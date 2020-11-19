@@ -1,27 +1,15 @@
-## Cheatsheet to use Docker
-If you have already installed Docker then you can use the following lines to start Docker and open new terminals. If you need to install it, please jump to the installation section.
-1. Move into the folder of the files you would like to use inside Docker: 
-	```
-	cd ~/<path-to-your-ros-packages>/
-	```
-2. Start Docker:
-	```
-	./<path-to-your-docker-image/run.sh 
-	```
-3. Inside the Docker image move into the `/projects` folder to access the files from your host folder.
-	
-4. Open a new terminal inside the Docker environment:
+# Simcloud
 
-	```
-	docker exec -it <name-of-your-docker-image> /bin/bash
-	```
+## List of environments
+* world with simple shapes - create for the workshop one blender mesh
+* playground world
+* collapsed house world - edit so the rover can enter
+* coolsingel world
 
-5. Source the environment variables in this terminal as well:
 
-	```
-	. ros_entrypoint.sh
-	```
-
+## List of robots
+* rover - 1 or multiple
+* uav - 1 or multiple
 
 
 # Setup the Simcloud environment
@@ -59,7 +47,50 @@ cd ros_packages
 
 9. Source the environment: `source devel/setup.bash`
 
-10. Start your launch file e.g. `roslaunch playground_world playground_world.launch`
+
+## Start the environment:
+* world with simple shapes - create for the workshop one blender mesh:
+
+
+
+
+* playground world:
+
+`roslaunch playground_world playground_world.launch`
+
+* collapsed house world:
+
+
+
+* coolsingel world:
+` roslaunch coolsingel_description coolsingel_world.launch`
+
+
+
+## Spawn robots in an empty environment:
+
+Spawn a rover (to do add parameters to spawn at a given location or spawn multiple):
+
+
+
+Spawn a UAV (to do add parameters to spawn at a given location or spawn multiple):
+
+
+
+
+## Spawn robots in an environment using preconfigured launch files:
+
+1. Rover in the shapes environment:
+
+2. Rover in the playground:
+
+3. Rover in the collapsed house:
+
+4. Rover on the Coolsingel:
+
+5. UAV on the Coolsingel:
+
+6. Multiple UAVs and a rover in the collapsed house:
 
 
 
@@ -123,3 +154,33 @@ TODO:
 25.  or use parameters to launch as many you want at a given location
     
 26.  add namespace parameter to the rover and location parameters
+
+
+
+
+
+
+## Cheatsheet to use Docker
+If you have already installed Docker then you can use the following lines to start Docker and open new terminals. If you need to install it, please jump to the installation section.
+1. Move into the folder of the files you would like to use inside Docker: 
+	```
+	cd ~/<path-to-your-ros-packages>/
+	```
+2. Start Docker:
+	```
+	./<path-to-your-docker-image/run.sh 
+	```
+3. Inside the Docker image move into the `/projects` folder to access the files from your host folder.
+	
+4. Open a new terminal inside the Docker environment:
+
+	```
+	docker exec -it <name-of-your-docker-image> /bin/bash
+	```
+
+5. Source the environment variables in this terminal as well:
+
+	```
+	. ros_entrypoint.sh
+	```
+
