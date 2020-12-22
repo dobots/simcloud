@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<!-- Launch the world file-->
+<launch>
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find simple_shapes_description)/worlds/simple_shapes.world"/>
+  </include>
+</launch>

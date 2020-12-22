@@ -1,0 +1,25 @@
+<?xml version="1.0"?>	
+<robot name= "base_fox_cart" xmlns:xacro="http://ros.org/wiki/xacro" >
+	<gazebo>
+		<plugin name= "base_fox_controller" filename="libgazebo_ros_diff_drive.so" >
+			<commandTopic> cmd_vel </commandTopic>
+			<odometryTopic> odom </odometryTopic>
+			<odometryFrame> odom </odometryFrame>
+			<odometrySource> world </odometrySource>
+			<publishOdomTF> true </publishOdomTF>
+			<robotBaseFrame> base_link </robotBaseFrame>
+			<publishWheelTF> false </publishWheelTF>
+			<publishTf> true </publishTf>
+			<publishWheelJointState> true </publishWheelJointState>
+			<legacyMode> false </legacyMode>
+			<updateRate> 100 </updateRate>
+			<leftJoint> wheel_left_joint </leftJoint>
+			<rightJoint> wheel_right_joint </rightJoint>
+			<wheelSeparation> 0.50 </wheelSeparation>
+			<wheelDiameter> 0.21 </wheelDiameter>
+			<wheelAcceleration> 1 </wheelAcceleration>
+			<wheelTorque> 10 </wheelTorque>
+			<rosDebugLevel> na </rosDebugLevel>
+		</plugin>
+	</gazebo>
+</robot>

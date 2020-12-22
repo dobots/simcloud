@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="front_wheel">
+	<xacro:macro name="front_wheel" params="alignment x_ y_ z_ rx_ ry_ rz_ off_ f_ s_ ">		
+
+		<joint name="wheel_${alignment}_joint" type="continuous">
+			<parent link="base_link"/>
+			<child link="wheel_${alignment}_link"/>
+			<dynamics damping="0.0005" friction="0.00" /> <!-- can be set to the right values -->
+			<!--limit upper="0.001"/--> <!-- set to correct values -->
+			<axis xyz="0 1 0"/>
+			<origin xyz= "${x_} ${y_} ${z_}"/>
+		</joint>
+		
+		<link name="wheel_${alignment}_link">
+			<visual>
+				<origin xyz="0 0 0" rpy="0 0 ${rz_}"/>
+				<geometry>
+					<mesh 	filename="package://fox_description/meshes/wheel_fox.dae" 
+							scale="0.001 0.001 0.001"/>
+				</geometry>
+			</visual>
+			<inertial>
+				<origin xyz="0 0 0"/>
+				<mass value="0.5" />
+				<inertia ixx="0.000986875" ixy="0.0" ixz="0.0" iyy="0.000145375" iyz="0.0" izz="0.000986875" />
+			</inertial>
+			<collision>
+				<origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+				<geometry>
+					<cylinder length="0.08" radius="0.105"/>
+				</geometry>
+			</collision>
+		</link>
+	
+		<gazebo reference="wheel_${alignment}_link">
+			<kp value="50000000.0" />
+			<kd value="0.2" />
+			<minDepth>0.001</minDepth>
+			<maxVel>0.01</maxVel>
+			<mu1 value="10.0"/>
+			<mu2 value="10.0"/>
+			<fdir1>1 0 0</fdir1>
+<!--			<material>Gazebo/Grey</material> -->
+		</gazebo>
+	</xacro:macro>
+</robot>

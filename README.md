@@ -50,20 +50,28 @@ cd ros_packages
 
 ## Start the environment:
 * world with simple shapes - create for the workshop one blender mesh:
-
+```
+roslaunch simple_shapes_description simple_shapes_world.launch
+```
 
 
 
 * playground world:
 
-`roslaunch playground_world playground_world.launch`
+```
+roslaunch playground_world playground_world.launch
+```
 
 * collapsed house world:
-
+```
+roslaunch collapsed_house_description collapsed_house_world.launch
+```
 
 
 * coolsingel world:
-` roslaunch coolsingel_description coolsingel_world.launch`
+```
+roslaunch coolsingel_description coolsingel_world.launch
+```
 
 
 
@@ -71,7 +79,9 @@ cd ros_packages
 
 Spawn a rover (to do add parameters to spawn at a given location or spawn multiple):
 
-
+```
+roslaunch fox_gazebo spawn_fox.launch
+```
 
 Spawn a UAV (to do add parameters to spawn at a given location or spawn multiple):
 
@@ -183,4 +193,16 @@ If you have already installed Docker then you can use the following lines to sta
 	```
 	. ros_entrypoint.sh
 	```
+	
+7. Move into the projects folder to access files from your host:
+```
+cd projects/
+```
+
+8. Move into the ros_packages folder ( this will be your ros workspace):
+```
+cd ros_packages
+```
+
+9. Source the environment: `source devel/setup.bash`
 
