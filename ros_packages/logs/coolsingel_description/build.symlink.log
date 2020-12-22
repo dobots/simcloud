@@ -1,0 +1,3 @@
+Symlinking /projects/ros_packages/devel/lib/pkgconfig/coolsingel_description.pc
+Symlinking /projects/ros_packages/devel/share/coolsingel_description/cmake/coolsingel_descriptionConfig.cmake
+Symlinking /projects/ros_packages/devel/share/coolsingel_description/cmake/coolsingel_descriptionConfig-version.cmake

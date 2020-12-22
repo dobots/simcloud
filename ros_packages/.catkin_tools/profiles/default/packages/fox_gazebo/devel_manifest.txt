@@ -1,0 +1,5 @@
+rover/fox_gazebo
+/projects/ros_packages/devel/.private/fox_gazebo/cmake.lock /projects/ros_packages/devel/./cmake.lock
+/projects/ros_packages/devel/.private/fox_gazebo/lib/pkgconfig/fox_gazebo.pc /projects/ros_packages/devel/lib/pkgconfig/fox_gazebo.pc
+/projects/ros_packages/devel/.private/fox_gazebo/share/fox_gazebo/cmake/fox_gazeboConfig.cmake /projects/ros_packages/devel/share/fox_gazebo/cmake/fox_gazeboConfig.cmake
+/projects/ros_packages/devel/.private/fox_gazebo/share/fox_gazebo/cmake/fox_gazeboConfig-version.cmake /projects/ros_packages/devel/share/fox_gazebo/cmake/fox_gazeboConfig-version.cmake

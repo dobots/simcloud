@@ -1,0 +1,3 @@
+Symlinking /projects/ros_packages/devel/lib/pkgconfig/simple_shapes_description.pc
+Symlinking /projects/ros_packages/devel/share/simple_shapes_description/cmake/simple_shapes_descriptionConfig-version.cmake
+Symlinking /projects/ros_packages/devel/share/simple_shapes_description/cmake/simple_shapes_descriptionConfig.cmake

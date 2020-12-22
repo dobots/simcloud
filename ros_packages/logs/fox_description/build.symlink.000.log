@@ -1,0 +1,3 @@
+Symlinking /projects/ros_packages/devel/lib/pkgconfig/fox_description.pc
+Symlinking /projects/ros_packages/devel/share/fox_description/cmake/fox_descriptionConfig-version.cmake
+Symlinking /projects/ros_packages/devel/share/fox_description/cmake/fox_descriptionConfig.cmake

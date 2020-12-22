@@ -1,0 +1,5 @@
+simple_shapes_description
+/projects/ros_packages/devel/.private/simple_shapes_description/cmake.lock /projects/ros_packages/devel/./cmake.lock
+/projects/ros_packages/devel/.private/simple_shapes_description/lib/pkgconfig/simple_shapes_description.pc /projects/ros_packages/devel/lib/pkgconfig/simple_shapes_description.pc
+/projects/ros_packages/devel/.private/simple_shapes_description/share/simple_shapes_description/cmake/simple_shapes_descriptionConfig-version.cmake /projects/ros_packages/devel/share/simple_shapes_description/cmake/simple_shapes_descriptionConfig-version.cmake
+/projects/ros_packages/devel/.private/simple_shapes_description/share/simple_shapes_description/cmake/simple_shapes_descriptionConfig.cmake /projects/ros_packages/devel/share/simple_shapes_description/cmake/simple_shapes_descriptionConfig.cmake

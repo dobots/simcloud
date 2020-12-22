@@ -67,9 +67,9 @@ RUN git clone https://github.com/osrf/gzweb.git
 
 WORKDIR /
 # Copy my own demo scripts:
-COPY demo_setup.sh .
-COPY launch_demo_script.sh .
-COPY launch_demo.sh .
+#COPY demo_setup.sh .
+#COPY launch_demo_script.sh .
+#COPY launch_demo.sh .
 
 RUN apt-get -y update && apt-get -y install libgl1-mesa-glx libgl1-mesa-dri
 RUN rm -rf /var/lib/apt/lists/*
