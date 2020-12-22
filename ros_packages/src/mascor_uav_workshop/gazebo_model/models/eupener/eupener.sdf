@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<sdf version='1.5'>
+  <model name='eupener'>
+    <static>true</static>
+    <link name="link">
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>150 300 .005</size>
+          </box>
+        </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>0.2</mu>
+                <mu2>0.2</mu2>
+              </ode>
+            </friction>
+          </surface>
+      </collision>
+      <visual name="visual">
+        <cast_shadows>false</cast_shadows>
+        <geometry>
+          <box>
+            <size>150 300 .005</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <name>eupener</name>
+            <uri>model://eupener/materials/scripts</uri>
+            <uri>model://eupener/materials/textures</uri>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>

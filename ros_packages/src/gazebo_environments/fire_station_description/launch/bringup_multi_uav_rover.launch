@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- MAVROS posix SITL environment launch script -->
+    <!-- launches Gazebo environment and 2x: MAVROS, PX4 SITL, and spawns vehicle -->
+    <!-- vehicle model and world -->
+    <arg name="est" default="ekf2"/>
+    <arg name="vehicle" default="iris"/>
+
+     <!--ADD YOUR OWN WORLD -->
+     <arg name="world" value="$(find fire_station_description)/worlds/fire_station.world"/>
+    <!--<arg name="world" default="$(find mavlink_sitl_gazebo)/worlds/empty.world"/>-->
+    <!-- gazebo configs -->
+    <arg name="gui" default="true"/>
+    <arg name="debug" default="false"/>
+    <arg name="verbose" default="false"/>
+    <arg name="paused" default="true"/>
+    <!-- Gazebo sim -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="gui" value="$(arg gui)"/>
+        <arg name="world_name" value="$(arg world)"/>
+        <arg name="debug" value="$(arg debug)"/>
+        <arg name="verbose" value="$(arg verbose)"/>
+        <arg name="paused" value="$(arg paused)"/>
+    </include>
+
+<!-- ADD THE ROVER -->
+  <arg name="x_" default="0.0"/>
+  <arg name="y_" default="-0.3"/>
+  <arg name="z_" default="0.12"/>
+  
+  <arg name="roll_" default="0"/>
+  <arg name="pitch_" default="0"/>
+  <arg name="yaw_" default="3.14"/>
+
+  <arg name="cart" default="rover"/>
+  <param name="robot_description" command="$(find xacro)/xacro $(find rover_description)/urdf/base_rover_big_top.urdf.xacro" />
+
+<node name="spawn_cart" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model $(arg cart) -x $(arg x_) -y $(arg y_) -z $(arg z_) -R $(arg roll_) -P $(arg pitch_) -Y $(arg yaw_)"/> 
+
+</launch>

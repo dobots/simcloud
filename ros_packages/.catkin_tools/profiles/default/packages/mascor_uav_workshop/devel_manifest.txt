@@ -1,0 +1,5 @@
+mascor_uav_workshop
+/projects/ros_packages/devel/.private/mascor_uav_workshop/cmake.lock /projects/ros_packages/devel/./cmake.lock
+/projects/ros_packages/devel/.private/mascor_uav_workshop/lib/pkgconfig/mascor_uav_workshop.pc /projects/ros_packages/devel/lib/pkgconfig/mascor_uav_workshop.pc
+/projects/ros_packages/devel/.private/mascor_uav_workshop/share/mascor_uav_workshop/cmake/mascor_uav_workshopConfig-version.cmake /projects/ros_packages/devel/share/mascor_uav_workshop/cmake/mascor_uav_workshopConfig-version.cmake
+/projects/ros_packages/devel/.private/mascor_uav_workshop/share/mascor_uav_workshop/cmake/mascor_uav_workshopConfig.cmake /projects/ros_packages/devel/share/mascor_uav_workshop/cmake/mascor_uav_workshopConfig.cmake

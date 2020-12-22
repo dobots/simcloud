@@ -1,4 +1,4 @@
-coolsingel_description
+gazebo environments/coolsingel_description
 /projects/ros_packages/devel/.private/coolsingel_description/cmake.lock /projects/ros_packages/devel/./cmake.lock
 /projects/ros_packages/devel/.private/coolsingel_description/lib/pkgconfig/coolsingel_description.pc /projects/ros_packages/devel/lib/pkgconfig/coolsingel_description.pc
 /projects/ros_packages/devel/.private/coolsingel_description/share/coolsingel_description/cmake/coolsingel_descriptionConfig.cmake /projects/ros_packages/devel/share/coolsingel_description/cmake/coolsingel_descriptionConfig.cmake

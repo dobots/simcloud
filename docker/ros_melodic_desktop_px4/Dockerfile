@@ -15,7 +15,18 @@ RUN apt-get -y update && apt-get install -y less nano nodejs libjansson-dev libb
 RUN apt-get -y update && apt-get install -y ant openjdk-8-jdk openjdk-8-jre
 RUN apt-get -y update && apt-get install -y ros-melodic-navigation ros-melodic-hector-slam ros-melodic-teb-local-planner ros-melodic-teleop-twist-keyboard ros-melodic-hector-gazebo-plugins
 RUN apt-get -y update && apt-get install -y geographiclib-tools gstreamer1.0-plugins-bad gstreamer1.0-libav gstreamer1.0-gl libgstreamer-plugins-base1.0-dev
+
+
+# Ensure bin/sh (default shell) is set to bash
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+# apt update
+RUN apt-get update -y && apt-get install -y less nano
+
+# ROS sourcing
+RUN echo ". /ros_entrypoint.sh" >> ~/.bashrc
+# Fix entrypoint.sh file
+RUN sed -i 's/set -e//' /ros_entrypoint.sh
+
 
 # Update and install Python tools
 RUN apt-get -y update && apt-get install -y python3-pip
@@ -70,6 +81,10 @@ WORKDIR /
 #COPY demo_setup.sh .
 #COPY launch_demo_script.sh .
 #COPY launch_demo.sh .
+
+
+
+
 
 RUN apt-get -y update && apt-get -y install libgl1-mesa-glx libgl1-mesa-dri
 RUN rm -rf /var/lib/apt/lists/*
