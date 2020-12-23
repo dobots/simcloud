@@ -50,7 +50,7 @@ RUN apt-get install -y gstreamer1.0-plugins-bad gstreamer1.0-libav gstreamer1.0-
 # RUN rm -rf requiredcomponents eprosima_fastrtps-1-7-2-linux.tar.gz
 #### Install MAVROS
 # (Optional) RUN apt-get install -y python-rosinstall-generator python-catkin-tools
-RUN apt-get install -y ros-melodic-mavros ros-melodic-mavros-extras
+RUN apt-get install -y ros-melodic-mavros ros-melodic-mavros-extras ros-melodic-genpy
 RUN wget https://raw.githubusercontent.com/mavlink/mavros/master/mavros/scripts/install_geographiclib_datasets.sh -O - | bash
 #### Download and build PX4-Autopilot
 RUN mkdir PX4
