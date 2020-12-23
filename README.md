@@ -1,9 +1,10 @@
 # Simcloud
 
 ## List of environments
-* world with simple shapes - create for the workshop one blender mesh
+* world with simple shapes 
 * playground world
-* collapsed house world - edit so the rover can enter
+* collapsed house world
+* fire station world 
 * coolsingel world
 
 
@@ -38,6 +39,13 @@ docker exec -it ros_melodic_desktop_full /bin/bash
 cd projects/
 ```
 
+8. (Optional) If you would like to work with drones run the init_drone.sh script to setup the correct variables:
+```
+. init_drone.sh
+```
+Important to have a space between the . and the init_drone.sh command, otherwise it'll not setup the correct path variables , because of the `#!/bin/bash` command at the top of the script.
+
+
 8. Move into the ros_packages folder ( this will be your ros workspace):
 ```
 cd ros_packages
@@ -45,7 +53,7 @@ cd ros_packages
 
 8. Run `catkin_make`
 
-9. Source the environment: `source devel/setup.bash`
+9. Source the environment: `source devel/local_setup.bash` If you source the setup.bash file instead of the local version and you are working with drones, you need to run the init_drone.sh script to reconfigure the ROS_PACKAGE_PATH. Otherwise your program will not find mavros, mavlink, and px4.
 
 
 ## Start the environment:
@@ -107,67 +115,24 @@ Spawn a UAV (to do add parameters to spawn at a given location or spawn multiple
 
 
 
-TODO:
-    
-2.  start collecting packages and updating the readme
-    
-3.  take the rover descritpion/ tb3 description
-    
-4.  show files what is in there
-    
-5.  create a gazebo folder
-    
-6.  empty world. launch
-    
-7.  spawn a rover
-    
-8.  do it in one file
-    
-9.  creating environments
-    
-10.  copy the description folder
-    
-11.  set the config files
-    
-12.  create a mesh or use gazebo mesh files in a world file
-    
-13.  create a mesh file - edit in blender, or download
-    
-14.  add the mesh file
-    
-15.  create a launch file in the gazebo folder
-    
-16.  do it 3 times - 3 environments
-    
-17.  spawn rover separately at a given location using parameters or use the combined launch files
-    
+## TODO:
+ - move drone pos control to a separate package
+ - rename mascor_uav package
+ - rename fox_robot
+ - correct the dependencies of launch files with the new names
+ - create instructions in the Readme
+ - create videos
+ - clean-up the docker image
+ - add instructions about building the docker image
+ - add instructions on how to setup the workspace, etc.
+
+
+## Future TODO 
+    - create new combined launch files for different scenarios
+    - use parameters to launch as many robots you want
+    - connect to a config file to set parameters
 
   
-
-18.  copy a drone gazebo folder
-    
-19.  copy a drone description folder
-    
-20.  clean both up, remove all the other package dependencies
-    
-21.  keep only what is necessary and copy here what is needed from other packages
-    
-22.  spawn a drone separately at a given location using parameters or use the combined launch files
-    
-
-  
-
-23.  create a rover and drone folder
-    
-24.  launch both of them in different environments using combined launch files
-    
-25.  or use parameters to launch as many you want at a given location
-    
-26.  add namespace parameter to the rover and location parameters
-
-
-
-
 
 
 ## Cheatsheet to use Docker
@@ -205,4 +170,5 @@ cd ros_packages
 ```
 
 9. Source the environment: `source devel/setup.bash`
+
 
