@@ -51,7 +51,7 @@
   <arg name="uav_model" default="iris_camera"/> <!--uses iris model from px4 firmware package and adds a ros usb_cam--> <!-- iris,iris_camera, iris_opt_flow, iris_rplida, solo, typhoon_h480 -->
 
   <arg name="cart" default="rover"/>
-  <param name="robot_description" command="$(find xacro)/xacro $(find rover_description)/urdf/base_rover.urdf.xacro" />
+  <param name="robot_description" command="$(find xacro)/xacro $(find fox_description)/urdf/base_rover_big_top.urdf.xacro" />
 
 	<node name="spawn_uav" pkg="gazebo_ros" type="spawn_model" args="-file $(find mascor_uav_workshop)/gazebo_model/models/$(arg uav_model)/$(arg uav_model).sdf -sdf -model $(arg uav_model) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)" />
 
