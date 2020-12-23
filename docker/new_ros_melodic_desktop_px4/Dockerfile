@@ -70,7 +70,7 @@ RUN apt-get install libarchive-tools && bsdtar xfp QGroundControl.AppImage
 
 ### GazeboWeb (TODO) (Optional):
 WORKDIR /
-EXPOSE 8080
+# EXPOSE 8080
 # RUN apt-get install -y nodejs libjansson-dev libboost-dev imagemagick libtinyxml-dev astyle
 # RUN apt-get install -y ant openjdk-8-jdk openjdk-8-jre
 
