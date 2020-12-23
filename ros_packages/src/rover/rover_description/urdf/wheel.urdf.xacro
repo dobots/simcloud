@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="front_wheel">
+	<xacro:macro name="front_wheel" params="alignment x_ y_ z_ r_ p_ j_ off_ f_ s_ ">		
+		<link name="wheel_${alignment}_link">
+			<visual>
+				<origin xyz="0 0 0" rpy="${r_} 0 0"/>
+				<geometry>
+					<mesh 	filename="package://rover_description/meshes/front_wheel_${alignment}.stl" 
+							scale="0.001 0.001 0.001"/>
+				</geometry>
+			</visual>
+			<inertial>
+				<origin xyz="0 ${off_} 0"/>
+				<mass value="0.5" />
+				<inertia ixx="0.000986875" ixy="0.0" ixz="0.0" iyy="0.000145375" iyz="0.0" izz="0.000986875" />
+			</inertial>
+			<collision>
+				<origin xyz="0 ${off_} 0" rpy="${r_} 0 0"/>
+				<geometry>
+					<cylinder length="0.08" radius="0.1"/>
+				</geometry>
+			</collision>
+		</link>
+	
+		<joint name="wheel_${alignment}_joint" type="continuous">
+			<parent link="base_cart_link"/>
+			<child link="wheel_${alignment}_link"/>
+			<dynamics damping="0.0005" friction="0.00" /> <!-- can be set to the right values -->
+			<!--limit upper="0.001"/--> <!-- set to correct values -->
+			<axis xyz="0 -1 0"/>
+			<origin xyz= "${x_} ${y_} ${z_}"/>
+		</joint>
+		
+		<gazebo reference="wheel_${alignment}_link">
+			<kp value="50000000.0" />
+			<kd value="0.2" />
+			<minDepth>0.001</minDepth>
+			<maxVel>0.01</maxVel>
+			<mu1 value="1.0"/>
+			<mu2 value="1.0"/>
+			<fdir1>1 0 0</fdir1>
+			<material>Gazebo/Orange</material>
+		</gazebo>
+	</xacro:macro>
+</robot>

@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="caster_wheel">
+	<xacro:macro name="caster" params="alignment x_ y_ z_">		
+		<link name="caster_${alignment}_link">
+			<visual>
+				<origin xyz="0 0 0" rpy="1.5707 0 0"/>
+				<geometry>
+					<cylinder length="0.01" radius="0.057"/>
+				</geometry>
+			</visual>
+
+			<inertial>
+				<origin xyz="0 0 0"/>
+				<mass value="0.1" />
+				<!-- M=3kg, h=0.08m, r=0.105m-->
+				<inertia ixx="0.000986875" ixy="0.0" ixz="0.0" iyy="0.000145375" iyz="0.0" izz="0.000986875" />
+			</inertial>
+
+			<collision>
+				<origin xyz="0 0 0" rpy="0 0 0"/>
+				<geometry>
+					<sphere radius="0.057"/>
+				</geometry>
+			</collision>
+		</link>
+	
+		<!--<joint name="caster_${alignment}_joint" type="fixed">
+			<parent link="base_cart_link"/>
+			<child link="caster_${alignment}_link"/>
+			<axis xyz="0 1 0"/>
+			<dynamics damping="0.0005" friction="0.00" /> 
+			<origin xyz= "${x_} ${y_} ${z_}"/>
+		</joint>-->
+
+		<joint name="caster_${alignment}_joint" type="continuous">
+			<parent link="base_cart_link"/>
+			<child link="caster_${alignment}_link"/>
+			<axis xyz="0 -1 0"/>
+			<dynamics damping="0.0005" friction="0.00" /> 
+			<origin xyz= "${x_} ${y_} ${z_}"/>
+		</joint>
+
+
+		
+		<gazebo reference="caster_${alignment}_link">
+			<kp value="50000000.0" />
+			<kd value="0.2" />
+			<mu1 value="0.1"/>
+			<mu2 value="0.1"/>
+			<minDepth>0.001</minDepth>
+			<maxVel>0.01</maxVel>
+			<fdir1>1 0 0</fdir1>
+			<material>Gazebo/Orange</material>
+                        <selfCollide>false</selfCollide>
+		</gazebo>
+	</xacro:macro>
+</robot>

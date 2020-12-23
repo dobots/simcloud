@@ -1,4 +1,5 @@
 FROM osrf/ros:melodic-desktop-full
+# 'desktop-full' includes gazebo9
 
 # nvidia-container-runtime
 ENV NVIDIA_VISIBLE_DEVICES \
@@ -6,90 +7,73 @@ ENV NVIDIA_VISIBLE_DEVICES \
 ENV NVIDIA_DRIVER_CAPABILITIES \
     ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
 
-
-# Prepare/extend image to be a useful development environment
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
-RUN apt-get -y update && apt-get remove modemmanager -y
-RUN apt-get -y update && apt-get install -y apt-utils build-essential psmisc vim-gtk
-RUN apt-get -y update && apt-get install -y less nano nodejs libjansson-dev libboost-dev imagemagick libtinyxml-dev mercurial git genromfs ninja-build exiftool astyle xxd python-argparse python-toml python-pip python-rosinstall-generator python-catkin-tools
-RUN apt-get -y update && apt-get install -y ant openjdk-8-jdk openjdk-8-jre
-RUN apt-get -y update && apt-get install -y ros-melodic-navigation ros-melodic-hector-slam ros-melodic-teb-local-planner ros-melodic-teleop-twist-keyboard ros-melodic-hector-gazebo-plugins
-RUN apt-get -y update && apt-get install -y geographiclib-tools gstreamer1.0-plugins-bad gstreamer1.0-libav gstreamer1.0-gl libgstreamer-plugins-base1.0-dev
-
-
 # Ensure bin/sh (default shell) is set to bash
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
-# apt update
-RUN apt-get update -y && apt-get install -y less nano
 
-# ROS sourcing
+# Basic installs for Image:
+RUN apt-get update -y
+RUN apt-get install -y --no-install-recommends apt-utils
+RUN apt-get install -y less nano wget psmisc zip build-essential git mercurial
+
+# ROS #
+## (Optional) Update ros packages to the latest version
+# RUN apt-get upgrade -y
+
+## sourcing
 RUN echo ". /ros_entrypoint.sh" >> ~/.bashrc
-# Fix entrypoint.sh file
+RUN echo ". /usr/share/gazebo/setup.sh" >> ~/.bashrc
+
+## Fix entrypoint.sh file
 RUN sed -i 's/set -e//' /ros_entrypoint.sh
 
+## Additional installs (Optional)
+### General packages:
+RUN apt-get install -y ros-melodic-teleop-twist-keyboard ros-melodic-move-base ros-melodic-map-server ros-melodic-gmapping ros-melodic-hector-slam
 
-# Update and install Python tools
-RUN apt-get -y update && apt-get install -y python3-pip
-RUN pip install --upgrade pip
-RUN pip install pandas jinja2 pyserial pyyaml pyulog 
-RUN pip3 install --upgrade pip
-RUN pip3 install toml empy numpy pyros-genmsg jinja2 packaging pyserial pyyaml pyulog
+### PX4 installation
+#### Initial setup:
+RUN apt-get remove modemmanager -y
+RUN apt-get install -y cmake genromfs ninja-build xxd vim-gtk exiftool
+RUN apt-get install -y python3-pip
+RUN pip3 install empy toml numpy pyros-genmsg jinja2 packaging pyserial pyyaml
+# gstreamer for PX4-AutoPilot and QGroundControl
+RUN apt-get install -y gstreamer1.0-plugins-bad gstreamer1.0-libav gstreamer1.0-gl libgstreamer-plugins-base1.0-dev
+# (Optional) RUN apt-get install -y qtcreator
 
-# Download and build MAVROS:
-COPY build_mavros.sh .
-RUN /build_mavros.sh
-
-# Download PX4 simulator
+#### (Optional) Install FastRTPS 1.7.1 and FastCDR-1.0.8
+# RUN wget https://www.eprosima.com/index.php/component/ars/repository/eprosima-fast-dds/eprosima-fast-rtps-1-7-2/eprosima_fastrtps-1-7-2-linux-tar-gz?format=raw -O eprosima_fastrtps-1-7-2-linux.tar.gz
+# RUN tar -xzf eprosima_fastrtps-1-7-2-linux.tar.gz eProsima_FastRTPS-1.7.2-Linux
+# RUN tar -xzf eprosima_fastrtps-1-7-2-linux.tar.gz requiredcomponents
+# RUN tar -xzf requiredcomponents/eProsima_FastCDR-1.0.8-Linux.tar.gz
+# RUN cd eProsima_FastCDR-1.0.8-Linux && ./configure --libdir=/usr/lib && make -j4 && make install
+# RUN cd eProsima_FastRTPS-1.7.2-Linux && ./configure --libdir=/usr/lib && make -j4 && make install
+# RUN rm -rf requiredcomponents eprosima_fastrtps-1-7-2-linux.tar.gz
+#### Install MAVROS
+# (Optional) RUN apt-get install -y python-rosinstall-generator python-catkin-tools
+RUN apt-get install -y ros-melodic-mavros ros-melodic-mavros-extras
+RUN wget https://raw.githubusercontent.com/mavlink/mavros/master/mavros/scripts/install_geographiclib_datasets.sh -O - | bash
+#### Download and build PX4-Autopilot
 RUN mkdir PX4
 WORKDIR PX4
 RUN git clone https://github.com/PX4/Firmware.git
-
-WORKDIR /
-# Install FastRTPS 1.7.1 and FastCDR-1.0.8 (Dependencies of the PX4 Simulator)
-RUN wget https://www.eprosima.com/index.php/component/ars/repository/eprosima-fast-dds/eprosima-fast-rtps-1-7-2/eprosima_fastrtps-1-7-2-linux-tar-gz?format=raw -O eprosima_fastrtps-1-7-2-linux.tar.gz
-RUN tar -xzf eprosima_fastrtps-1-7-2-linux.tar.gz eProsima_FastRTPS-1.7.2-Linux
-RUN tar -xzf eprosima_fastrtps-1-7-2-linux.tar.gz requiredcomponents
-RUN tar -xzf requiredcomponents/eProsima_FastCDR-1.0.8-Linux.tar.gz
-
-RUN cd eProsima_FastCDR-1.0.8-Linux && ./configure --libdir=/usr/lib && make -j4 && make install
-RUN cd eProsima_FastRTPS-1.7.2-Linux && ./configure --libdir=/usr/lib && make -j4 && make install
-RUN rm -rf requiredcomponents eprosima_fastrtps-1-7-2-linux.tar.gz
-
-# Build PX4 simulator
 WORKDIR /PX4/Firmware
 RUN DONT_RUN=1 make px4_sitl gazebo
+# TODO: Source Firmware and add to ROS PACKAGE PATH
 
-# Install QGroundcontrol
-WORKDIR /root/
-RUN wget https://s3-us-west-2.amazonaws.com/qgroundcontrol/latest/QGroundControl.AppImage -O QGroundControl.AppImage
-RUN chmod +x ./QGroundControl.AppImage
-#RUN ./QGroundControl.AppImage --appimage-extract-and-run
-
-# Install drone tooling for ROS
-RUN apt-get -y update && apt-get install -y ros-melodic-ar-track-alvar ros-melodic-jsk-rviz-plugins
-RUN catkin_ws/src/mavros/mavros/scripts/install_geographiclib_datasets.sh
-
-
-# Deploy Gazebo models for GZWEB (Needs filtering, otherwise extreme long duration)
+### Install QGroundControl:
 WORKDIR /
-RUN git clone https://github.com/osrf/gzweb.git
-#WORKDIR /gzweb
-#RUN  . /usr/share/gazebo/setup.sh; ./deploy.sh -m
+RUN mkdir QGroundControl
+WORKDIR QGroundControl
+RUN wget https://s3-us-west-2.amazonaws.com/qgroundcontrol/builds/master/QGroundControl.AppImage -O QGroundControl.AppImage
+RUN apt-get install libarchive-tools && bsdtar xfp QGroundControl.AppImage
+# Now you may run the app using ./QGroundControl/AppRun (As a non root user)
 
+### GazeboWeb (TODO) (Optional):
 WORKDIR /
-# Copy my own demo scripts:
-#COPY demo_setup.sh .
-#COPY launch_demo_script.sh .
-#COPY launch_demo.sh .
+# EXPOSE 8080
+# RUN apt-get install -y nodejs libjansson-dev libboost-dev imagemagick libtinyxml-dev astyle
+# RUN apt-get install -y ant openjdk-8-jdk openjdk-8-jre
 
 
-
-
-
-RUN apt-get -y update && apt-get -y install libgl1-mesa-glx libgl1-mesa-dri
-RUN rm -rf /var/lib/apt/lists/*
-
-# Normal init
-EXPOSE 8080
+# Ensure image runs bash
 CMD ["bash"]
-
