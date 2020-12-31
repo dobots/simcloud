@@ -9,7 +9,7 @@ Link to the tutorial: [uav workshop detailed guide](https://docs.google.com/docu
 
 ## Dependencies
 
- - mascor_uav_workshop package
+ - uav package
 	 - includes the UAV model and its config files
 	 - it can be found in this repository as well
 	 - or if you have followed the uav_workshop tutorial it should be already in your catkin folder
@@ -116,7 +116,7 @@ To add more UAVs (up to 10) you need to:
 
 - Set the malink_udp_port to 14560+id) 
   
-The ```single_vehicle_spawn.launch``` file instead of the original urdf (px4/Tools/sitl_gazebo/models/rotors_description/urdf/iris_base.xacro) description can be edited to load the description located in the aut_opp/gazebo_model/models/iris_camera/ folder instead of mascor_uav_workshop/gazebo_model/models/iris_camera/.
+The ```single_vehicle_spawn.launch``` file instead of the original urdf (px4/Tools/sitl_gazebo/models/rotors_description/urdf/iris_base.xacro) description can be edited to load the description located in the aut_opp/gazebo_model/models/iris_camera/ folder instead of uav/gazebo_model/models/iris_camera/.
 **It is an important difference, since in that folder a camera is added to the iris model of the UAV!**
 
 

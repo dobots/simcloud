@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
 
-  <!--<arg name="world_name" default="$(find mascor_uav_workshop)/gazebo_model/world/eupener.world"/> -->
+  <!--<arg name="world_name" default="$(find uav)/gazebo_model/world/eupener.world"/> -->
  <arg name="world_name" value="$(find human_resting_description)/worlds/human_resting.world"/>
 
 <!--EDIT YOUR WORLD HERE-->
@@ -28,6 +28,6 @@
   <arg name="pitch" default="0"/>
   <arg name="yaw" default="0"/>
   <arg name="uav_model" default="iris_camera"/> <!--uses iris model from px4 firmware package and adds a ros usb_cam--> <!-- iris,iris_camera, iris_opt_flow, iris_rplida, solo, typhoon_h480 -->
-  <node name="spawn_uav" pkg="gazebo_ros" type="spawn_model" args="-file $(find mascor_uav_workshop)/gazebo_model/models/$(arg uav_model)/$(arg uav_model).sdf -sdf -model $(arg uav_model) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)" /> 
+  <node name="spawn_uav" pkg="gazebo_ros" type="spawn_model" args="-file $(find uav)/gazebo_model/models/$(arg uav_model)/$(arg uav_model).sdf -sdf -model $(arg uav_model) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)" /> 
 
 </launch>
