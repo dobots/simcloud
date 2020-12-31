@@ -116,13 +116,14 @@ Spawn a UAV (to do add parameters to spawn at a given location or spawn multiple
 
 
 ## TODO:
- - move drone pos control to a separate package
+ - -move drone pos control to a separate package-
+ - update scripts pointing to the position control package
  - rename mascor_uav package
- - rename rover_robot
- - correct the dependencies of launch files with the new names
+ - -rename rover_robot-
+ - -correct the dependencies of launch files with the new names-
  - create instructions in the Readme
  - create videos
- - clean-up the docker image
+ - clean-up the docker image-
  - add instructions about building the docker image
  - add instructions on how to setup the workspace, etc.
 
