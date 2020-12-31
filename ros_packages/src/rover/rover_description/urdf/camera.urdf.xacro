@@ -12,7 +12,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="${pi/2} 0 ${pi/2}"/>
       <geometry>
-        <mesh filename="package://fox_description/meshes/astra.dae" scale="0.001 0.001 0.001" />
+        <mesh filename="package://rover_description/meshes/astra.dae" scale="0.001 0.001 0.001" />
       </geometry>
     </visual>
 

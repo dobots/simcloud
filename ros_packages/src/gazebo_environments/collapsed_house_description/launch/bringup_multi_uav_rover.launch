@@ -33,7 +33,7 @@
   <arg name="yaw_" default="3.14"/>
 
   <arg name="cart" default="rover"/>
-  <param name="robot_description" command="$(find xacro)/xacro $(find fox_description)/urdf/base_rover_big_top.urdf.xacro" />
+  <param name="robot_description" command="$(find xacro)/xacro $(find rover_description)/urdf/base_rover_big_top.urdf.xacro" />
 
 <node name="spawn_cart" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model $(arg cart) -x $(arg x_) -y $(arg y_) -z $(arg z_) -R $(arg roll_) -P $(arg pitch_) -Y $(arg yaw_)"/> 
 

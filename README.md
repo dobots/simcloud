@@ -88,7 +88,7 @@ roslaunch coolsingel_description coolsingel_world.launch
 Spawn a rover (to do add parameters to spawn at a given location or spawn multiple):
 
 ```
-roslaunch fox_gazebo spawn_fox.launch
+roslaunch rover_gazebo spawn_rover.launch
 ```
 
 Spawn a UAV (to do add parameters to spawn at a given location or spawn multiple):
@@ -118,7 +118,7 @@ Spawn a UAV (to do add parameters to spawn at a given location or spawn multiple
 ## TODO:
  - move drone pos control to a separate package
  - rename mascor_uav package
- - rename fox_robot
+ - rename rover_robot
  - correct the dependencies of launch files with the new names
  - create instructions in the Readme
  - create videos
