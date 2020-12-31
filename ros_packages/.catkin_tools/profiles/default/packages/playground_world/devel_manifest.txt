@@ -1,5 +1,0 @@
-gazebo environments/playground_world
-/projects/ros_packages/devel/.private/playground_world/cmake.lock /projects/ros_packages/devel/./cmake.lock
-/projects/ros_packages/devel/.private/playground_world/lib/pkgconfig/playground_world.pc /projects/ros_packages/devel/lib/pkgconfig/playground_world.pc
-/projects/ros_packages/devel/.private/playground_world/share/playground_world/cmake/playground_worldConfig.cmake /projects/ros_packages/devel/share/playground_world/cmake/playground_worldConfig.cmake
-/projects/ros_packages/devel/.private/playground_world/share/playground_world/cmake/playground_worldConfig-version.cmake /projects/ros_packages/devel/share/playground_world/cmake/playground_worldConfig-version.cmake

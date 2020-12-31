@@ -1,5 +1,0 @@
-gazebo environments/collapsed_house_description
-/projects/ros_packages/devel/.private/collapsed_house_description/cmake.lock /projects/ros_packages/devel/./cmake.lock
-/projects/ros_packages/devel/.private/collapsed_house_description/lib/pkgconfig/collapsed_house_description.pc /projects/ros_packages/devel/lib/pkgconfig/collapsed_house_description.pc
-/projects/ros_packages/devel/.private/collapsed_house_description/share/collapsed_house_description/cmake/collapsed_house_descriptionConfig-version.cmake /projects/ros_packages/devel/share/collapsed_house_description/cmake/collapsed_house_descriptionConfig-version.cmake
-/projects/ros_packages/devel/.private/collapsed_house_description/share/collapsed_house_description/cmake/collapsed_house_descriptionConfig.cmake /projects/ros_packages/devel/share/collapsed_house_description/cmake/collapsed_house_descriptionConfig.cmake

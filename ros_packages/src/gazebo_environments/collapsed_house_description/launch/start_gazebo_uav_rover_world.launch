@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
 
-  <!--<arg name="world_name" default="$(find mascor_uav_workshop)/gazebo_model/world/eupener.world"/> -->
+  <!--<arg name="world_name" default="$(find uav)/gazebo_model/world/eupener.world"/> -->
  <arg name="world_name" value="$(find collapsed_house_description)/worlds/collapsed_house.world"/>
 
 <!--EDIT YOUR WORLD HERE-->
@@ -29,7 +29,7 @@
   <arg name="pitch" default="0"/>
   <arg name="yaw" default="0"/>
   <arg name="uav_model" default="iris_camera"/> 
-  <node name="spawn_uav" pkg="gazebo_ros" type="spawn_model" args="-file $(find mascor_uav_workshop)/gazebo_model/models/$(arg uav_model)/$(arg uav_model).sdf -sdf -model $(arg uav_model) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)" /> -->
+  <node name="spawn_uav" pkg="gazebo_ros" type="spawn_model" args="-file $(find uav)/gazebo_model/models/$(arg uav_model)/$(arg uav_model).sdf -sdf -model $(arg uav_model) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)" /> -->
 
 <arg name="x" default="0"/>
   <arg name="y" default="-0.3"/>
@@ -53,7 +53,7 @@
   <arg name="cart" default="rover"/>
   <param name="robot_description" command="$(find xacro)/xacro $(find rover_description)/urdf/base_rover_big_top.urdf.xacro" />
 
-	<node name="spawn_uav" pkg="gazebo_ros" type="spawn_model" args="-file $(find mascor_uav_workshop)/gazebo_model/models/$(arg uav_model)/$(arg uav_model).sdf -sdf -model $(arg uav_model) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)" />
+	<node name="spawn_uav" pkg="gazebo_ros" type="spawn_model" args="-file $(find uav)/gazebo_model/models/$(arg uav_model)/$(arg uav_model).sdf -sdf -model $(arg uav_model) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)" />
 
 	<node name="spawn_cart" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model $(arg cart) -x $(arg x_) -y $(arg y_) -z $(arg z_) -R $(arg roll_) -P $(arg pitch_) -Y $(arg yaw_)"/> 
 

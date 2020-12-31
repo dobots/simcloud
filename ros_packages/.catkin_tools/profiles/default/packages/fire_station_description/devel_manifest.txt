@@ -1,5 +1,0 @@
-gazebo environments/fire_station_description
-/projects/ros_packages/devel/.private/fire_station_description/cmake.lock /projects/ros_packages/devel/./cmake.lock
-/projects/ros_packages/devel/.private/fire_station_description/lib/pkgconfig/fire_station_description.pc /projects/ros_packages/devel/lib/pkgconfig/fire_station_description.pc
-/projects/ros_packages/devel/.private/fire_station_description/share/fire_station_description/cmake/fire_station_descriptionConfig.cmake /projects/ros_packages/devel/share/fire_station_description/cmake/fire_station_descriptionConfig.cmake
-/projects/ros_packages/devel/.private/fire_station_description/share/fire_station_description/cmake/fire_station_descriptionConfig-version.cmake /projects/ros_packages/devel/share/fire_station_description/cmake/fire_station_descriptionConfig-version.cmake

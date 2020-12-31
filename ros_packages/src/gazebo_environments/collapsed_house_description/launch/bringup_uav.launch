@@ -8,10 +8,10 @@
     <env name="PX4_HOME_ALT" value="488.0" />
     <include file="$(find px4)/launch/px4.launch"></include>
     <include file="$(find collapsed_house_description)/launch/start_gazebo_uav_world.launch"></include>
-    <include file="$(find mascor_uav_workshop)/launch/start_mavros.launch"></include>
-    <include file="$(find mascor_uav_workshop)/launch/start_ar_track_alvar.launch"></include>
-    <!--<node name="FramesPublisher" pkg="mascor_uav_workshop" type="FramesPublisher.py" output="screen" respawn="true"></node>-->
+    <include file="$(find uav)/launch/start_mavros.launch"></include>
+    <include file="$(find uav)/launch/start_ar_track_alvar.launch"></include>
+    <!--<node name="FramesPublisher" pkg="uav" type="FramesPublisher.py" output="screen" respawn="true"></node>-->
     <node pkg="tf" type="static_transform_publisher" name="static_tf_broadcaster" args="0 0 0 -1.57079632679 0 3.14159265359 base_link usb_camera::camera_link 100" />
     <node pkg="tf" type="static_transform_publisher" name="static_tf_broadcaster_fcu" args="0 0 0 0 0 3.14159265359 fcu_frd fcu 100" />
-    <node name="rviz_uav" pkg="rviz" type="rviz" output="screen" args="-d $(find mascor_uav_workshop)/cfg/config.rviz" />
+    <node name="rviz_uav" pkg="rviz" type="rviz" output="screen" args="-d $(find uav)/cfg/config.rviz" />
 </launch>
