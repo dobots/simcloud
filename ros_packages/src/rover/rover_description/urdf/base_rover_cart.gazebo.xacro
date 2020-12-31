@@ -1,7 +1,7 @@
 <?xml version="1.0"?>	
-<robot name= "base_fox_cart" xmlns:xacro="http://ros.org/wiki/xacro" >
+<robot name= "base_rover_cart" xmlns:xacro="http://ros.org/wiki/xacro" >
 	<gazebo>
-		<plugin name= "base_fox_controller" filename="libgazebo_ros_diff_drive.so" >
+		<plugin name= "base_rover_controller" filename="libgazebo_ros_diff_drive.so" >
 			<commandTopic> cmd_vel </commandTopic>
 			<odometryTopic> odom </odometryTopic>
 			<odometryFrame> odom </odometryFrame>

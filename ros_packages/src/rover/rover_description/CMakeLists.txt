@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(fox_description)
+project(rover_description)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -32,13 +32,13 @@ include_directories(
 )
 
 ## Declare a C++ library
-#add_library(fox_cart src/broadcast_cart.cpp)
-#target_link_libraries(fox_cart ${catkin_LIBRARIES})
+#add_library(rover_cart src/broadcast_cart.cpp)
+#target_link_libraries(rover_cart ${catkin_LIBRARIES})
 
 ## Declare a C++ executable
 #add_executable(broadcast_cart_node src/broadcast_cart_node.cpp)
 #add_dependencies(broadcast_cart_node ${catkin_EXPORTED_TARGETS})
-#target_link_libraries(broadcast_cart_node fox_cart ${catkin_LIBRARIES})
+#target_link_libraries(broadcast_cart_node rover_cart ${catkin_LIBRARIES})
 #set_target_properties(broadcast_cart_node PROPERTIES OUTPUT_NAME "broadcast_cart")
 
 
@@ -90,7 +90,7 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_fox_cart_description.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_rover_cart_description.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
