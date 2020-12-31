@@ -36,7 +36,7 @@ docker exec -it ros_melodic_desktop_full /bin/bash
 ```
 7. Move into the projects folder to access files from your host:
 ```
-cd projects/
+cd /projects/
 ```
 
 8. (Optional) If you would like to work with drones run the init_drone.sh script to setup the correct variables:
@@ -57,7 +57,7 @@ cd ros_packages
 
 
 ## Start the environment:
-* world with simple shapes - create for the workshop one blender mesh:
+* world with simple shapes:
 ```
 roslaunch simple_shapes_description simple_shapes_world.launch
 ```
@@ -81,6 +81,11 @@ roslaunch collapsed_house_description collapsed_house_world.launch
 roslaunch coolsingel_description coolsingel_world.launch
 ```
 
+* collapsed fire station
+```
+roslaunch fire_station_description fire_station_world.launch
+```
+
 
 
 ## Spawn robots in an empty environment:
@@ -92,8 +97,9 @@ roslaunch rover_gazebo spawn_rover.launch
 ```
 
 Spawn a UAV (to do add parameters to spawn at a given location or spawn multiple):
-
-
+```
+roslaunch uav spawn_uav.launch
+```
 
 
 ## Spawn robots in an environment using preconfigured launch files:
@@ -118,6 +124,7 @@ Spawn a UAV (to do add parameters to spawn at a given location or spawn multiple
 ## TODO:
  - ~~move drone pos control to a separate package~~
  - update scripts pointing to the position control package
+ - mavros flyscript error?
  - ~~rename mascor_uav package~~
  - ~~rename rover_robot~~
  - ~~correct the dependencies of launch files with the new names~~
