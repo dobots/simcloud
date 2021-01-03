@@ -22,7 +22,7 @@
 		</link>
 	
 		<joint name="ar_tag_${number_}_joint" type="fixed">
-			<parent link="base_cart_link"/>
+			<parent link="base_link"/>
 			<child link="ar_tag_${number_}"/>
 			<origin xyz= "${x_} ${y_} ${z_}" rpy="0.0 ${r_} 0.0"/>
 		</joint>

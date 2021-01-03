@@ -2,7 +2,7 @@
 <launch>
 
   <arg name="robot_name" default="rover_cart"/>
-  <arg name="init_pose" default="-x 0.0 -y 0.0 -z 0.2 -R 0.0 -P 0.0 -Y 3.14"/>
+  <arg name="init_pose" default="-x 0.0 -y 0.0 -z 0.2 -R 0.0 -P 0.0 -Y 0.0"/>
 
   <param name="robot_description" command="$(find xacro)/xacro $(find rover_description)/urdf/base_rover_cart.urdf.xacro" />
 

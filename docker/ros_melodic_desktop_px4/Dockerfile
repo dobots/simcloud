@@ -19,15 +19,17 @@ RUN apt-get install -y less nano wget psmisc zip build-essential git mercurial
 ## (Optional) Update ros packages to the latest version
 # RUN apt-get upgrade -y
 
-## sourcing
+## source ROS:
+### Fix entrypoint.sh file
+RUN sed -i 's/set -e//' /ros_entrypoint.sh
 RUN echo ". /ros_entrypoint.sh" >> ~/.bashrc
+## source and setup Gazebo:
+RUN sed -i 's/ignitionfuel/ignitionrobotics/' ~/.ignition/fuel/config.yaml
 RUN echo ". /usr/share/gazebo/setup.sh" >> ~/.bashrc
 
-## Fix entrypoint.sh file
-RUN sed -i 's/set -e//' /ros_entrypoint.sh
+## Additional installs:
 
-## Additional installs (Optional)
-### General packages:
+### General packages
 RUN apt-get install -y ros-melodic-teleop-twist-keyboard ros-melodic-move-base ros-melodic-map-server ros-melodic-gmapping ros-melodic-hector-slam
 
 ### PX4 installation

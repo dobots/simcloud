@@ -1,108 +1,113 @@
 # Simcloud
+This repository contains packages and setup files to run ROS-based robot simulations. The simulation environment is set up and run using the provided docker image (that needs to be built before use).
 
-## List of environments
-* world with simple shapes 
+## List of environments/worlds
 * playground world
 * collapsed house world
-* fire station world 
+* fire station world
 * coolsingel world
-
+* world with simple shapes (simple_shapes)
 
 ## List of robots
 * rover - 1 or multiple
 * uav - 1 or multiple
 
+## Building the docker image:
+If you are new to docker, have a look at the `README_docker.md` file in the `simcloud/docker` folder to install docker and build the image.
 
-# Setup the Simcloud environment
+## Setup the Simcloud environment
 
-1. Move into the simcloud folder:
-```
-cd ~/simcloud
-```
+1. Move to the simcloud repository folder:
+	```
+	cd simcloud
+	```
 
-4. Start your docker environment from here (If it doesn't work you might need to build this docker image):
-```
-~/docker/ros_melodic_desktop_full/run.sh
-```
+2. Start your docker container from here using the provided script (If it doesn't work you might need to build this docker image):
+	```
+	./docker/ros_melodic_desktop_px4/run.sh
+	```
+	**Note:** To open another terminal inside the docker container, run:
+	```
+	docker exec -it ros_melodic_desktop_px4 /bin/bash
+	```
+	(Remember to source the scripts below to set up required environment variables in this new terminal as well)
 
-5. Open a new terminal inside the Docker environment:
-```
-docker exec -it ros_melodic_desktop_full /bin/bash
-```
+3. Move into the projects folder to access the simcloud files from your host:
+	```
+	cd /projects/
+	```
 
-6. Source the environment variables in this terminal as well:
-```
-. ros_entrypoint.sh
-```
-7. Move into the projects folder to access files from your host:
-```
-cd /projects/
-```
+4. Move into the ros_packages folder (this will be your ros workspace):
+	```
+	cd ros_packages
+	```
 
-8. (Optional) If you would like to work with drones run the init_drone.sh script to setup the correct variables:
-```
-. init_drone.sh
-```
-Important to have a space between the . and the init_drone.sh command, otherwise it'll not setup the correct path variables , because of the `#!/bin/bash` command at the top of the script.
+5. Run `catkin_make`
 
+6. Source the ROS environment: `source devel/setup.bash`
 
-8. Move into the ros_packages folder ( this will be your ros workspace):
-```
-cd ros_packages
-```
-
-8. Run `catkin_make`
-
-9. Source the environment: `source devel/local_setup.bash` If you source the setup.bash file instead of the local version and you are working with drones, you need to run the init_drone.sh script to reconfigure the ROS_PACKAGE_PATH. Otherwise your program will not find mavros, mavlink, and px4.
+7. (Optional) If you would like to work with drones, you need to setup the px4 autopilot software. To do this, source the `init_uav_px4.sh` script in the `uav` ROS package (to setup the correct variables):
+	```
+	source src/uav/scripts/init_uav_px4.sh
+	```
+	**Note:** If you source your ROS workspace's `setup.bash` file again, you need to re-source the `init_uav_px4.sh` script to setup the ROS_PACKAGE_PATH environment variable. Otherwise the `setup.bash` will overwrite the ROS_PACKAGE_PATH and your program will not find the px4 package.
 
 
-## Start the environment:
+### Start the environment:
 * world with simple shapes:
-```
-roslaunch simple_shapes_description simple_shapes_world.launch
-```
-
-
+	```
+	roslaunch simple_shapes_description simple_shapes_world.launch
+	```
 
 * playground world:
-
-```
-roslaunch playground_world playground_world.launch
-```
+	```
+	roslaunch playground_world playground_world.launch
+	```
 
 * collapsed house world:
-```
-roslaunch collapsed_house_description collapsed_house_world.launch
-```
-
+	```
+	roslaunch collapsed_house_description collapsed_house_world.launch
+	```
 
 * coolsingel world:
-```
-roslaunch coolsingel_description coolsingel_world.launch
-```
+	```
+	roslaunch coolsingel_description coolsingel_world.launch
+	```
 
 * collapsed fire station
-```
-roslaunch fire_station_description fire_station_world.launch
-```
+	```
+	roslaunch fire_station_description fire_station_world.launch
+	```
 
 
+### Spawn and move robots in an environment:
 
-## Spawn robots in an empty environment:
+* Spawn a rover (TODO: add parameters to spawn multiple robots):
+	```
+	roslaunch rover_gazebo spawn_rover.launch
+	```
 
-Spawn a rover (to do add parameters to spawn at a given location or spawn multiple):
+	Tele-operate the rover using the [IJKL,] keys:
+	```
+	rosrun teleop_twist_keyboard teleop_twist_keyboard.py
+	```
 
-```
-roslaunch rover_gazebo spawn_rover.launch
-```
+* Spawn a UAV (TODO: add parameters to spawn multiple robots):
+	```
+	roslaunch uav spawn_uav.launch
+	``` 
+	You can command the UAV (position control) using the scripts in `pos_control`. For example, run:
+	```
+	rosrun collapsed_house_pos_control FLYinCollapsedHouse.py
+	```
+	Finally, you need to arm the drone for flying by running the corresponding mavros commands:
+	```
+	rosrun mavros mavsys mode -c OFFBOARD
+	rosrun mavros mavsafety arm
+	```
 
-Spawn a UAV (to do add parameters to spawn at a given location or spawn multiple):
-```
-roslaunch uav spawn_uav.launch
-```
 
-
-## Spawn robots in an environment using preconfigured launch files:
+### (TODO) Spawn robots in an environment using preconfigured launch files:
 
 1. Rover in the shapes environment:
 
@@ -133,6 +138,7 @@ roslaunch uav spawn_uav.launch
  - ~~clean-up the docker image~~
  - add instructions about building the docker image
  - add instructions on how to setup the workspace, etc.
+ - add instructions for using QGroundControl
 
 
 ## Future TODO 
@@ -143,19 +149,19 @@ roslaunch uav spawn_uav.launch
   
 
 
-## Cheatsheet to use Docker
-If you have already installed Docker then you can use the following lines to start Docker and open new terminals. If you need to install it, please jump to the installation section.
-1. Move into the folder of the files you would like to use inside Docker: 
+## Cheatsheet to use docker
+If you have already installed docker then you can use the following lines to start docker and open new terminals. If you need to install it, please jump to the installation section.
+1. Move into the folder of the files you would like to use inside docker: 
 	```
 	cd ~/<path-to-your-ros-packages>/
 	```
-2. Start Docker:
+2. Start docker:
 	```
 	./<path-to-your-docker-image/run.sh 
 	```
-3. Inside the Docker image move into the `/projects` folder to access the files from your host folder.
+3. Inside the docker image move into the `/projects` folder to access the files from your host folder.
 	
-4. Open a new terminal inside the Docker environment:
+4. Open a new terminal inside the docker environment:
 
 	```
 	docker exec -it <name-of-your-docker-image> /bin/bash
