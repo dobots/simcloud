@@ -25,8 +25,7 @@ RUN apt-get install -y libgl1-mesa-glx libgl1-mesa-dri
 ### Fix entrypoint.sh file
 RUN sed -i 's/set -e//' /ros_entrypoint.sh
 RUN echo ". /ros_entrypoint.sh" >> ~/.bashrc
-## source and setup Gazebo:
-RUN sed -i 's/ignitionfuel/ignitionrobotics/' ~/.ignition/fuel/config.yaml
+## source Gazebo:
 RUN echo ". /usr/share/gazebo/setup.sh" >> ~/.bashrc
 
 ## Additional installs:
@@ -62,7 +61,6 @@ WORKDIR PX4
 RUN git clone https://github.com/PX4/Firmware.git
 WORKDIR /PX4/Firmware
 RUN DONT_RUN=1 make px4_sitl gazebo
-# TODO: Source Firmware and add to ROS PACKAGE PATH
 
 ### Install QGroundControl:
 WORKDIR /
@@ -78,6 +76,15 @@ WORKDIR /
 # RUN apt-get install -y nodejs libjansson-dev libboost-dev imagemagick libtinyxml-dev astyle
 # RUN apt-get install -y ant openjdk-8-jdk openjdk-8-jre
 
+# Create new simcloud user (id 1000) for running the container
+RUN addgroup --gid 1000 simcloud_user
+RUN adduser --disabled-password --gecos '' --uid 1000 --gid 1000 simcloud_user
+USER simcloud_user
+
+## source ROS for new user as well:
+RUN echo ". /ros_entrypoint.sh" >> ~/.bashrc
+## source Gazebo:
+RUN echo ". /usr/share/gazebo/setup.sh" >> ~/.bashrc
 
 # Ensure image runs bash
 CMD ["bash"]

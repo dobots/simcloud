@@ -12,6 +12,7 @@
 3. Start your docker container from here using the provided script:
 	```bash
 	./docker/ros_melodic_desktop_px4/run.sh
+	# Non-nvidia users can try `run_no_nvidia.sh`
 	```
 4. At the bash prompt within the container, run:
 	```bash
