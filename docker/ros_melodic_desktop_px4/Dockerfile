@@ -14,6 +14,8 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 RUN apt-get update -y
 RUN apt-get install -y --no-install-recommends apt-utils
 RUN apt-get install -y less nano wget psmisc zip build-essential git mercurial
+# mesa packages for non-nvidia users
+RUN apt-get install -y libgl1-mesa-glx libgl1-mesa-dri
 
 # ROS #
 ## (Optional) Update ros packages to the latest version

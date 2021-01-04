@@ -15,7 +15,7 @@ To run docker without super user:
 ## Step 2: Install Nvidia acceleration:
 [https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker](https://meet.google.com/linkredirect?authuser=1&dest=https%3A%2F%2Fdocs.nvidia.com%2Fdatacenter%2Fcloud-native%2Fcontainer-toolkit%2Finstall-guide.html%23docker)
 
-Note: If your setup uses graphics other than nvidia, see http://wiki.ros.org/docker/Tutorials/Hardware%20Acceleration. You would also need to modify the run.sh script accordingly (Eg. remove the option `--runtime=nvidia`).
+**Note:** If your setup uses graphics other than nvidia, you can try using the alternative script `run_no_nvidia.sh` (The 'no_nvidia' script removes the option `--runtime=nvidia`). For more information, see http://wiki.ros.org/docker/Tutorials/Hardware%20Acceleration.
 
 
 ## Step 3: Build the Docker image
