@@ -2,15 +2,19 @@
 This repository contains packages and setup files to run ROS-based robot simulations. The simulation environment is set up and run using the provided docker image (that needs to be built before use).
 
 ### List of environments/worlds:
-* playground world
-* collapsed house world
-* fire station world
-* coolsingel world
-* world with simple shapes (simple_shapes)
+
+| Empty world | Simple shapes world | Fire station world  |
+| ------------- |:-------------:| -----:|
+|    ![empty](https://github.com/dobots/simcloud/blob/master/images/empty.png)  | ![simple shapes](https://github.com/dobots/simcloud/blob/master/images/simple_shapes.png) | ![fire_station](https://github.com/dobots/simcloud/blob/master/images/fire_station.png) |
+| **Coolsingel world**      | **Playground world** | **Collapsed house** |
+|![coolsingel](https://github.com/dobots/simcloud/blob/master/images/coolsingel.png) | ![playground](https://github.com/dobots/simcloud/blob/master/images/playground.jpg)| ![collapsed_house](https://github.com/dobots/simcloud/blob/master/images/collapsed_house.png)|
+
 
 ### List of robots:
-* rover - 1 or multiple
-* uav - 1 or multiple
+ |Rover | UAV | 
+| ------------- |:-------------:| 
+|![rover](https://github.com/dobots/simcloud/blob/master/images/rover.png)|![UAV](https://github.com/dobots/simcloud/blob/master/images/uav.png)|
+
 
 ## Building the docker image:
 If you are new to docker, have a look at the `DOCKER_README.md` file in the `simcloud/docker` folder to install docker and see how to build images.
