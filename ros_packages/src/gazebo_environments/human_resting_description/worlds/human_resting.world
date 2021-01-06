@@ -49,10 +49,6 @@
       <uri>model://ar_tag_13</uri>
     </include>
 
-   <!-- <include>
-      <pose>0 0 0 0 0 1.482587</pose> 
-      <uri>model://eupener</uri>
-    </include>-->
 
 
 <model name="fire_station">

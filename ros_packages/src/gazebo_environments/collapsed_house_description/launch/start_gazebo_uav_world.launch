@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <launch>
 
-  <!--<arg name="world_name" default="$(find uav)/gazebo_model/world/eupener.world"/> -->
  <arg name="world_name" value="$(find collapsed_house_description)/worlds/collapsed_house.world"/>
 
 <!--EDIT YOUR WORLD HERE-->

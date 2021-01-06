@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <sdf version='1.5'>
-  <model name='eupener'>
+  <model name='roffa'>
     <static>true</static>
     <link name="link">
       <collision name="collision">
@@ -27,9 +27,9 @@
         </geometry>
         <material>
           <script>
-            <name>eupener</name>
-            <uri>model://eupener/materials/scripts</uri>
-            <uri>model://eupener/materials/textures</uri>
+            <name>roffa</name>
+            <uri>model://roffa/materials/scripts</uri>
+            <uri>model://roffa/materials/textures</uri>
           </script>
         </material>
       </visual>
