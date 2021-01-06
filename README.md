@@ -131,22 +131,10 @@ To run a demonstration of the simulation environment (drone in a fire station), 
 6. Multiple UAVs and a rover in the collapsed house:
 
 
-## TODO:
- - ~~move drone pos control to a separate package~~
- - update scripts pointing to the position control package
- - mavros flyscript error?
- - ~~rename mascor_uav package~~
- - ~~rename rover_robot~~
- - ~~correct the dependencies of launch files with the new names~~
- - create instructions in the Readme
- - create videos
- - ~~clean-up the docker image~~
- - add instructions about building the docker image
- - add instructions on how to setup the workspace, etc.
- - add instructions for using QGroundControl
-
 
 ## Future TODO:
+    - create videos
+    - add instructions for using QGroundControl
     - create new combined launch files for different scenarios
     - use parameters to launch as many robots you want
     - connect to a config file to set parameters
