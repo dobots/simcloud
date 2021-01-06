@@ -5,15 +5,16 @@ This repository contains packages and setup files to run ROS-based robot simulat
 
 | Empty world | Simple shapes world | Fire station world  |
 | ------------- |:-------------:| -----:|
-|   <img src="https://github.com/dobots/simcloud/blob/master/images/empty.png" width = "50"/>  | ![simple shapes](https://github.com/dobots/simcloud/blob/master/images/simple_shapes.png) | ![fire_station](https://github.com/dobots/simcloud/blob/master/images/fire_station.png) |
+|   <img src="https://github.com/dobots/simcloud/blob/master/images/empty.png" width = "200"/>  | 
+<img src="https://github.com/dobots/simcloud/blob/master/images/simple_shapes.png" width = "200"/> | <img src="https://github.com/dobots/simcloud/blob/master/images/fire_station.png" width = "200"/>|
 | **Coolsingel world**      | **Playground world** | **Collapsed house** |
-|![coolsingel](https://github.com/dobots/simcloud/blob/master/images/coolsingel.png) | ![playground](https://github.com/dobots/simcloud/blob/master/images/playground.jpg)| ![collapsed_house](https://github.com/dobots/simcloud/blob/master/images/collapsed_house.png)|
+|<img src="https://github.com/dobots/simcloud/blob/master/images/coolsingel.png" width = "200"/> | <img src="https://github.com/dobots/simcloud/blob/master/images/playground.jpg" width = "200"/> | <img src="https://github.com/dobots/simcloud/blob/master/images/collapsed_house.png" width = "200"/>|
 
 
 ### List of robots:
  |Rover | UAV | 
 | ------------- |:-------------:| 
-|![rover](https://github.com/dobots/simcloud/blob/master/images/rover.png)|![UAV](https://github.com/dobots/simcloud/blob/master/images/uav.png)|
+|<img src="https://github.com/dobots/simcloud/blob/master/images/rover.png" width = "200"/>|<img src="https://github.com/dobots/simcloud/blob/master/images/uav.png" width = "200"/>|
 
 
 ## Building the docker image:
