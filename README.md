@@ -115,6 +115,14 @@ To run a demonstration of the simulation environment (drone in a fire station), 
 	# OR run `rosrun uav arm_uav.sh`
 	```
 
+### Use QGroundControl 
+
+To start QGroundControl move its folder and start the run script:
+```
+cd /Qgroundcontrol
+...sh
+```
+In QGroundControl you can arm and takeoff with the UAV or easily create a mission plan. Try creating a mission plan and see how does it follows the points in Gazebo.
 
 ### (TODO) Spawn robots in an environment using preconfigured launch files:
 
@@ -134,6 +142,7 @@ To run a demonstration of the simulation environment (drone in a fire station), 
 
 ## Future TODO:
     - create videos
+    - add roffa package
     - add instructions for using QGroundControl
     - create new combined launch files for different scenarios
     - use parameters to launch as many robots you want
@@ -176,4 +185,4 @@ If you have already installed docker then you can use the following lines to sta
 
 9. Source the environment: `source devel/setup.bash`
 
-
+### Special thanks to the MASCOR Institute, FH Aachen University of Applied Sciences for their summer school and uav workshop! We have learned a lot from it and it provided an excellent base for creating this repository! 
