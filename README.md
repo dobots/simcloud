@@ -146,11 +146,11 @@ In QGroundControl you can arm and takeoff with the UAV or easily create a missio
 
 ## Future TODO:
     - create videos
-    - add roffa package
     - add instructions for using QGroundControl
     - create new combined launch files for different scenarios
     - use parameters to launch as many robots you want
     - connect to a config file to set parameters
+    - create cloud hosting
 
 
 ## Cheatsheet to use docker:
