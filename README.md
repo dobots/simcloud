@@ -5,8 +5,7 @@ This repository contains packages and setup files to run ROS-based robot simulat
 
 | Empty world | Simple shapes world | Fire station world  |
 | ------------- |:-------------:| -----:|
-|   <img src="https://github.com/dobots/simcloud/blob/master/images/empty.png" width = "200"/>  | 
-<img src="https://github.com/dobots/simcloud/blob/master/images/simple_shapes.png" width = "200"/> | <img src="https://github.com/dobots/simcloud/blob/master/images/fire_station.png" width = "200"/>|
+|   <img src="https://github.com/dobots/simcloud/blob/master/images/empty.png" width = "200"/>  | <img src="https://github.com/dobots/simcloud/blob/master/images/simple_shapes.png" width = "200"/> | <img src="https://github.com/dobots/simcloud/blob/master/images/fire_station.png" width = "200"/>|
 | **Coolsingel world**      | **Playground world** | **Collapsed house** |
 |<img src="https://github.com/dobots/simcloud/blob/master/images/coolsingel.png" width = "200"/> | <img src="https://github.com/dobots/simcloud/blob/master/images/playground.jpg" width = "200"/> | <img src="https://github.com/dobots/simcloud/blob/master/images/collapsed_house.png" width = "200"/>|
 
