@@ -123,8 +123,8 @@ To run a demonstration of the simulation environment (drone in a fire station), 
 
 To start QGroundControl move its folder and start the run script:
 ```
-cd /Qgroundcontrol
-...sh
+cd /QGroundControl
+./qgroundcontrol-start.sh
 ```
 In QGroundControl you can arm and takeoff with the UAV or easily create a mission plan. Try creating a mission plan and see how does it follows the points in Gazebo.
 
