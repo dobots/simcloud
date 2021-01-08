@@ -66,9 +66,9 @@ RUN DONT_RUN=1 make px4_sitl gazebo
 WORKDIR /
 RUN mkdir QGroundControl
 WORKDIR QGroundControl
-RUN wget https://s3-us-west-2.amazonaws.com/qgroundcontrol/builds/master/QGroundControl.AppImage -O QGroundControl.AppImage
+RUN wget https://github.com/mavlink/qgroundcontrol/releases/download/v3.5.6/QGroundControl.AppImage
 RUN apt-get install libarchive-tools && bsdtar xfp QGroundControl.AppImage
-# Now you may run the app using ./QGroundControl/AppRun (As a non root user)
+# Now you may run the app using ./QGroundControl/qgroundcontrol-start.sh (As a non root user)
 
 ### GazeboWeb (TODO) (Optional):
 WORKDIR /
@@ -76,18 +76,20 @@ WORKDIR /
 # RUN apt-get install -y nodejs libjansson-dev libboost-dev imagemagick libtinyxml-dev astyle
 # RUN apt-get install -y ant openjdk-8-jdk openjdk-8-jre
 
-# Create new simcloud user (id 1000) for running the container
-RUN addgroup --gid 1000 simcloud_user
+# Create new simcloud user and simcloud group (id 1000) for running the container
+RUN addgroup --gid 1000 simcloud_group
 RUN adduser --disabled-password --gecos '' --uid 1000 --gid 1000 simcloud_user
+# Allow simcloud_user to use sudo with no password
+RUN usermod -aG sudo simcloud_user
+RUN echo "simcloud_user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER simcloud_user
-
-## source ROS for new user as well:
+## source ROS in bashrc for new user as well:
 RUN echo ". /ros_entrypoint.sh" >> ~/.bashrc
-## source Gazebo:
+## source Gazebo in bashrc:
 RUN echo ". /usr/share/gazebo/setup.sh" >> ~/.bashrc
 # (Optional) Add ros_packages and UAV sourcing to bashrc as well:
 # RUN echo ". /projects/ros_packages/devel/setup.bash" >> ~/.bashrc
-# RUN echo ". $(rospack find uav)/scripts/init_uav_px4.sh > /dev/null" >> ~/.bashrc
+# RUN echo ". \$(rospack find uav)/scripts/init_uav_px4.sh > /dev/null" >> ~/.bashrc
 
 # Ensure image runs bash
 CMD ["bash"]
