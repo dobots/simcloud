@@ -126,7 +126,21 @@ To start QGroundControl move its folder and start the run script:
 cd /QGroundControl
 ./qgroundcontrol-start.sh
 ```
-In QGroundControl you can arm and takeoff with the UAV or easily create a mission plan. Try creating a mission plan and see how does it follows the points in Gazebo.
+
+<p>In QGroundControl you can arm the UAV using the buttons highlighted in red in the below image.</p>
+<p>
+	<img src="images/QGC_1.png" width = "650"/>
+</p>
+
+<p>You can also create a mission plan and set waypoints for the drone to follow (highlighted in blue in the images).</p>
+<p>
+	<img src="images/QGC_2.png" width = "650"/>
+</p>
+
+<p>Finally, upload and start the mission (highlighted in green in the images). The drone should launch its flight in Gazebo.</p>
+<p>
+	<img src="images/QGC_3.png" width = "650"/>
+</p>
 
 ### (TODO) Spawn robots in an environment using preconfigured launch files:
 
