@@ -117,7 +117,7 @@ To add more UAVs (up to 10) you need to:
 
 - Set the malink_udp_port to 14560+id) 
   
-The ```single_vehicle_spawn.launch``` file instead of the original urdf (px4/Tools/sitl_gazebo/models/rotors_description/urdf/iris_base.xacro) description can be edited to load the description located in the aut_opp/gazebo_model/models/iris_camera/ folder instead of uav/gazebo_model/models/iris_camera/.
+The ```single_vehicle_spawn.launch``` file instead of the original urdf (px4/Tools/sitl_gazebo/models/rotors_description/urdf/iris_base.xacro) description can be edited to load the description located in the uav/gazebo_model/models/iris_camera/ folder instead of uav/gazebo_model/models/iris_camera/.
 
 **It is an important difference, since in that folder a camera is added to the iris model of the UAV!**
 

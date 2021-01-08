@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
 
-  <arg name="world_name" default="$(find aut_opp)/gazebo_model/world/roffa.world"/> <!--EDIT YOUR WORLD HERE-->
+  <arg name="world_name" default="$(find uav)/gazebo_model/world/roffa.world"/> <!--EDIT YOUR WORLD HERE-->
   <arg name="gui" default="true" doc="set false for headless environment " />
   <arg name="paused" default="false"/>
   <arg name="debug" default="false"/>
@@ -14,36 +14,5 @@
     <arg name="debug" default="$(arg debug)"/>
     <arg name="headless" default="$(arg headless)"/>
   </include>
-
-  <!-- ADD POSE FOR UAV -->
-  <!-- GAZEBO COORDINATE FRAME IS ORIGIN -->
-  <!-- VALUES IN METER AND RADIANT -->
-  <arg name="x" default="0"/>
-  <arg name="y" default="0"/>
-  <arg name="z" default="0.6"/>
-
-  <arg name="x_" default="0.0"/>
-  <arg name="y_" default="0.0"/>
-  <arg name="z_" default="0.3"/>
-  
-  <arg name="roll" default="0"/>
-  <arg name="pitch" default="0"/>
-  <arg name="yaw" default="0"/>
-  <arg name="uav_model" default="iris_camera"/> <!--uses iris model from px4 firmware package and adds a ros usb_cam--> <!-- iris,iris_camera, iris_opt_flow, iris_rplida, solo, typhoon_h480 -->
-  <arg name="cart" default="fox_cart"/>
-  <param name="robot_description" command="$(find xacro)/xacro $(find fox_cart_description)/urdf/base_fox_cart.urdf.xacro" />
-
-	<node 
-  		name="spawn_uav" 
-		pkg="gazebo_ros" 
-		type="spawn_model" 
-		args="-file $(find aut_opp)/gazebo_model/models/$(arg uav_model)/$(arg uav_model).sdf -sdf -model $(arg uav_model) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)" 
-	/>
-
-	<node 
-  		name="spawn_cart" 
-		pkg="gazebo_ros" 
-		type="spawn_model" 
-		args="-urdf -param robot_description -model $(arg cart) -x $(arg x_) -y $(arg y_) -z $(arg z_) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)"/> 
 
 </launch>
