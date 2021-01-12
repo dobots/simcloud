@@ -159,13 +159,19 @@ cd /QGroundControl
 
 
 ## Future TODO:
-    - create videos
-    - add instructions for using QGroundControl
     - create new combined launch files for different scenarios
     - use parameters to launch as many robots you want
     - connect to a config file to set parameters
+	- create videos
     - create cloud hosting
-
+	- MVP:
+		- Scripts to launch scenarios (Open API/Scenario)		
+		- Rover, drone navigation stacks
+		- Cloud hosting
+		- GUI (Qtcreator?)
+		- Security and protected files
+		- ROS training pdfs
+		- Sensor menu card?
 
 ## Cheatsheet to use docker:
 If you have already installed docker then you can use the following lines to start docker and open new terminals. If you need to install it, please jump to the installation section.
