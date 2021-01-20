@@ -9,6 +9,10 @@
   <arg name="pitch" default="0.0"/>
   <arg name="yaw" default="3.14"/>
 
+  <arg name="rviz" default="false"/>
+  <!-- Show in Rviz -->
+  <node if="$(arg rviz)" name="rviz" pkg="rviz" type="rviz" args="-d $(find rover_gazebo)/rviz/rover.rviz" required="false" output="screen"/>
+
   <param name="robot_description" command="$(find xacro)/xacro $(find rover_description)/urdf/base_rover_cart.urdf.xacro" />
 
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">

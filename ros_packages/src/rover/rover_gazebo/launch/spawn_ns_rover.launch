@@ -6,13 +6,14 @@
   <!-- Namespace (mandatory) Eg. robot_0 (no leading or trailing '/' !) -->
   <arg name="namespace"/>
   <!-- Robot name (mandatory) and initial pose -->
-  <arg name="robot_name"/>
+  <arg name="robot_name" default="$(arg namespace)"/>
   <arg name="x" default="0.0"/>
   <arg name="y" default="0.0"/>
   <arg name="z" default="0.2"/>
   <arg name="roll" default="0.0"/>
   <arg name="pitch" default="0.0"/>
   <arg name="yaw" default="3.14"/>
+  <arg name="rviz" default="false"/>
 
   <group ns="$(arg namespace)">
 
@@ -28,6 +29,9 @@
       <arg name="yaw" value="$(arg yaw)" />
     </include>
   
+    <!-- Show in Rviz -->
+    <node if="$(arg rviz)" name="rviz" pkg="rviz" type="rviz" args="-d $(find rover_gazebo)/rviz/rover_ns.rviz" required="false" output="screen"/>
+
   </group>
 
 </launch>

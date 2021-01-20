@@ -1,0 +1,23 @@
+footprint: [[-0.205, -0.155], [-0.205, 0.155], [0.077, 0.155], [0.077, -0.155]]
+#robot_radius: 0.17
+
+transform_tolerance: 0.2
+map_type: costmap
+
+obstacle_layer:
+ enabled: true
+ obstacle_range: 8.0
+ raytrace_range: 10.0
+ track_unknown_space: true
+ combination_method: 1
+
+ observation_sources: scan
+
+ scan: {sensor_frame: laser, data_type: LaserScan, topic: /scan, marking: true, clearing: true, expected_update_rate: 0.5, observation_persistence: 0.0, min_obstacle_height: -0.10, max_obstacle_height: 2.0}
+
+static_layer:
+  enabled:              true
+  map_topic:            "/map"
+  first_map_only:       false
+  subscribe_to_updates: false
+  trinary_costmap:      false
