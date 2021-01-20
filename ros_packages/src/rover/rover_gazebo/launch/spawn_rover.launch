@@ -2,7 +2,12 @@
 <launch>
 
   <arg name="robot_name" default="rover_cart"/>
-  <arg name="init_pose" default="-x 0.0 -y 0.0 -z 0.2 -R 0.0 -P 0.0 -Y 0.0"/>
+  <arg name="x" default="0.0"/>
+  <arg name="y" default="0.0"/>
+  <arg name="z" default="0.2"/>
+  <arg name="roll" default="0.0"/>
+  <arg name="pitch" default="0.0"/>
+  <arg name="yaw" default="3.14"/>
 
   <param name="robot_description" command="$(find xacro)/xacro $(find rover_description)/urdf/base_rover_cart.urdf.xacro" />
 
@@ -15,6 +20,6 @@
     <param name="use_gui" value="false"/>
   </node>
 
-  <node pkg="gazebo_ros" type="spawn_model" name="spawn_rover" args="-urdf -param robot_description -model $(arg robot_name) $(arg init_pose)"/>
+  <node pkg="gazebo_ros" type="spawn_model" name="spawn_rover" args="-urdf -param robot_description -model $(arg robot_name) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)"/>
 
 </launch>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
 
-  <arg name="world_name" default="$(find rover_gazebo)/worlds/arena_2018.world"/>
+  <arg name="world_name" default="$(find rover_gazebo)/worlds/house.world"/>
   <arg name="empty_world" default="false"/>
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
