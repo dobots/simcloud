@@ -510,7 +510,7 @@
             </contact>
           </surface>
         </collision>
-        <visual name='Wall_20_Visual_3'>
+        <!--     <visual name='Wall_20_Visual_3'>
           <pose>-1.49735 0 0.35 0 -0 0</pose>
           <geometry>
             <box>
@@ -541,7 +541,7 @@
               <ode/>
             </contact>
           </surface>
-        </collision>
+        </collision>       -->
         <velocity_decay>
           <linear>0</linear>
           <angular>0</angular>

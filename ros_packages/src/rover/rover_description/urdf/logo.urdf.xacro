@@ -31,7 +31,7 @@
 			<kp value="50000000.0" />
 			<kd value="0.2" />
 			<minDepth>0.001</minDepth>
-			<material>logo</material>
+			<material>logo_alm</material>
 		</gazebo>
 	</xacro:macro>
 </robot>
