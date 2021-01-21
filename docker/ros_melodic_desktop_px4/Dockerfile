@@ -30,8 +30,9 @@ RUN echo ". /usr/share/gazebo/setup.sh" >> ~/.bashrc
 
 ## Additional installs:
 
-### General packages
-RUN apt-get install -y ros-melodic-teleop-twist-keyboard ros-melodic-move-base ros-melodic-map-server ros-melodic-gmapping ros-melodic-hector-slam ros-melodic-amcl
+### General ROS packages
+RUN apt-get install -y ros-melodic-teleop-twist-keyboard ros-melodic-map-server ros-melodic-amcl ros-melodic-gmapping
+RUN apt-get install -y ros-melodic-move-base ros-melodic-global-planner ros-melodic-teb-local-planner
 
 ### PX4 installation
 #### Initial setup:
