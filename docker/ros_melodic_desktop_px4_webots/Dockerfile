@@ -98,6 +98,9 @@ ENV QTWEBENGINE_DISABLE_SANDBOX=1
 ENV WEBOTS_HOME /webots
 ENV PATH /webots:${PATH}
 
+# Install Webots-ROS package
+RUN apt-get install -y ros-melodic-webots-ros
+
 ######
 
 # Create new simcloud user and simcloud group (id 1000) for running the container
