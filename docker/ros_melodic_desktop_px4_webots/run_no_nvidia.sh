@@ -18,6 +18,6 @@ docker run -iPt \
     --device=/dev/dri \
     --env="XAUTHORITY=$XAUTHORITY" \
     --volume="$PWD:/projects" \
-    --name="ros_melodic_webots" \
-    ros_melodic_webots \
+    --name="ros_melodic_desktop_px4_webots" \
+    ros_melodic_desktop_px4_webots \
     bash

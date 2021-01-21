@@ -18,6 +18,6 @@ docker run -iPt \
     --env="XAUTHORITY=$XAUTHORITY" \
     --volume="$PWD:/projects" \
     --runtime=nvidia \
-    --name="ros_melodic_webots" \
-    ros_melodic_webots \
+    --name="ros_melodic_desktop_webots" \
+    ros_melodic_desktop_webots \
     bash

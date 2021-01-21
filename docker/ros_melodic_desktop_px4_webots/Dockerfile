@@ -30,7 +30,7 @@ RUN echo ". /usr/share/gazebo/setup.sh" >> ~/.bashrc
 
 ## Additional installs:
 
-### General packages
+### General ROS packages
 RUN apt-get install -y ros-melodic-teleop-twist-keyboard ros-melodic-move-base ros-melodic-map-server ros-melodic-gmapping ros-melodic-hector-slam
 
 ### PX4 installation
@@ -71,18 +71,13 @@ RUN apt-get install libarchive-tools && bsdtar xfp QGroundControl.AppImage
 # Now you may run the app using ./QGroundControl/qgroundcontrol-start.sh (As a non root user)
 
 ### GazeboWeb (TODO) (Optional):
-WORKDIR /
+# WORKDIR /
 # EXPOSE 8080
 # RUN apt-get install -y nodejs libjansson-dev libboost-dev imagemagick libtinyxml-dev astyle
 # RUN apt-get install -y ant openjdk-8-jdk openjdk-8-jre
 
-
-
 ###### Install WeBots 
-#ARG BASE_IMAGE=nvidia/cudagl:11.0-devel-ubuntu20.04
-ARG BASE_IMAGE=nvidia/cudagl:10.0-devel-ubuntu18.04
-#FROM ${BASE_IMAGE}
-
+WORKDIR /
 # Disable dpkg/gdebi interactive dialogs
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -91,24 +86,19 @@ ARG WEBOTS_VERSION=R2021a
 ARG WEBOTS_PACKAGE_PREFIX=_ubuntu-18.04
 
 # Install Webots runtime dependencies
-RUN apt-get update && apt-get install --yes wget && rm -rf /var/lib/apt/lists/
-RUN wget https://raw.githubusercontent.com/cyberbotics/webots/master/scripts/install/linux_runtime_dependencies.sh
-RUN chmod +x linux_runtime_dependencies.sh && ./linux_runtime_dependencies.sh && rm ./linux_runtime_dependencies.sh && rm -rf /var/lib/apt/lists/
-
+RUN apt-get install -y ffmpeg g++ make libavcodec-extra libglu1-mesa libxkbcommon-x11-dev execstack libusb-dev libxcb-keysyms1 libxcb-image0 libxcb-icccm4 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcomposite-dev libxtst6 libnss3
 # Install X virtual framebuffer to be able to use Webots without GPU and GUI (e.g. CI)
-RUN apt-get update && apt-get install --yes xvfb && rm -rf /var/lib/apt/lists/
+RUN apt-get install -y xvfb
 
 # Install Webots
-WORKDIR /usr/local
+WORKDIR /
 RUN wget https://github.com/cyberbotics/webots/releases/download/$WEBOTS_VERSION/webots-$WEBOTS_VERSION-x86-64$WEBOTS_PACKAGE_PREFIX.tar.bz2
 RUN tar xjf webots-*.tar.bz2 && rm webots-*.tar.bz2
 ENV QTWEBENGINE_DISABLE_SANDBOX=1
-ENV WEBOTS_HOME /usr/local/webots
-ENV PATH /usr/local/webots:${PATH}
+ENV WEBOTS_HOME /webots
+ENV PATH /webots:${PATH}
 
-
-
-
+######
 
 # Create new simcloud user and simcloud group (id 1000) for running the container
 RUN addgroup --gid 1000 simcloud_group
@@ -125,11 +115,5 @@ RUN echo ". /usr/share/gazebo/setup.sh" >> ~/.bashrc
 # RUN echo ". /projects/ros_packages/devel/setup.bash" >> ~/.bashrc
 # RUN echo ". \$(rospack find uav)/scripts/init_uav_px4.sh > /dev/null" >> ~/.bashrc
 
-
-
-
-
-
 # Ensure image runs bash
 CMD ["bash"]
-
