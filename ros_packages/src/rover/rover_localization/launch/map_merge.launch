@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="namespace_prefix" default="robot_"/>
+
+    <node pkg="multirobot_map_merge" type="map_merge" respawn="false" name="map_merge" output="screen">
+
+        <param name="robot_map_topic" value="map"/>
+        <param name="robot_map_updates_topic" value="map_updates"/>
+        <param name="robot_namespace" value="$(arg namespace_prefix)"/>
+        <param name="merged_map_topic" value="map"/>
+        <param name="world_frame" value="map"/>
+        <param name="known_init_poses" value="true"/>
+
+        <param name="merging_rate" value="0.2"/>
+        <param name="discovery_rate" value="0.05"/>
+        <param name="estimation_rate" value="0.1"/>
+        <param name="estimation_confidence" value="0.6"/>
+        <param name="publish_rate" value="30.0"/> <!-- publish rate of tfs -->
+
+    </node>
+
+</launch>
