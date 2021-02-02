@@ -56,12 +56,28 @@ RUN apt-get install -y gstreamer1.0-plugins-bad gstreamer1.0-libav gstreamer1.0-
 # (Optional) RUN apt-get install -y python-rosinstall-generator python-catkin-tools
 RUN apt-get install -y ros-melodic-mavros ros-melodic-mavros-extras ros-melodic-genpy
 RUN wget https://raw.githubusercontent.com/mavlink/mavros/master/mavros/scripts/install_geographiclib_datasets.sh -O - | bash
-#### Download and build PX4-Autopilot
+#### Clone and build PX4-Autopilot
 RUN mkdir PX4
 WORKDIR PX4
 RUN git clone https://github.com/PX4/Firmware.git
 WORKDIR /PX4/Firmware
 RUN DONT_RUN=1 make px4_sitl gazebo
+#### (Optional) Clone and build PX4-Avoidance for collision avoidance
+RUN apt-get install -y libpcl1 ros-melodic-octomap-*
+# Create catkin workspace for PX4
+WORKDIR /PX4
+RUN mkdir src
+WORKDIR /PX4/src
+RUN git clone https://github.com/PX4/avoidance.git
+RUN /bin/bash -c '. /ros_entrypoint.sh; catkin_make -C /PX4'
+# Source PX4 catkin workspace in bashrc (this ensures any other catkin workspaces are overlayed)
+RUN echo $'# PX4 catkin workspace\n. /PX4/devel/setup.bash' >> ~/.bashrc
+RUN echo $'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:/PX4/src/avoidance/avoidance/sim/models:/PX4/src/avoidance/avoidance/sim/worlds\n' >> ~/.bashrc
+# Give all users permission to use PX4 catkin workspace
+RUN chmod -R a+rw /PX4/
+RUN chmod -R a+rwx /PX4/build/
+RUN chmod -R a+rwx /PX4/devel/
+RUN chmod -R a+rwx /PX4/src/
 
 ### Install QGroundControl:
 WORKDIR /
@@ -72,7 +88,7 @@ RUN apt-get install libarchive-tools && bsdtar xfp QGroundControl.AppImage
 # Now you may run the app using ./QGroundControl/qgroundcontrol-start.sh (As a non root user)
 
 ### GazeboWeb (TODO) (Optional):
-# WORKDIR /
+WORKDIR /
 # EXPOSE 8080
 # RUN apt-get install -y nodejs libjansson-dev libboost-dev imagemagick libtinyxml-dev astyle
 # RUN apt-get install -y ant openjdk-8-jdk openjdk-8-jre
@@ -115,6 +131,9 @@ USER simcloud_user
 RUN echo ". /ros_entrypoint.sh" >> ~/.bashrc
 ## source Gazebo in bashrc:
 RUN echo ". /usr/share/gazebo/setup.sh" >> ~/.bashrc
+## source PX4 workspace in bashrc (this ensures any other catkin workspaces are overlayed):
+RUN echo $'# PX4 catkin workspace\n. /PX4/devel/setup.bash' >> ~/.bashrc
+RUN echo $'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:/PX4/src/avoidance/avoidance/sim/models:/PX4/src/avoidance/avoidance/sim/worlds\n' >> ~/.bashrc
 # (Optional) Add ros_packages and UAV sourcing to bashrc as well:
 # RUN echo ". /projects/ros_packages/devel/setup.bash" >> ~/.bashrc
 # RUN echo ". \$(rospack find uav)/scripts/init_uav_px4.sh > /dev/null" >> ~/.bashrc
