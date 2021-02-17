@@ -125,8 +125,9 @@ To run a demonstration of the simulation environment (drone in a fire station), 
 	* ```iris_lidar``` has a 3D velodyne lidar beneath <-- this is however not working correctly
 	
 	Add the name of these models as value for the ```uav_model``` argument
-	example: 
-    	```bash
+	example:
+ 
+    	```
     	roslaunch uav spawn_uav.launch uav_model:=iris_front_camera
 
     	```
