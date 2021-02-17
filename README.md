@@ -127,10 +127,10 @@ To run a demonstration of the simulation environment (drone in a fire station), 
 	Add the name of these models as value for the ```uav_model``` argument
 	example:
  
-    	```
+    	
     	roslaunch uav spawn_uav.launch uav_model:=iris_front_camera
 
-    	```
+    	
 
 ### Use QGroundControl 
 
