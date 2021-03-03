@@ -6,19 +6,16 @@
     <arg name="est" default="ekf2"/>
     <arg name="vehicle" default="iris"/>
 
-   
-
-
     <!-- UAV0 -->
     <group ns="uav0">
         <!-- MAVROS and vehicle configs -->
         <arg name="ID" value="0"/>
         <arg name="fcu_url" default="udp://:14540@localhost:14580"/>
         <!-- PX4 SITL and vehicle spawn -->
-        <include file="$(find fire_station_description)/launch/single_vehicle_spawn.launch">
-            <arg name="x" value="0.25"/>
-            <arg name="y" value="-0.1"/>
-            <arg name="z" value="0.4"/>
+        <include file="$(find parking_garage_description)/launch/single_vehicle_spawn.launch">
+            <arg name="x" value="0.35"/>
+            <arg name="y" value="0"/>
+            <arg name="z" value="0.3"/>
             <arg name="R" value="0"/>
             <arg name="P" value="0"/>
             <arg name="Y" value="0"/>
@@ -41,10 +38,10 @@
         <arg name="ID" value="1"/>
         <arg name="fcu_url" default="udp://:14541@localhost:14581"/>
         <!-- PX4 SITL and vehicle spawn -->
-        <include file="$(find fire_station_description)/launch/single_vehicle_spawn.launch">
-            <arg name="x" value="-0.3"/>
-            <arg name="y" value="-0.55"/>
-            <arg name="z" value="0.4"/>
+        <include file="$(find parking_garage_description)/launch/single_vehicle_spawn.launch">
+            <arg name="x" value="0.35"/>
+            <arg name="y" value="-0.6"/>
+            <arg name="z" value="0.3"/>
             <arg name="R" value="0"/>
             <arg name="P" value="0"/>
             <arg name="Y" value="0"/>
@@ -67,7 +64,7 @@
         <arg name="ID" value="2"/>
         <arg name="fcu_url" default="udp://:14542@localhost:14582"/>
         
-        <include file="$(find fire_station_description)/launch/single_vehicle_spawn.launch">
+        <include file="$(find parking_garage_description)/launch/single_vehicle_spawn.launch">
             <arg name="x" value="0"/>
             <arg name="y" value="1"/>
             <arg name="z" value="0"/>

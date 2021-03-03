@@ -19,16 +19,15 @@
     <arg name="mavlink_tcp_port" default="4560"/>
     <!-- PX4 configs -->
     <arg name="interactive" default="true"/>
-    <!-- generate urdf vehicle model -->
- <!-- generate urdf vehicle model -->
-    <arg name="cmd" default="$(find xacro)/xacro $(find uav)/gazebo_model/models/iris_camera/$(arg vehicle)_camera_base.xacro rotors_description_dir:=$(find px4)/Tools/sitl_gazebo/models/rotors_description mavlink_udp_port:=$(arg mavlink_udp_port) mavlink_tcp_port:=$(arg mavlink_tcp_port) --inorder"/>
-    <param command="$(arg cmd)" name="rotors_description"/>
+    
     <!-- PX4 SITL -->
     <arg unless="$(arg interactive)" name="px4_command_arg1" value=""/>
     <arg     if="$(arg interactive)" name="px4_command_arg1" value="-d"/>
     <node name="sitl_$(arg ID)" pkg="px4" type="px4" output="screen" args="$(find px4)/ROMFS/px4fmu_common -s etc/init.d-posix/rcS -i $(arg ID) -w sitl_$(arg vehicle)_$(arg ID) $(arg px4_command_arg1)">
     </node>
     <!-- spawn vehicle -->
-    <node name="$(arg vehicle)_$(arg ID)_spawn" output="screen" pkg="gazebo_ros" type="spawn_model" args="-urdf -param rotors_description -model $(arg vehicle)_$(arg ID) -package_to_model -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg R) -P $(arg P) -Y $(arg Y) "/>
+    <arg name="uav_model" default="iris_camera"/> <!--uses iris model from px4 firmware package and adds a ros usb_cam--> <!-- iris,iris_camera, iris_opt_flow, iris_rplida, solo, typhoon_h480 -->	
+
+    <node name="$(arg vehicle)_$(arg ID)_spawn" output="screen" pkg="gazebo_ros" type="spawn_model" args="-file $(find uav)/gazebo_model/models/$(arg uav_model)/$(arg uav_model).sdf -sdf -model $(arg vehicle)_$(arg ID) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg R) -P $(arg P) -Y $(arg Y)" />
 
 </launch>

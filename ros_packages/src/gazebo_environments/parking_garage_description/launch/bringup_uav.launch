@@ -3,9 +3,9 @@
 	<!-- stationplein -->
     <env name="PX4_HOME_LAT" value="51.923345" />
     <env name="PX4_HOME_LON" value="4.470345" />
-    <env name="PX4_HOME_ALT" value="488.0" />
+    <env name="PX4_HOME_ALT" value="4.0" />
     <include file="$(find px4)/launch/px4.launch"></include>
-    <include file="$(find fire_station_description)/launch/start_gazebo_uav_world.launch"></include>
+    <include file="$(find parking_garage_description)/launch/start_gazebo_uav_world.launch"></include>
     <include file="$(find uav)/launch/start_mavros.launch"></include>
     <include file="$(find uav)/launch/start_ar_track_alvar.launch"></include>
     <!--<node name="FramesPublisher" pkg="uav" type="FramesPublisher.py" output="screen" respawn="true"></node>-->
