@@ -2,7 +2,7 @@
 <launch>
 
 
-	<arg name="world_name" value="$(find parking_garage_description)/worlds/simple_obstacle.world"/>
+	<arg name="world_name" value="$(find parking_garage_description)/worlds/parking_garage.world"/>
 
 <!--EDIT YOUR WORLD HERE-->
   <arg name="gui" default="true" doc="set false for headless environment " />

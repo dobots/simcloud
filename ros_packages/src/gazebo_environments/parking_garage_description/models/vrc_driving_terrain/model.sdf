@@ -7,8 +7,8 @@
         <geometry>
           <heightmap>
             <uri>model://vrc_driving_terrain/materials/textures/heightmap.png</uri>
-            <size>500 500 118</size>
-            <pos>0 0 -15</pos>
+            <size>500 500 98</size>
+            <pos>0 0 -16</pos>
           </heightmap>
         </geometry>
       </collision>
@@ -39,8 +39,8 @@
               <fade_dist>10</fade_dist>
             </blend>
             <uri>model://vrc_driving_terrain/materials/textures/heightmap.png</uri>
-            <size>500 500 118</size>
-            <pos>0 0 -15</pos>
+            <size>500 500 98</size>
+            <pos>0 0 -16</pos>
           </heightmap>
         </geometry>
       </visual>
@@ -76,6 +76,7 @@
             <uri>model://vrc_driving_terrain/materials/scripts</uri>
             <uri>model://vrc_driving_terrain/materials/textures</uri>
             <name>vrc/grass</name>
+            <!--name>vrc/asphalt</name-->
           </script>
         </material>
       </visual>
