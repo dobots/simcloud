@@ -1,0 +1,226 @@
+<?xml version="1.0" ?>
+<sdf version='1.4'>
+  <world name='default'>
+
+    <physics name='default_physics' default='0' type='ode'>
+      <gravity>0 0 -9.8066</gravity>
+      <ode>
+        <solver>
+          <type>quick</type>
+          <iters>10</iters>
+          <sor>1.3</sor>
+          <use_dynamic_moi_rescaling>0</use_dynamic_moi_rescaling>
+        </solver>
+        <constraints>
+          <cfm>0</cfm>
+          <erp>0.2</erp>
+          <contact_max_correcting_vel>100</contact_max_correcting_vel>
+          <contact_surface_layer>0.001</contact_surface_layer>
+        </constraints>
+      </ode>
+      <max_step_size>0.004</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>250</real_time_update_rate>
+      <magnetic_field>6.0e-6 2.3e-5 -4.2e-5</magnetic_field>
+    </physics>
+
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <latitude_deg>0</latitude_deg>
+      <longitude_deg>0</longitude_deg>
+      <elevation>0</elevation>
+      <heading_deg>0</heading_deg>
+    </spherical_coordinates>
+
+  <include>
+      <pose>0 0 0 0 0 0</pose> 
+      <uri>model://ground_plane</uri>
+   </include>
+
+    <!-- A global light source -->
+   <scene>
+      <sky>
+        <clouds>
+          <speed>12</speed>
+        </clouds>
+      </sky>
+   </scene>
+
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+     <!--<include>
+      <uri>model://ar_tag_13</uri>
+    </include> -->
+
+
+  <include>
+      <pose>20 20 0 0 0 0</pose> 
+      <uri>model://parking_garage_description/models/oak_tree</uri>
+   </include>
+
+  <include>
+      <pose>30 20 0 0 0 0</pose> 
+      <uri>model://parking_garage_description/models/oak_tree</uri>
+   </include>
+   
+  <include>
+      <pose>52 -16 0.2 0 0 1.57</pose> 
+      <uri>model://parking_garage_description/models/hatchback_red</uri>
+   </include>
+  
+   <include>
+      <pose>0 0 0 0 0 0</pose> 
+      <uri>model://parking_garage_description/models/asphalt_plane</uri>
+   </include>
+
+<!-- Model -->
+    <model name="plane">
+      <include>
+            <static>true</static>
+	    <uri>model://parking_garage_description/models/asphalt_plane/model.sdf</uri>
+        <pose> 0 0 1 0 0 0</pose>
+      </include>
+    </model>
+
+<model name="parking_garage">
+    <static>true</static>
+    <pose>50 0 0 0 0 0</pose>
+    <link name="body"> 
+   <visual name="visual">
+  <pose>10 0 0 0 0 -1.57</pose>
+        <geometry>
+          <mesh>
+		  <uri>model://parking_garage_description/models/parking_garage/meshes/parking_garage.dae</uri>
+            <!--<uri>model://coolsingel_description/meshes/cube.dae</uri>-->
+          </mesh>
+        </geometry>
+        <cast_shadows>true</cast_shadows>
+      </visual>
+  <collision name="collision">
+  <!-- <pose>-160 0 -0.5 0 0 1.47</pose>-->
+    <pose>10 0 0 0 0 -1.57</pose>
+       <geometry>
+          <mesh>
+		  <uri>model://parking_garage_description/models/parking_garage/meshes/parking_garage.dae</uri>
+            <!--<uri>model://coolsingel_description/meshes/cube.dae</uri>-->
+          </mesh>
+        </geometry>
+      </collision>
+    </link>
+  </model>
+
+<model name="barrier_0">
+    <static>true</static>
+   <pose>51 0 5.8 0 0 1.57</pose>
+    <link name="body"> 
+   <visual name="visual">
+        <geometry>
+          <mesh>
+		  <uri>model://parking_garage_description/models/jersey_barrier/meshes/jersey_barrier.dae</uri>
+          </mesh>
+        </geometry>
+        <cast_shadows>true</cast_shadows>
+      </visual>
+  <collision name="collision">
+       <geometry>
+          <mesh>
+		  <uri>model://parking_garage_description/models/jersey_barrier/meshes/jersey_barrier.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+    </link>
+  </model>
+
+<model name="barrier_1">
+    <static>true</static>
+   <pose>50.5 4 5.8 0 0 1.5</pose>
+    <link name="body"> 
+   <visual name="visual">
+        <geometry>
+          <mesh>
+		  <uri>model://parking_garage_description/models/jersey_barrier/meshes/jersey_barrier.dae</uri>
+          </mesh>
+        </geometry>
+        <cast_shadows>true</cast_shadows>
+      </visual>
+  <collision name="collision">
+       <geometry>
+          <mesh>
+		  <uri>model://parking_garage_description/models/jersey_barrier/meshes/jersey_barrier.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+    </link>
+  </model>
+
+<model name="barrier_2">
+    <static>true</static>
+   <pose>50.7 -4 5.8 0 0 1.78</pose>
+    <link name="body"> 
+   <visual name="visual">
+        <geometry>
+          <mesh>
+		  <uri>model://parking_garage_description/models/jersey_barrier/meshes/jersey_barrier.dae</uri>
+          </mesh>
+        </geometry>
+        <cast_shadows>true</cast_shadows>
+      </visual>
+  <collision name="collision">
+       <geometry>
+          <mesh>
+		  <uri>model://parking_garage_description/models/jersey_barrier/meshes/jersey_barrier.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+    </link>
+  </model>
+
+
+
+<model name="human">
+    <static>true</static>
+   <pose>65 9 17.25 0 3.14 0</pose>
+    <link name="body"> 
+   <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://human_resting_description/gazebo_model/meshes/man_resting.dae</uri>
+          </mesh>
+        </geometry>
+        <cast_shadows>true</cast_shadows>
+      </visual>
+  <collision name="collision">
+       <geometry>
+          <mesh>
+            <uri>model://human_resting_description/gazebo_model/meshes/man_resting.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+    </link>
+  </model>
+
+<model name="human_2">
+    <static>true</static>
+   <pose>45 9 11.55 0 3.14 -1.57</pose>
+    <link name="body"> 
+   <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://human_resting_description/gazebo_model/meshes/man_resting.dae</uri>
+          </mesh>
+        </geometry>
+	<cast_shadows>true</cast_shadows>
+      </visual>
+  <collision name="collision">
+       <geometry>
+          <mesh>
+            <uri>model://human_resting_description/gazebo_model/meshes/man_resting.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+    </link>
+  </model>
+  </world>
+</sdf>
