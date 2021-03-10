@@ -1,6 +1,20 @@
 <?xml version="1.0" ?>
 <sdf version='1.4'>
   <world name='default'>
+	  
+    <!-- camera to follow the uav-->
+    <!-- <gui fullscreen='0'>
+    <camera name="user_camera">
+    <track_visual>
+      <name>iris_depth_camera</name>
+      <static>false</static>
+      <min_dist>1.0</min_dist>
+      <max_dist>2.0</max_dist>
+      <use_model_frame>true</use_model_frame>
+      <xyz>-1.0 0 0</xyz>
+      <inherit_yaw>true</inherit_yaw>
+    </track_visual>
+    </camera>
 
     <physics name='default_physics' default='0' type='ode'>
       <gravity>0 0 -9.8066</gravity>

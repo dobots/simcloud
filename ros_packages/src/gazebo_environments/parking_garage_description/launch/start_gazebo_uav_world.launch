@@ -22,11 +22,11 @@
   <!-- VALUES IN METER AND RADIANT -->
   <arg name="x" default="0"/>
   <arg name="y" default="0"/>
-  <arg name="z" default="0.3"/>
+  <arg name="z" default="0"/> <!--5.6-->
   <arg name="roll" default="0"/>
   <arg name="pitch" default="0"/>
-  <arg name="yaw" default="0"/>
-  <arg name="uav_model" default="iris_camera"/> <!--uses iris model from px4 firmware package and adds a ros usb_cam--> <!-- iris,iris_camera, iris_opt_flow, iris_rplida, solo, typhoon_h480 -->
+  <arg name="yaw" default="3.141"/>
+  <arg name="uav_model" default="iris_depth_camera"/> <!--uses iris model from px4 firmware package and adds a ros usb_cam--> <!-- iris,iris_camera, iris_opt_flow, iris_rplida, solo, typhoon_h480 -->
   <node name="spawn_uav" pkg="gazebo_ros" type="spawn_model" args="-file $(find uav)/gazebo_model/models/$(arg uav_model)/$(arg uav_model).sdf -sdf -model $(arg uav_model) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)" /> 
 
 </launch>
