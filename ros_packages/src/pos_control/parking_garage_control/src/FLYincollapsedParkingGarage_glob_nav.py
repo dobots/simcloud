@@ -22,7 +22,6 @@ from std_msgs.msg import Float64
 
 def path_list():
     path_points = list()
-    path_points.append([-40, 0.2, 8.2]) #rover position
     path_points.append([-27, 0.26, 12.2]) #2
     path_points.append([-16.8, -1.3, 14.1]) #3
     path_points.append([-17.1, -11.1, 14.1]) #4
@@ -68,7 +67,7 @@ def callback(msg):
     global target_position_z
 
     global counter
-    if math.sqrt((target_position_x-current_pos_x)**2 + (target_position_y-current_pos_y)**2 + (target_position_z-current_pos_z)**2) < 0.4:
+    if math.sqrt((target_position_x-current_pos_x)**2 + (target_position_y-current_pos_y)**2 + (target_position_z-current_pos_z)**2) < 1.0:
         counter = counter + 1
         if counter == len(target_points): counter = 0
         target_position_x = target_points[counter][0]
@@ -79,7 +78,7 @@ def callback(msg):
 ##########################
 
 
-pubPosition = rospy.Publisher('/mavros/setpoint_position/local', PoseStamped, queue_size=10)
+pubPosition = rospy.Publisher('/move_base_simple/goal',PoseStamped, queue_size=10)
 subscriber = rospy.Subscriber("/mavros/local_position/pose", PoseStamped, callback)        
 counter = -1
 
