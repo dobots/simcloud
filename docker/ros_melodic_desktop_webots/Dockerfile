@@ -73,8 +73,8 @@ RUN echo ". /ros_entrypoint.sh" >> ~/.bashrc
 ## source Gazebo in bashrc:
 RUN echo ". /usr/share/gazebo/setup.sh" >> ~/.bashrc
 # (Optional) Add ros_packages and UAV sourcing to bashrc as well:
-# RUN echo ". /projects/ros_packages/devel/setup.bash" >> ~/.bashrc
-# RUN echo ". \$(rospack find uav)/scripts/init_uav_px4.sh > /dev/null" >> ~/.bashrc
+RUN echo ". /projects/ros_packages/devel/setup.bash" >> ~/.bashrc
+RUN echo ". \$(rospack find uav)/scripts/init_uav_px4.sh > /dev/null" >> ~/.bashrc
 
 # Ensure image runs bash
 CMD ["bash"]

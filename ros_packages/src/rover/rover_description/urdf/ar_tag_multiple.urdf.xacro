@@ -5,7 +5,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0"/>
 				<geometry>
-					<box size="0.5 0.6 0.03"/>
+					<box size="0.5 0.8 0.03"/>
 				</geometry>
 			</visual>
 			<inertial>
@@ -16,7 +16,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0"/>
 				<geometry>
-					<box size="0.5 0.75 0.03"/>
+					<box size="0.5 0.8 0.03"/>
 				</geometry>
 			</collision>
 		</link>
@@ -72,7 +72,7 @@
 		<joint name="ar_tag_${number_}_wall_joint_1" type="fixed">
 			<parent link="ar_tag_${number_}"/>
 			<child link="ar_tag_${number_}_wall_1"/>
-			<origin xyz="0 0.3 0.03" rpy="0 0 0"/>
+			<origin xyz="0 0.4 0.03" rpy="0 0 0"/>
 		</joint>
 		
 		<link name="ar_tag_${number_}_wall_2">
@@ -98,7 +98,7 @@
 		<joint name="ar_tag_${number_}_wall_joint_2" type="fixed">
 			<parent link="ar_tag_${number_}"/>
 			<child link="ar_tag_${number_}_wall_2"/>
-			<origin xyz="0 -0.3 0.03" rpy="0 0 0"/>
+			<origin xyz="0 -0.4 0.03" rpy="0 0 0"/>
 		</joint>		
 
 	</xacro:macro>

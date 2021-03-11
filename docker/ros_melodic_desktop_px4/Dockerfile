@@ -108,8 +108,8 @@ RUN echo ". /usr/share/gazebo/setup.sh" >> ~/.bashrc
 RUN echo $'# PX4 catkin workspace\n. /PX4/devel/setup.bash' >> ~/.bashrc
 RUN echo $'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:/PX4/src/avoidance/avoidance/sim/models:/PX4/src/avoidance/avoidance/sim/worlds\n' >> ~/.bashrc
 # (Optional) Add ros_packages and UAV sourcing to bashrc as well:
-# RUN echo ". /projects/ros_packages/devel/setup.bash" >> ~/.bashrc
-# RUN echo ". \$(rospack find uav)/scripts/init_uav_px4.sh > /dev/null" >> ~/.bashrc
+RUN echo ". /projects/ros_packages/devel/setup.bash" >> ~/.bashrc
+RUN echo ". \$(rospack find uav)/scripts/init_uav_px4.sh > /dev/null" >> ~/.bashrc
 
 # Ensure image runs bash
 CMD ["bash"]

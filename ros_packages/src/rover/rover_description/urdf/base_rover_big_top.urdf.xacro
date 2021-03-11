@@ -70,7 +70,7 @@
 
 
 	<!-- ar_tag macros bottom right-->
-    <xacro:ar_tag number_="13" x_="-0.36" y_="-0.3" z_="0.1" r_="0.0">
+    <xacro:ar_tag number_="13" x_="-0.36" y_="-0.4" z_="0.1" r_="0.0">
 	</xacro:ar_tag>
 
 	<!-- ar_tag macros top right-->
@@ -78,7 +78,7 @@
 	</xacro:ar_tag> -->
 
 	<!-- ar_tag macros bottom left-->
-    <xacro:ar_tag number_="5" x_="-0.36" y_="0.3" z_="0.1" r_="0.0">
+    <xacro:ar_tag number_="5" x_="-0.36" y_="0.4" z_="0.1" r_="0.0">
 	</xacro:ar_tag>
 
 	<!-- Gazebo simulation plugins -->

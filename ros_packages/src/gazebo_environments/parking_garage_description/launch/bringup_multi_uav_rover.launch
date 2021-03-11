@@ -23,7 +23,7 @@
 
   <!-- ADD THE ROVER -->
   <arg name="x_" default="0.0"/>
-  <arg name="y_" default="-0.3"/>
+  <arg name="y_" default="0.0"/>
   <arg name="z_" default="0.12"/>
   
   <arg name="roll_" default="0"/>

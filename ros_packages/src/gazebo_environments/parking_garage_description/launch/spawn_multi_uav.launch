@@ -14,7 +14,7 @@
         <!-- PX4 SITL and vehicle spawn -->
         <include file="$(find parking_garage_description)/launch/single_vehicle_spawn.launch">
             <arg name="x" value="0.35"/>
-            <arg name="y" value="0"/>
+            <arg name="y" value="0.4"/>
             <arg name="z" value="0.3"/>
             <arg name="R" value="0"/>
             <arg name="P" value="0"/>
@@ -40,7 +40,7 @@
         <!-- PX4 SITL and vehicle spawn -->
         <include file="$(find parking_garage_description)/launch/single_vehicle_spawn.launch">
             <arg name="x" value="0.35"/>
-            <arg name="y" value="-0.6"/>
+            <arg name="y" value="-0.4"/>
             <arg name="z" value="0.3"/>
             <arg name="R" value="0"/>
             <arg name="P" value="0"/>
