@@ -4,7 +4,7 @@
     <!-- <arg name="world_path" default="$(find avoidance)/sim/worlds/$(arg world_file_name).world" /> -->
     <arg name="world_path" default="/projects/ros_packages/src/gazebo_environments/parking_garage_description/worlds/parking_garage.world" />
     <arg name="pointcloud_topics" default="[/camera/depth/points]"/>
-    <arg name="frame_id"    default="base_link" />
+    <arg name="frame_id"    default="map" /> <!-- origin -->
     <arg name="camera_frame_id" default="camera_link"/>
     <arg name="start_pos_x" default="0" />
     <arg name="start_pos_y" default="0" />
@@ -36,7 +36,7 @@
     </include>>
 
     <!-- Copy transform from world frame to frame named local_origin for visualization -->
-    <node pkg="tf" type="static_transform_publisher" name="static_tf_broadcaster_global_planner" args="0 0 0 0 0 0 local_origin base_link 100" />
+    <node pkg="tf" type="static_transform_publisher" name="static_tf_broadcaster_global_planner" args="0 0 0 0 0 0 local_origin map 100" />
 
     <node pkg="rviz" type="rviz" output="screen" name="rviz_global_planner" respawn="true"
           args="-d $(find global_planner)/resource/global_planner.rviz" />
