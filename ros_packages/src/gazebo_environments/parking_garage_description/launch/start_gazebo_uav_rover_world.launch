@@ -6,8 +6,9 @@
   <!--EDIT YOUR WORLD HERE-->
   <arg name="gui" default="true" doc="set false for headless environment " />
   <arg name="paused" default="false"/>
-  <arg name="debug" default="false"/>
+  <arg name="debug" default="true"/>
   <arg name="headless" default="false"/>
+  <arg name="verbose" value="true"/>
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="world_name" default="$(arg world_name)"/>
