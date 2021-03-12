@@ -189,7 +189,18 @@ buttons: (0, 0, 0, 0, 0)
 Source:
 http://wiki.ros.org/joy/Tutorials/ConfiguringALinuxJoystick
 
+### 1.5. Run teleop with a rover
 
+Start a launch file with a rover and then run:
+```
+rosrun joy joy_node
+rosrun teleop_twist_joy teleop_node
+```
+Hold down the X button on the controller and control the rover with the left joystick. Don't forget to keep the teleop_twist_joy window active to be able to control the rover.
+
+### 1.6. Run teleop with Qgroundcontrol on a UAV
+
+https://docs.qgroundcontrol.com/master/en/SetupView/Joystick.html
 
 
 

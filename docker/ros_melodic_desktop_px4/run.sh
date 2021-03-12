@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #bluetooth setup
-service dbus start
-bluetoothd &
+#service dbus start
+#bluetoothd &
 
 #check if there is a /build and /devel in the current PWD
 if [ -f devel/.catkin ]; then
@@ -16,7 +16,6 @@ fi
 
 docker run -iPt \
     --rm \
-    --net=host \
     -v /dev/bus/usb:/dev/bus/usb \
     -v /dev/input:/dev/input \
     --device-cgroup-rule 'a 13:* rwm' \
