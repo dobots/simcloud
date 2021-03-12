@@ -24,25 +24,26 @@ def path_list():
     path_points = list()
     path_points.append([-10, 0.4, 3]) #1
     path_points.append([-10, 31, 8]) #2
-    path_points.append([-52, 31, 8]) #3
-    path_points.append([-52, -31, 12]) #4
-    path_points.append([-10, -31, 12]) #5
-    path_points.append([-10, 0, 16]) #5 #6
-    path_points.append([-10, 31, 16]) #2
-    path_points.append([-52, 31, 20]) #3
-    path_points.append([-52, -31, 20]) #4
-    path_points.append([-10, -31, 24]) #5
-    path_points.append([-10, 0, 24]) #5 #6
-    path_points.append([-10, 31, 30]) #2
-    path_points.append([-52, 31, 30]) #3
-    path_points.append([-52, -31, 34]) #4
-    path_points.append([-10, -31, 34]) #5
-    path_points.append([-10, 0, 40]) #5 #6
+    path_points.append([-32, 31, 9.75]) #2.5
+    path_points.append([-52, 31, 11.5]) #3
+    path_points.append([-52, -31, 15]) #4
+    path_points.append([-32, -31, 16.75]) #4.5
+    path_points.append([-10, -31, 18.5]) #5
+    path_points.append([-10, 0, 22]) #6
+    path_points.append([-10, 31, 25.5]) #2
+    path_points.append([-32, 31, 27]) #2.5
+    path_points.append([-52, 31, 29]) #3
+    path_points.append([-52, -31, 32.5]) #4
+    path_points.append([-32, -31, 34]) #4.5
+    path_points.append([-10, -31, 36]) #5
+    path_points.append([-10, 0, 39.5]) #6
     path_points.append([-8, 21, 40]) #2
+    path_points.append([-28, 21, 40]) #2.5
     path_points.append([-45, 21, 40]) #3
     path_points.append([-45, -21, 40]) #4
+    path_points.append([-28, -21, 40]) #4.5
     path_points.append([-8, -21, 40]) #5
-    path_points.append([-8, 0, 40]) #5 #6
+    path_points.append([-8, 0, 40]) #6
     return path_points
     
 

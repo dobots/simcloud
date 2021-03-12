@@ -10,6 +10,7 @@
     <arg name="start_pos_y" default="0" />
     <arg name="start_pos_z" default="1.5" />
     <arg name="gui" default="true"/>
+    <arg name="rviz" default="true"/>
 
     <!-- Define a static transform from a camera internal frame to the fcu for every camera used -->
     <!-- Ros transformation -->
@@ -38,6 +39,5 @@
     <!-- Copy transform from world frame to frame named local_origin for visualization -->
     <node pkg="tf" type="static_transform_publisher" name="static_tf_broadcaster_global_planner" args="0 0 0 0 0 0 local_origin map 100" />
 
-    <node pkg="rviz" type="rviz" output="screen" name="rviz_global_planner" respawn="true"
-          args="-d $(find global_planner)/resource/global_planner.rviz" />
+    <node if="$(arg rviz)" pkg="rviz" type="rviz" output="screen" name="rviz_global_planner" args="-d $(find global_planner)/resource/global_planner.rviz" />
 </launch>
