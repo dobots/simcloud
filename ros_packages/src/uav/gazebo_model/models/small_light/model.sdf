@@ -4,7 +4,7 @@
     <link name="light_link">
       <inertial>
         <pose>0.01 0.025 0.025 0 0 0</pose>
-        <mass>0.05</mass>
+        <mass>0.005</mass>
         <inertia>
           <ixx>4.15e-6</ixx>
           <ixy>0</ixy>
@@ -21,8 +21,6 @@
           </box>
         </geometry>
           <material>
-            <ambient>1 0 0 1</ambient>
-            <!--diffuse>0.5 1 1 1</diffuse-->
             <diffuse>1 0 0 1</diffuse>
             <specular>1 0 0 1</specular>
             <emissive>1 0 0 1</emissive>
@@ -30,7 +28,7 @@
       </visual>
     </link>
     <link name='light_source'>
-        <pose>0 0 0.005 0 0 0</pose>
+        <pose>0 0 -0.01 0 0 0</pose>
         <light name='lamp' type='spot'>
           <pose>0 0 0.0 0 0 0</pose>
           <attenuation>
@@ -46,11 +44,27 @@
           </spot>
           <direction>0 0 -1</direction>
         </light>
+      <inertial>
+        <pose>0.01 0.025 0.025 0 0 0</pose>
+        <mass>0.005</mass>
+        <inertia>
+          <ixx>4.15e-6</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>2.407e-6</iyy>
+          <iyz>0</iyz>
+          <izz>2.407e-6</izz>
+        </inertia>
+      </inertial>
         <visual name='lamp'>
           <geometry>
-            <sphere>
+            <!--sphere>
               <radius>0.02</radius>
-            </sphere>
+            </sphere-->
+            <cylinder>
+              <radius>0.02</radius>
+              <length>0.01</length>
+            </cylinder>
           </geometry>
           <transparency>0.4</transparency>
           <material>
