@@ -19,7 +19,7 @@ RUN apt-get install -y less nano wget psmisc zip build-essential git mercurial
 RUN apt-get install -y libgl1-mesa-glx libgl1-mesa-dri
 
 # install joystick package
-sudo apt-get install -y jstest-gtk
+RUN apt-get install -y jstest-gtk
 
 # install bluetooth packages
 #RUN apt-get install -y libbluetooth-dev bluez bluetooth
