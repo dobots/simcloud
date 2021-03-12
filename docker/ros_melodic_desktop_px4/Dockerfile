@@ -1,6 +1,7 @@
 FROM osrf/ros:melodic-desktop-full
 # 'desktop-full' includes gazebo9
 
+
 # nvidia-container-runtime
 ENV NVIDIA_VISIBLE_DEVICES \
     ${NVIDIA_VISIBLE_DEVICES:-all}
@@ -17,6 +18,12 @@ RUN apt-get install -y less nano wget psmisc zip build-essential git mercurial
 # mesa packages for non-nvidia users
 RUN apt-get install -y libgl1-mesa-glx libgl1-mesa-dri
 
+# install joystick package
+sudo apt-get install -y jstest-gtk
+
+# install bluetooth packages
+#RUN apt-get install -y libbluetooth-dev bluez bluetooth
+
 # ROS #
 ## (Optional) Update ros packages to the latest version
 # RUN apt-get upgrade -y
@@ -31,7 +38,7 @@ RUN echo ". /usr/share/gazebo/setup.sh" >> ~/.bashrc
 ## Additional installs:
 
 ### General ROS packages
-RUN apt-get install -y ros-melodic-teleop-twist-keyboard ros-melodic-map-server ros-melodic-amcl ros-melodic-gmapping
+RUN apt-get install -y ros-melodic-teleop-twist-keyboard ros-melodic-teleop-twist-joy ros-melodic-map-server ros-melodic-amcl ros-melodic-gmapping
 RUN apt-get install -y ros-melodic-move-base ros-melodic-global-planner ros-melodic-teb-local-planner
 
 ### PX4 installation
