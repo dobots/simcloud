@@ -22,20 +22,20 @@ from std_msgs.msg import Float64
 
 def path_list():
     path_points = list()
-    path_points.append([-10, 0.4, 3]) #1
-    path_points.append([-10, 31, 8]) #2
-    path_points.append([-32, 31, 9.75]) #2.5
-    path_points.append([-52, 31, 11.5]) #3
-    path_points.append([-52, -31, 15]) #4
-    path_points.append([-32, -31, 16.75]) #4.5
-    path_points.append([-10, -31, 18.5]) #5
-    path_points.append([-10, 0, 22]) #6
-    path_points.append([-10, 31, 25.5]) #2
-    path_points.append([-32, 31, 27]) #2.5
-    path_points.append([-52, 31, 29]) #3
-    path_points.append([-52, -31, 32.5]) #4
-    path_points.append([-32, -31, 34]) #4.5
-    path_points.append([-10, -31, 36]) #5
+    # path_points.append([-10, 0.4, 3]) #1
+    # path_points.append([-10, 31, 8]) #2
+    # path_points.append([-32, 31, 9.75]) #2.5
+    # path_points.append([-52, 31, 11.5]) #3
+    # path_points.append([-52, -31, 15]) #4
+    # path_points.append([-32, -31, 16.75]) #4.5
+    # path_points.append([-10, -31, 18.5]) #5
+    # path_points.append([-10, 0, 22]) #6
+    # path_points.append([-10, 31, 25.5]) #2
+    # path_points.append([-32, 31, 27]) #2.5
+    # path_points.append([-52, 31, 29]) #3
+    # path_points.append([-52, -31, 32.5]) #4
+    # path_points.append([-32, -31, 34]) #4.5
+    # path_points.append([-10, -31, 36]) #5
     path_points.append([-10, 0, 40]) #6
     path_points.append([-8, 21, 46]) #2
     path_points.append([-28, 21, 46]) #2.5
