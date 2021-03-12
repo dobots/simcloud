@@ -21,5 +21,21 @@
       </axis>
     </joint>
 
+    <!--include>
+      <uri>model://led_light_small</uri>
+      <pose>-0.1 0 -0.05 3.141 0 0</pose>
+    </include>
+    <joint name="led_light_joint" type="fixed">
+      <child>led_light_small::led_link</child>
+      <parent>iris::base_link</parent>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <upper>0</upper>
+          <lower>0</lower>
+        </limit>
+      </axis>
+    </joint-->
+
   </model>
 </sdf>

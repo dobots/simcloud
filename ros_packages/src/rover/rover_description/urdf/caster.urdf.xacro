@@ -36,8 +36,8 @@
 		<gazebo reference="caster_${alignment}_link">
 			<kp value="50000000.0" />
 			<kd value="0.2" />
-			<mu1 value="0.01"/>
-			<mu2 value="0.01"/>
+			<mu1 value="0.00"/>
+			<mu2 value="0.00"/>
 			<minDepth>0.001</minDepth>
 			<maxVel>0.01</maxVel>
 			<fdir1>1 0 0</fdir1>

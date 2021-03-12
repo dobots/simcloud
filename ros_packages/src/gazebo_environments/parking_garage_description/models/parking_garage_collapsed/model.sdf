@@ -9,6 +9,14 @@
             <uri>model://parking_garage/meshes/parking_garage_collapsed.dae</uri>
           </mesh>
         </geometry>
+	<surface>
+          <friction>
+            <ode>
+              <mu>0.9</mu>
+              <mu2>0.9</mu2>
+            </ode>
+          </friction>
+        </surface>
       </collision>
       <visual name="visual">
         <geometry>

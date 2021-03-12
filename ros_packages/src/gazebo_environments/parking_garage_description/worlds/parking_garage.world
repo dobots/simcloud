@@ -59,7 +59,8 @@
 	<uri>model://sun</uri>
     </include>
 
-  <!--    floor and mountains   -->
+   
+   <!--    floor and mountains   -->
   <include>
       <pose>0 0 0 0 0 0 </pose> 
       <uri>model://parking_garage_description/models/vrc_driving_terrain</uri>
