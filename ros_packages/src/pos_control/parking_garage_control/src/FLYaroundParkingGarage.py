@@ -37,13 +37,13 @@ def path_list():
     path_points.append([-32, -31, 34]) #4.5
     path_points.append([-10, -31, 36]) #5
     path_points.append([-10, 0, 40]) #6
-    path_points.append([-8, 21, 46]) #2
+    path_points.append([-12, 21, 46]) #2
     path_points.append([-28, 21, 46]) #2.5
-    path_points.append([-45, 21, 46]) #3
-    path_points.append([-45, -21, 46]) #4
+    path_points.append([-35, 21, 46]) #3
+    path_points.append([-35, -21, 46]) #4
     path_points.append([-28, -21, 46]) #4.5
-    path_points.append([-8, -21, 46]) #5
-    path_points.append([-8, 0, 46]) #6
+    path_points.append([-12, -21, 46]) #5
+    path_points.append([-12, 0, 46]) #6
     return path_points
     
 
