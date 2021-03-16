@@ -1,7 +1,11 @@
 <?xml version="1.0" ?>
 <sdf version='1.4'>
   <world name='default'>
-	  
+    <!-- Disable shadows -->
+    <scene>
+      <shadows>0</shadows>
+    </scene>
+
     <!-- camera to follow the uav-->
     <!-- <gui fullscreen='0'>
     <camera name="user_camera">
@@ -44,21 +48,49 @@
       <longitude_deg>0</longitude_deg>
       <elevation>0</elevation>
       <heading_deg>0</heading_deg>
-    </spherical_coordinates>
+    </spherical_coordinates> -->
 
-    <!-- A global light source -->
-   <scene>
+    <scene>
       <sky>
         <clouds>
           <speed>12</speed>
         </clouds>
       </sky>
-   </scene>
+    </scene>
 
-    <include>
-	<uri>model://sun</uri>
-    </include>
+    <!-- A global light source -->
+    <!-- <include>
+      <uri>model://sun</uri>
+    </include> -->
 
+  <!-- Directional lights to fully light up the garage -->
+  <light type="directional" name="sun1">
+    <cast_shadows>true</cast_shadows>
+    <pose>0 0 200 0.35 0 0</pose>
+    <diffuse>0.8 0.8 0.8 1</diffuse>
+    <specular>0.2 0.2 0.2 1</specular>
+    <attenuation>
+      <range>1000</range>
+      <constant>0.9</constant>
+      <linear>0.01</linear>
+      <quadratic>0.001</quadratic>
+    </attenuation>
+    <direction>-0.5 0.1 -0.9</direction>
+  </light>
+
+  <light type="directional" name="sun2">
+    <cast_shadows>true</cast_shadows>
+    <pose>0 0 200 -1.05 -1.75 0</pose>
+    <diffuse>0.5 0.5 0.5 1</diffuse>
+    <specular>0.2 0.2 0.2 1</specular>
+    <attenuation>
+      <range>1000</range>
+      <constant>0.9</constant>
+      <linear>0.01</linear>
+      <quadratic>0.001</quadratic>
+    </attenuation>
+    <direction>-0.5 0.1 -0.9</direction>
+  </light>
    
    <!--    floor and mountains   -->
   <include>
