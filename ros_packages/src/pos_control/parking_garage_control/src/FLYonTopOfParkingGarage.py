@@ -36,8 +36,8 @@ def path_list():
     # path_points.append([-52, -31, 32.5]) #4
     # path_points.append([-32, -31, 34]) #4.5
     # path_points.append([-10, -31, 36]) #5
-    path_points.append([-10, 0, 20]) #
-    path_points.append([-10, 0, 42.5]) #
+    path_points.append([-9, 0, 20]) #
+    path_points.append([-9, 0, 42.5]) #
 
     # Enter building from top
     path_points.append([-22, 0, 42.5])
