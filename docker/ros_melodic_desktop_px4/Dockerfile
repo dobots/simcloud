@@ -91,7 +91,7 @@ WORKDIR /
 RUN mkdir QGroundControl
 WORKDIR QGroundControl
 RUN wget https://github.com/mavlink/qgroundcontrol/releases/download/v3.5.6/QGroundControl.AppImage
-RUN apt-get install libarchive-tools && bsdtar xfp QGroundControl.AppImage
+RUN apt-get install -y libarchive-tools && bsdtar xfp QGroundControl.AppImage
 # Now you may run the app using ./QGroundControl/qgroundcontrol-start.sh (As a non root user)
 
 ### GazeboWeb (TODO) (Optional):
