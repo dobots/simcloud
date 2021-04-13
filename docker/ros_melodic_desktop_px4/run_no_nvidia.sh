@@ -14,6 +14,7 @@ docker run -iPt \
     --env="DISPLAY=$DISPLAY" \
     --env="QT_X11_NO_MITSHM=1" \
     --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
+    #--net=host \
     --volume="$XAUTHORITY:$XAUTHORITY" \
     --device=/dev/dri \
     --env="XAUTHORITY=$XAUTHORITY" \
