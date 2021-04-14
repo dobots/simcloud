@@ -10,7 +10,7 @@ import rospy
 from sensor_msgs.msg import Joy
 from geometry_msgs.msg import TwistStamped
 
-from mavros_msgs.srv import CommandBool, SetMode
+from mavros_msgs.srv import CommandBool, SetMode, CommandTOL
 
 import sys, select, termios, tty
 
@@ -40,7 +40,7 @@ Right stick: Pitch up/down(move forward/backward) roll left/right (slide left/ri
 
 --------------------------
 action button circle : arm and offboard
-action button cross : stop
+action button cross : land
 
 
 action buttons triangle/square : increase/decrease max speeds by 10%
@@ -161,7 +161,7 @@ def joyCallback(msg):
 def getSpeedBindingsKey(buttons, button_ind):
    key = None
    
-   if button_ind and buttons[button_ind] == 0: # last active button is released
+   if (button_ind is not None) and buttons[button_ind] == 0: # last active button is released
         key = "button[%d]" % (button_ind) # create a key 
         button_ind = None    # reset the index
 
@@ -174,6 +174,8 @@ def getSpeedBindingsKey(buttons, button_ind):
    return button_ind, key
 
 
+# mavros set mode  -------------------------------------
+
 def setArm():
    rospy.wait_for_service('/mavros/cmd/arming')
    try:
@@ -182,7 +184,28 @@ def setArm():
    except rospy.ServiceException, e:
        print("Service arm call failed: %s"%e)
 
+def setOffboard():
+   rospy.wait_for_service('/mavros/set_mode')
+   try:
+       offboardService = rospy.ServiceProxy('/mavros/set_mode', SetMode)
+       offboardService(base_mode=0,custom_mode="OFFBOARD")
+   except rospy.ServiceException, e:
+       print("Service arm call failed: %s"%e)
 
+       
+def setLandMode():
+   rospy.wait_for_service('/mavros/cmd/land')
+   try:
+       landService = rospy.ServiceProxy('/mavros/cmd/land', CommandTOL)
+       isLanding = landService(altitude = 0, latitude = 0, longitude = 0, min_pitch = 0, yaw = 0)
+   except rospy.ServiceException, e:
+       print("service land call failed: %s. The vehicle cannot land "%e)
+              
+   
+   
+   
+   
+              
 
 if __name__=="__main__":
     
@@ -196,8 +219,7 @@ if __name__=="__main__":
     repeat = rospy.get_param("~repeat_rate", 10.0)
     
     key_timeout = rospy.get_param("~key_timeout", 0.0)
-    
-    
+   
     if key_timeout == 0.0:
         key_timeout = None
 
@@ -205,8 +227,6 @@ if __name__=="__main__":
     
     # Subscribe to joy topic
     rospy.Subscriber('joy', Joy, joyCallback, queue_size=1)
-    
-
         
     x = 0
     y = 0
@@ -218,6 +238,9 @@ if __name__=="__main__":
     try:
         pub_thread.wait_for_subscribers()
         pub_thread.update(x, y, z, th, speed, turn)
+        
+        print(msg)
+        print(vels(speed,turn))
      
         while(1):
            
@@ -227,33 +250,28 @@ if __name__=="__main__":
                 z = joymsg.axes[1]
                 th = joymsg.axes[0]
                 button_index,key = getSpeedBindingsKey(joymsg.buttons, button_index)
-                                
+                             
                 if key in speedBindings.keys(): # directional buttons change speed
                     speed = speed * speedBindings[key][0]
                     turn = turn * speedBindings[key][1] 
                     print(vels(speed,turn))                
                 
                              
-                if key == 'button[1]': #action button circle : arm and offboard
+                elif key == 'button[1]': #action button circle : arm and offboard
                     print('arm and offboard')
-                    setArm()         
-                
-                
+                    setArm()
+                    setOffboard()         
+                               
             
-                #action button cross : stop
-                #if joymsg.buttons[0]: #cross
-                #   KeyboardInterrupt               
+                elif key == 'button[0]': #action button cross : stop
+                   print('land')
+                   setLandMode()
                 
-                
-                
-               
+                             
             pub_thread.update(x, y, z, th, speed, turn)
         
-           
+ 
             
-            
-    except KeyboardInterrupt:
-        print("KeyboardInterrupt has been caught.")
     
     except Exception as e:
         print(e)

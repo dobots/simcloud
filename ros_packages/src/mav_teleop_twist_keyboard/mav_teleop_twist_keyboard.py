@@ -9,6 +9,8 @@ import rospy
 
 from geometry_msgs.msg import TwistStamped
 
+from mavros_msgs.srv import CommandBool, SetMode, CommandTOL
+
 import sys, select, termios, tty
 
 msg = """
@@ -30,11 +32,14 @@ Pitch up/down(move forward/backward) roll left/right (slide left/right):
    m    ,    .
 
 
-anything else : stop
+1 : arm and offboard
+2: land
 
-q/z : increase/decrease max speeds by 10%
-w/x : increase/decrease only linear speed by 10%
-e/c : increase/decrease only angular speed by 10%
+r/v : increase/decrease max speeds by 10%
+t/b : increase/decrease only linear speed by 10%
+y/n : increase/decrease only angular speed by 10%
+
+
 
 CTRL-C to quit
 """
@@ -67,18 +72,17 @@ moveBindings = {
     }
 
 speedBindings={
-        'q':(1.1,1.1),
-        'z':(.9,.9),
-        'w':(1.1,1),
-        'x':(.9,1),
-        'e':(1,1.1),
-        'c':(1,.9),
+        'r':(1.1,1.1),
+        'v':(.9,.9),
+        't':(1.1,1),
+        'b':(.9,1),
+        'y':(1,1.1),
+        'n':(1,.9),
     }
 
 class PublishThread(threading.Thread):
     def __init__(self, rate):
         super(PublishThread, self).__init__()
-        #self.publisher = rospy.Publisher('/teleop_uav/cmd_vel', TwistStamped, queue_size = 1)
         self.publisher = rospy.Publisher('/mavros/setpoint_velocity/cmd_vel', TwistStamped, queue_size = 1)
         
         self.x = 0.0
@@ -160,6 +164,7 @@ class PublishThread(threading.Thread):
 def getKey(key_timeout):
     tty.setraw(sys.stdin.fileno())
     rlist, _, _ = select.select([sys.stdin], [], [], key_timeout)
+    
     if rlist:
         key = sys.stdin.read(1)
     else:
@@ -172,6 +177,43 @@ def getKey(key_timeout):
 def vels(speed, turn):
     return "currently:\tspeed %s\tturn %s " % (speed,turn)
 
+
+
+
+# mavros set mode  -------------------------------------
+
+def setArm():
+   rospy.wait_for_service('/mavros/cmd/arming')
+   try:
+       armService = rospy.ServiceProxy('/mavros/cmd/arming', CommandBool)
+       armService(True)
+   except rospy.ServiceException, e:
+       print("Service arm call failed: %s"%e)
+
+def setOffboard():
+   rospy.wait_for_service('/mavros/set_mode')
+   try:
+       offboardService = rospy.ServiceProxy('/mavros/set_mode', SetMode)
+       offboardService(base_mode=0,custom_mode="OFFBOARD")
+   except rospy.ServiceException, e:
+       print("Service arm call failed: %s"%e)
+
+       
+def setLandMode():
+   rospy.wait_for_service('/mavros/cmd/land')
+   try:
+       landService = rospy.ServiceProxy('/mavros/cmd/land', CommandTOL)
+       isLanding = landService(altitude = 0, latitude = 0, longitude = 0, min_pitch = 0, yaw = 0)
+   except rospy.ServiceException, e:
+       print("service land call failed: %s. The vehicle cannot land "%e)
+
+
+
+
+
+
+
+
 if __name__=="__main__":
     settings = termios.tcgetattr(sys.stdin)
 
@@ -180,7 +222,7 @@ if __name__=="__main__":
     
     speed = rospy.get_param("~speed", 0.5)
     turn = rospy.get_param("~turn", 1.0)
-    repeat = rospy.get_param("~repeat_rate", 0.0)
+    repeat = rospy.get_param("~repeat_rate", 10.0)
     
     key_timeout = rospy.get_param("~key_timeout", 0.0)
     
@@ -206,6 +248,7 @@ if __name__=="__main__":
         while(1):
             key = getKey(key_timeout) 
             
+            
             if key in moveBindings.keys():
                 x = moveBindings[key][0]
                 y = moveBindings[key][1]
@@ -219,6 +262,16 @@ if __name__=="__main__":
                 if (status == 14):
                     print(msg)
                 status = (status + 1) % 15
+            elif key == '1':
+                print('arm and offboard')
+                setArm()
+                setOffboard()
+
+            elif key == '2':
+                print('land')
+                setLandMode()
+               
+                    
             else:
                 # Skip updating cmd_vel if key timeout and robot already
                 # stopped.
