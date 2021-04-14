@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>uav_teleop_twist_keyboard</name>
+  <name>mav_teleop_twist_joy</name>
   <version>1.0.0</version>
-  <description>Generic keyboard teleop for uavs completely based on the teleop twist keyboard package.</description>
+  <description>Generic joystick teleop for mavs (micro-aerial-vehicles) based on the teleop twist keyboard package.</description>
 
   <maintainer email="reka@dobots.nl">Reka Berci-Hajnovics</maintainer>
 

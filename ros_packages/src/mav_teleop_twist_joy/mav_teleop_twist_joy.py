@@ -4,81 +4,69 @@ from __future__ import print_function
 
 import threading
 
-import roslib; roslib.load_manifest('uav_teleop_twist_keyboard')
+import roslib; roslib.load_manifest('mav_teleop_twist_joy')
 import rospy
 
+from sensor_msgs.msg import Joy
 from geometry_msgs.msg import TwistStamped
+
+from mavros_msgs.srv import CommandBool, SetMode
 
 import sys, select, termios, tty
 
 msg = """
-Reading from the keyboard  and Publishing to TwistStamped!
+Reading from a joystick  and Publishing to TwistStamped!
 
 ---------------------------
-Throttle up/down (move up/down) and yaw left/right (rotate left/right):
+Left stick: Throttle up/down (move up/down) and yaw left/right (rotate left/right):
 
-   q    w    e
-   a    s    d
-   z/y  x    c
+
+          Throttle up  
+                   
+  Yaw left    o      Yaw right
+         
+         Throttle down    
 
 
 ---------------------------
-Pitch up/down(move forward/backward) roll left/right (slide left/right):
+Right stick: Pitch up/down(move forward/backward) roll left/right (slide left/right):
 
-   u    i    o
-   j    k    l
-   m    ,    .
+         Pitch forward  
+                   
+ Roll left    o     Roll right
+         
+        Pitch backward  
 
 
-anything else : stop
+--------------------------
+action button circle : arm and offboard
+action button cross : stop
 
-q/z : increase/decrease max speeds by 10%
-w/x : increase/decrease only linear speed by 10%
-e/c : increase/decrease only angular speed by 10%
+
+action buttons triangle/square : increase/decrease max speeds by 10%
+directional buttons up/down : increase/decrease only linear speed by 10%
+directional buttons left/right : increase/decrease only angular speed by 10%
 
 CTRL-C to quit
 """
 
-moveBindings = {
-        'w':(0,0,1,0), # up
-        'x':(0,0,-1,0), # down
-        'd':(0,0,0,-1), # yaw right (facing)
-        'a':(0,0,0,1), # yaw left (facing)
-        's':(0,0,0,0), # keep howering
-        
-        'q':(0,0,1,1), # up and yaw left
-        'e':(0,0,1,-1), # up and yaw right
-        'z':(0,0,-1,1), # down and yaw left
-        'y':(0,0,-1,1), # down and yaw left
-        'c':(0,0,-1,-1), # down and yaw right
-        
-        'i':(0,1,0,0), # pitch forward (slide forward)
-        ',':(0,-1,0,0), # pitch backward (slide backward)
-        'j':(-1,0,0,0), # roll left (slide left)
-        'l':(1,0,0,0), # roll right  (slide right)
-        'k':(0,0,0,0), # keep howering
 
-        
-        'u':(-1,1,0,0), # pitch forward and roll left
-        'o':(1,1,0,0), # pitch forward and roll right
-        'm':(-1,-1,0,0), # pitch backward and roll left
-        '.':(1,-1,0,0), # pitch backward and roll right
-        
-    }
 
 speedBindings={
-        'q':(1.1,1.1),
-        'z':(.9,.9),
-        'w':(1.1,1),
-        'x':(.9,1),
-        'e':(1,1.1),
-        'c':(1,.9),
+        'button[2]' :(1.1,1.1), # triangle
+        'button[3]' :(0.9,0.9), # square
+        'button[13]':(1.1,1.0), #dir. button up
+        'button[14]':(0.9,1.0), #dir. button down
+        'button[15]':(1.0,1.1), #dir. button left
+        'button[16]':(1.0,0.9), #dir. button right
     }
+
+
+
 
 class PublishThread(threading.Thread):
     def __init__(self, rate):
         super(PublishThread, self).__init__()
-        #self.publisher = rospy.Publisher('/teleop_uav/cmd_vel', TwistStamped, queue_size = 1)
         self.publisher = rospy.Publisher('/mavros/setpoint_velocity/cmd_vel', TwistStamped, queue_size = 1)
         
         self.x = 0.0
@@ -109,6 +97,7 @@ class PublishThread(threading.Thread):
             i = i % 5
         if rospy.is_shutdown():
             raise Exception("Got shutdown request before subscribers connected")
+
 
     def update(self, x, y, z, th, speed, turn):
         self.condition.acquire()
@@ -157,22 +146,46 @@ class PublishThread(threading.Thread):
         self.publisher.publish(twistStamped)
 
 
-def getKey(key_timeout):
-    tty.setraw(sys.stdin.fileno())
-    rlist, _, _ = select.select([sys.stdin], [], [], key_timeout)
-    if rlist:
-        key = sys.stdin.read(1)
-    else:
-        key = ''
-    
-    termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
-    return key
 
 
 def vels(speed, turn):
     return "currently:\tspeed %s\tturn %s " % (speed,turn)
 
+joymsg = None    
+def joyCallback(msg):
+    global joymsg
+    joymsg = msg
+
+        
+
+def getSpeedBindingsKey(buttons, button_ind):
+   key = None
+   
+   if button_ind and buttons[button_ind] == 0: # last active button is released
+        key = "button[%d]" % (button_ind) # create a key 
+        button_ind = None    # reset the index
+
+   for num, button in enumerate(buttons):  # look for active buttons    
+      if button: # if a button is pressed
+         button_ind = num # store its id
+         break;
+
+                  
+   return button_ind, key
+
+
+def setArm():
+   rospy.wait_for_service('/mavros/cmd/arming')
+   try:
+       armService = rospy.ServiceProxy('/mavros/cmd/arming', CommandBool)
+       armService(True)
+   except rospy.ServiceException, e:
+       print("Service arm call failed: %s"%e)
+
+
+
 if __name__=="__main__":
+    
     settings = termios.tcgetattr(sys.stdin)
 
     rospy.init_node('uav_teleop_twist_keyboard')
@@ -180,66 +193,72 @@ if __name__=="__main__":
     
     speed = rospy.get_param("~speed", 0.5)
     turn = rospy.get_param("~turn", 1.0)
-    repeat = rospy.get_param("~repeat_rate", 0.0)
+    repeat = rospy.get_param("~repeat_rate", 10.0)
     
     key_timeout = rospy.get_param("~key_timeout", 0.0)
+    
     
     if key_timeout == 0.0:
         key_timeout = None
 
     pub_thread = PublishThread(repeat)
     
+    # Subscribe to joy topic
+    rospy.Subscriber('joy', Joy, joyCallback, queue_size=1)
     
+
+        
     x = 0
     y = 0
     z = 0
     th = 0
     status = 0
+    button_index = None
 
     try:
         pub_thread.wait_for_subscribers()
         pub_thread.update(x, y, z, th, speed, turn)
-       
-        print(msg)
-        print(vels(speed,turn))
-        #r = rospy.Rate(10)
+     
         while(1):
-            key = getKey(key_timeout) 
+           
+            if joymsg is not None:
+                x = joymsg.axes[3]
+                y = joymsg.axes[4]
+                z = joymsg.axes[1]
+                th = joymsg.axes[0]
+                button_index,key = getSpeedBindingsKey(joymsg.buttons, button_index)
+                                
+                if key in speedBindings.keys(): # directional buttons change speed
+                    speed = speed * speedBindings[key][0]
+                    turn = turn * speedBindings[key][1] 
+                    print(vels(speed,turn))                
+                
+                             
+                if key == 'button[1]': #action button circle : arm and offboard
+                    print('arm and offboard')
+                    setArm()         
+                
+                
             
-            if key in moveBindings.keys():
-                x = moveBindings[key][0]
-                y = moveBindings[key][1]
-                z = moveBindings[key][2]
-                th = moveBindings[key][3]
-            elif key in speedBindings.keys():
-                speed = speed * speedBindings[key][0]
-                turn = turn * speedBindings[key][1]
-
-                print(vels(speed,turn))
-                if (status == 14):
-                    print(msg)
-                status = (status + 1) % 15
-            else:
-                # Skip updating cmd_vel if key timeout and robot already
-                # stopped.
-                if key == '' and x == 0 and y == 0 and z == 0 and th == 0:
-                    continue
-                x = 0
-                y = 0
-                z = 0
-                th = 0
-                if (key == '\x03'):
-                    break
- 
+                #action button cross : stop
+                #if joymsg.buttons[0]: #cross
+                #   KeyboardInterrupt               
+                
+                
+                
+               
             pub_thread.update(x, y, z, th, speed, turn)
+        
            
             
             
-
+    except KeyboardInterrupt:
+        print("KeyboardInterrupt has been caught.")
+    
     except Exception as e:
         print(e)
 
     finally:
         pub_thread.stop()
 
-        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
+        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)     
