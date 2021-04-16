@@ -242,10 +242,11 @@ if __name__=="__main__":
         print(msg)
         print(vels(speed,turn))
      
-        while(1):
-           
+        #while(1):
+        while not rospy.is_shutdown():   
+        
             if joymsg is not None:
-                x = joymsg.axes[3]
+                x = -joymsg.axes[3]
                 y = joymsg.axes[4]
                 z = joymsg.axes[1]
                 th = joymsg.axes[0]
@@ -267,6 +268,9 @@ if __name__=="__main__":
                    print('land')
                    setLandMode()
                 
+                if rospy.is_shutdown():
+                   print('shutdown')
+                   break
                              
             pub_thread.update(x, y, z, th, speed, turn)
         

@@ -245,7 +245,8 @@ if __name__=="__main__":
         print(msg)
         print(vels(speed,turn))
         #r = rospy.Rate(10)
-        while(1):
+        #while(1):
+        while not rospy.is_shutdown():
             key = getKey(key_timeout) 
             
             
