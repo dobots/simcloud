@@ -12,7 +12,7 @@ docker run -iPt -d \
     --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
     --volume="$XAUTHORITY:$XAUTHORITY" \
     --env="XAUTHORITY=$XAUTHORITY" \
-    --volume="/home/sjauhri/DoBots_WS/simcloud:/projects" \ # Replace with your simcloud repo path!!!
+    --volume="/home/sjauhri/DoBots_WS/simcloud:/projects" \
     --runtime=nvidia \
     --name="ros_melodic_desktop_px4" \
     ros_melodic_desktop_px4
