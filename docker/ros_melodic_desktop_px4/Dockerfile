@@ -12,7 +12,8 @@ ENV NVIDIA_DRIVER_CAPABILITIES \
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 # Basic installs for Image:
-RUN apt-get update -y
+## (Optional) Update ros packages to the latest version
+RUN apt-get update -y && apt-get upgrade -y
 RUN apt-get install -y --no-install-recommends apt-utils
 RUN apt-get install -y less nano wget psmisc zip build-essential git mercurial
 # mesa packages for non-nvidia users
@@ -23,10 +24,6 @@ RUN apt-get install -y jstest-gtk
 
 # install bluetooth packages
 #RUN apt-get install -y libbluetooth-dev bluez bluetooth
-
-# ROS #
-## (Optional) Update ros packages to the latest version
-# RUN apt-get upgrade -y
 
 ## source ROS:
 ### Fix entrypoint.sh file
