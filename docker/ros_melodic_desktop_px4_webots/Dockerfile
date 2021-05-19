@@ -65,7 +65,7 @@ RUN apt-get install -y libpcl1 ros-melodic-octomap-*
 WORKDIR /PX4
 RUN mkdir src
 WORKDIR /PX4/src
-RUN git clone https://github.com/PX4/avoidance.git
+RUN git clone https://github.com/dobots/PX4-Avoidance.git
 RUN /bin/bash -c '. /ros_entrypoint.sh; catkin_make -C /PX4'
 # Source PX4 catkin workspace in bashrc (this ensures any other catkin workspaces are overlayed)
 RUN echo $'# PX4 catkin workspace\n. /PX4/devel/setup.bash' >> ~/.bashrc
