@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: latin-1 -*-
 
+#debugging script used for tf transfomration investigation 
+
 import rospy
 from time import time
 import tf

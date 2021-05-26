@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+    
+    <!--sensor switch chase based on "sensor_model" value -->
+    <arg name="sensor_model" default="iris_camera"/>
+    <node pkg="tf" type="static_transform_publisher" name="iris_camera_static_tf_broadcaster" args="0 0 0 -1.57079632679 0 3.14159265359 base_link usb_camera::camera_link 100" if="$(eval sensor_model == 'iris_camera')"/>
+    <node pkg="tf" type="static_transform_publisher" name="iris_depth_camera_static_tf_broadcaster" args="0.1 0 0 -1.57 0 -1.57 base_link camera_link 100" if="$(eval sensor_model == 'iris_depth_camera')"/>
+    <node pkg="tf" type="static_transform_publisher" name="iris_front_camera_static_tf_broadcaster" args="0.1 0 0 0 0.349066 0 base_link usb_camera::camera_link 100" if="$(eval sensor_model == 'iris_front_camera')"/>
+    <node pkg="tf" type="static_transform_publisher" name="iris_lidar_static_tf_broadcaster" args="0 0 -0.1 0 0 0 base_link velodyne 100" if="$(eval sensor_model == 'iris_lidar')"/>
+    <node pkg="tf" type="static_transform_publisher" name="iris_rplidar_static_tf_broadcaster" args="0 0 0.1 0 0 0 base_link rplidar_link 100" if="$(eval sensor_model == 'iris_rplidar')"/>
+
+
+    <!--perfrom second static transfrom and bring up rviz -->
+    <node pkg="tf" type="static_transform_publisher" name="$(arg sensor_model)_static_tf_broadcaster_fcu" args="0 0 0 0 0 3.14159265359 fcu_frd fcu 100" />
+    <node name="rviz_uav" pkg="rviz" type="rviz" output="screen" args="-d $(find uav)/cfg/config.rviz" />
+
+</launch>
