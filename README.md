@@ -104,7 +104,7 @@ To run a demonstration of the simulation environment (drone in a fire station), 
 	rosrun teleop_twist_keyboard teleop_twist_keyboard.py
 	```
 
-* Spawn a UAV in a certain configuration, currently available [iris_camera, iris_depth_camera, iris_front_camera, iris_lidar, iris_rplidar]  (TODO: add parameters to spawn multiple robots):
+* Spawn an UAV in a certain configuration, currently available [iris_camera, iris_depth_camera, iris_front_camera, iris_lidar, iris_rplidar]  (TODO: add parameters to spawn multiple robots):
 	```bash
 	roslaunch uav spawn_uav.launch uav_model:=iris_camera
 	``` 
