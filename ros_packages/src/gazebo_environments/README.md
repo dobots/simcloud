@@ -1,0 +1,2 @@
+## How to add an environment
+The gazebo_environments folder acts as a container for all available environments. An environment always is defined in a seperated subfolder with the ending "_description". For convenience the rospackage "evironments" was created, which holds a link to all available environments. To add a new evironment please also add a linked launch file in the "evironments" folder!

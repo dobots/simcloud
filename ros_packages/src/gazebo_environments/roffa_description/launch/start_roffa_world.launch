@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
 
-  <arg name="world_name" default="$(find uav)/gazebo_model/world/roffa.world"/> <!--EDIT YOUR WORLD HERE-->
+  <arg name="world_name" default="$(find roffa_description)/worlds/roffa.world"/> <!--EDIT YOUR WORLD HERE-->
   <arg name="gui" default="true" doc="set false for headless environment " />
   <arg name="paused" default="false"/>
   <arg name="debug" default="false"/>

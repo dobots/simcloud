@@ -28,8 +28,8 @@
         <material>
           <script>
             <name>roffa</name>
-            <uri>model://roffa/materials/scripts</uri>
-            <uri>model://roffa/materials/textures</uri>
+            <uri>model://roffa_description/model/roffa/materials/scripts</uri>
+            <uri>model://roffa_description/model/roffa/materials/textures</uri>
           </script>
         </material>
       </visual>

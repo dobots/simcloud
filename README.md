@@ -68,27 +68,37 @@ To run a demonstration of the simulation environment (drone in a fire station), 
 ### Start the environment:
 * world with simple shapes:
 	```bash
-	roslaunch simple_shapes_description simple_shapes_world.launch
+	roslaunch environments simple_shapes.launch
 	```
 
 * playground world:
 	```bash
-	roslaunch playground_world playground_world.launch
+	roslaunch environments playground.launch
 	```
 
 * collapsed house world:
 	```bash
-	roslaunch collapsed_house_description collapsed_house_world.launch
+	roslaunch environments collapsed_house.launch
 	```
 
 * coolsingel world:
 	```bash
-	roslaunch coolsingel_description coolsingel_world.launch
+	roslaunch environments coolsingel.launch
 	```
 
 * collapsed fire station
 	```bash
-	roslaunch fire_station_description fire_station_world.launch
+	roslaunch environments fire_station.launch
+	```
+
+* parking garage
+	```bash
+	roslaunch environments parking_garage.launch
+	```
+
+* roffa
+	```bash
+	roslaunch environments roffa.launch
 	```
 
 

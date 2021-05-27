@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+
+<include file="$(find simple_shapes_description)/launch/simple_shapes_world.launch">
+</include>
+
+</launch>

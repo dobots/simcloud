@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+
+<include file="$(find collapsed_house_description)/launch/collapsed_house_world.launch">
+</include>
+
+</launch>
