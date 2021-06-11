@@ -18,6 +18,7 @@ docker run -iPt \
     --rm \
     -v /dev/bus/usb:/dev/bus/usb \
     -v /dev/input:/dev/input \
+    -p 8080:8080 \
     --device-cgroup-rule 'a 13:* rwm' \
     --device-cgroup-rule 'a 189:* rwm' \
     --env="DISPLAY=$DISPLAY" \

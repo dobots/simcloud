@@ -92,11 +92,26 @@ RUN wget https://github.com/mavlink/qgroundcontrol/releases/download/v3.5.6/QGro
 RUN apt-get install -y libarchive-tools && bsdtar xfp QGroundControl.AppImage
 # Now you may run the app using ./QGroundControl/qgroundcontrol-start.sh (As a non root user)
 
-### GazeboWeb (TODO) (Optional):
+### GazeboWeb
+#dependencies
 WORKDIR /
-# EXPOSE 8080
-# RUN apt-get install -y nodejs libjansson-dev libboost-dev imagemagick libtinyxml-dev astyle
-# RUN apt-get install -y ant openjdk-8-jdk openjdk-8-jre
+EXPOSE 8080
+RUN apt-get update && apt-get install -y libjansson-dev libboost-dev imagemagick libtinyxml-dev mercurial cmake build-essential libgts-dev
+
+#instalation of nvm (older versions of nodejs and npm are required)
+ENV NVM_DIR /usr/local/nvm
+RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
+ENV NODE_VERSION v8.9.0
+RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
+ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
+ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
+
+#build of gzweb
+RUN git clone https://github.com/osrf/gzweb
+WORKDIR /gzweb
+RUN git checkout gzweb_1.4.1
+RUN /bin/bash -c "source /usr/share/gazebo/setup.sh && npm run deploy --- -m"
+
 
 # Create new simcloud user and simcloud group (id 1000) for running the container
 RUN addgroup --gid 1000 simcloud_group
