@@ -112,6 +112,8 @@ WORKDIR /gzweb
 RUN git checkout gzweb_1.4.1
 RUN /bin/bash -c "source /usr/share/gazebo/setup.sh && npm run deploy --- -m"
 
+#ensure the right entry point for the docker container
+WORKDIR /
 
 # Create new simcloud user and simcloud group (id 1000) for running the container
 RUN addgroup --gid 1000 simcloud_group
