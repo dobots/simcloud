@@ -106,11 +106,14 @@ RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use
 ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
 ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
 
+#add db of used models requirment of gzweb
+COPY ./gzweb_model_db/ /gzweb_db/
+
 #build of gzweb
 RUN git clone https://github.com/osrf/gzweb
 WORKDIR /gzweb
 RUN git checkout gzweb_1.4.1
-RUN /bin/bash -c "source /usr/share/gazebo/setup.sh && npm run deploy --- -m"
+RUN /bin/bash -c "source /usr/share/gazebo/setup.sh && export GAZEBO_MODEL_PATH=/gzweb_db:$GAZEBO_MODEL_PATH && npm run deploy --- -m local -t"
 
 #ensure the right entry point for the docker container
 WORKDIR /
