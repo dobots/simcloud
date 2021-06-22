@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+
+<include file="$(find parking_garage_description)/launch/parking_garage_world.launch">
+</include>
+
+</launch>

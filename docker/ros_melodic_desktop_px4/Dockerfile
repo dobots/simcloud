@@ -13,6 +13,7 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 # Basic installs for Image:
 ## (Optional) Update ros packages to the latest version
+RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
 RUN apt-get update -y && apt-get upgrade -y
 RUN apt-get install -y --no-install-recommends apt-utils
 RUN apt-get install -y less nano wget psmisc zip build-essential git mercurial

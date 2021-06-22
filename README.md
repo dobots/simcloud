@@ -68,27 +68,37 @@ To run a demonstration of the simulation environment (drone in a fire station), 
 ### Start the environment:
 * world with simple shapes:
 	```bash
-	roslaunch simple_shapes_description simple_shapes_world.launch
+	roslaunch environments simple_shapes.launch
 	```
 
 * playground world:
 	```bash
-	roslaunch playground_world playground_world.launch
+	roslaunch environments playground.launch
 	```
 
 * collapsed house world:
 	```bash
-	roslaunch collapsed_house_description collapsed_house_world.launch
+	roslaunch environments collapsed_house.launch
 	```
 
 * coolsingel world:
 	```bash
-	roslaunch coolsingel_description coolsingel_world.launch
+	roslaunch environments coolsingel.launch
 	```
 
 * collapsed fire station
 	```bash
-	roslaunch fire_station_description fire_station_world.launch
+	roslaunch environments fire_station.launch
+	```
+
+* parking garage
+	```bash
+	roslaunch environments parking_garage.launch
+	```
+
+* roffa
+	```bash
+	roslaunch environments roffa.launch
 	```
 
 
@@ -104,9 +114,9 @@ To run a demonstration of the simulation environment (drone in a fire station), 
 	rosrun teleop_twist_keyboard teleop_twist_keyboard.py
 	```
 
-* Spawn a UAV (TODO: add parameters to spawn multiple robots):
+* Spawn an UAV in a certain configuration, currently available [iris_camera, iris_depth_camera, iris_front_camera, iris_lidar, iris_rplidar]  (TODO: add parameters to spawn multiple robots):
 	```bash
-	roslaunch uav spawn_uav.launch
+	roslaunch uav spawn_uav.launch uav_model:=iris_camera
 	``` 
 	You can command the UAV (position control) using the scripts in `pos_control`. For example, in a new terminal, run:
 	```bash

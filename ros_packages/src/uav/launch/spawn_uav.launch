@@ -22,7 +22,9 @@
     
        
     <!-- launch static broadcasters for the UAV model -->
-    <include file="$(find uav)/launch/$(arg uav_model)_tf.launch"></include>
+    <include file="$(find uav)/launch/model_tf.launch">
+        <arg name="sensor_model" value="$(arg uav_model)" />
+    </include>
     
 	<!-- ADD AR TRACK FOLLOWING -->
     <!--<include file="$(find uav)/launch/start_ar_track_alvar.launch"></include>  -->

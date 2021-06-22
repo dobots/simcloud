@@ -1,0 +1,68 @@
+<?xml version="1.0" ?>
+<sdf version="1.4">
+  <model name="usb_camera">
+    <link name="camera_link">
+      <inertial>
+        <pose>0.01 0.025 0.025 0 -0 0</pose>
+        <mass>0.05</mass>
+        <inertia>
+          <ixx>4.15e-6</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>2.407e-6</iyy>
+          <iyz>0</iyz>
+          <izz>2.407e-6</izz>
+        </inertia>
+      </inertial>
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>0.02 0.05 0.05</size>
+          </box>
+        </geometry>
+      </visual>
+      <sensor type="camera" name="usb_camera">
+        <always_on>true</always_on>
+        <update_rate>24</update_rate>
+        <visualize>false</visualize>
+        <camera>
+          <horizontal_fov>1.38</horizontal_fov>
+          <image>
+            <format>R8G8B8</format>
+            <width>1920</width>
+            <height>1080</height>
+          </image>
+          <clip>
+	      <near>0.02</near>
+          <far>300</far>
+          </clip>
+          <lens>
+            <type>gnomonical</type>
+            <scale_to_hfov>true</scale_to_hfov>
+            <cutoff_angle>1.5707</cutoff_angle>
+            <env_texture_size>512</env_texture_size>
+          </lens>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.15</mean>
+            <stddev>0.007</stddev>
+          </noise>
+        </camera>
+	    <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+	      <alwaysOn>true</alwaysOn>
+	      <updateRate>0.0</updateRate>
+	      <cameraName>camera</cameraName>
+	      <imageTopicName>image_raw</imageTopicName>
+	      <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+	      <frameName>camera_link</frameName>
+	      <hackBaseline>0.07</hackBaseline>
+	      <distortionK1>0.0</distortionK1>
+	      <distortionK2>0.0</distortionK2>
+	      <distortionK3>0.0</distortionK3>
+	      <distortionT1>0.0</distortionT1>
+	      <distortionT2>0.0</distortionT2>
+	    </plugin>
+      </sensor>
+    </link>
+  </model>
+</sdf>

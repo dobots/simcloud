@@ -9,7 +9,7 @@ project(collapsed_house_description)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   gazebo_ros
-    geometry_msgs
+  geometry_msgs
   nav_msgs
   roscpp
   rospy

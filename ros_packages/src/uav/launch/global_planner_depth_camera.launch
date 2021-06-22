@@ -1,0 +1,26 @@
+<launch>
+
+    <arg name="pointcloud_topics" default="[/camera/depth/points]"/>
+    <arg name="frame_id"    default="map" /> <!-- origin -->
+    <arg name="camera_frame_id" default="camera_link"/>
+    <arg name="start_pos_x" default="0" />
+    <arg name="start_pos_y" default="0" />
+    <arg name="start_pos_z" default="1.5" />
+    <arg name="gui" default="true"/>
+    <arg name="rviz" default="true"/>
+
+    <!-- Global planner -->
+    <include file="$(find global_planner)/launch/global_planner_octomap.launch" >
+        <arg name="pointcloud_topics" value="$(arg pointcloud_topics)" />
+        <arg name="frame_id" value="$(arg frame_id)" />
+        <arg name="camera_frame_id" value="$(arg camera_frame_id)" />
+        <arg name="start_pos_x" value="$(arg start_pos_x)" />
+        <arg name="start_pos_y" value="$(arg start_pos_y)" />
+        <arg name="start_pos_z" value="$(arg start_pos_z)" />
+    </include>>
+
+    <!-- Copy transform from world frame to frame named local_origin for visualization -->
+    <node pkg="tf" type="static_transform_publisher" name="static_tf_broadcaster_global_planner" args="0 0 0 0 0 0 local_origin map 100" />
+
+    <node if="$(arg rviz)" pkg="rviz" type="rviz" output="screen" name="rviz_global_planner" args="-d $(find global_planner)/resource/global_planner.rviz" />
+</launch>

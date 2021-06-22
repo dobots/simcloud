@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+
+<include file="$(find coolsingel_description)/launch/coolsingel_world.launch">
+</include>
+
+</launch>
