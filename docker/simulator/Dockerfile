@@ -118,9 +118,28 @@ RUN /bin/bash -c "source /usr/share/gazebo/setup.sh && export GAZEBO_MODEL_PATH=
 #ensure the right entry point for the docker container
 WORKDIR /
 
+#install wetty
+ENV NVM_DIR /usr/local/nvm
+RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
+ENV NODE_VERSION v14.16.1
+RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
+ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
+ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
+RUN npm install -g yarn
+RUN yarn global add wetty
+EXPOSE 3000
+
+#enable ssh into the container
+RUN apt-get update && apt-get install -y openssh-server
+RUN service ssh start
+EXPOSE 22
+CMD ["/usr/sbin/sshd","-D"]
+
+
 # Create new simcloud user and simcloud group (id 1000) for running the container
 RUN addgroup --gid 1000 simcloud_group
 RUN adduser --disabled-password --gecos '' --uid 1000 --gid 1000 simcloud_user
+RUN useradd -d /home/term -m -s /bin/bash term
 # Allow simcloud_user to use sudo with no password
 RUN usermod -aG sudo simcloud_user
 RUN echo "simcloud_user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
@@ -135,6 +154,11 @@ RUN echo $'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:/PX4/src/avoidance/avoi
 # (Optional) Add ros_packages and UAV sourcing to bashrc as well:
 RUN echo ". /projects/ros_packages/devel/setup.bash" >> ~/.bashrc
 RUN echo ". \$(rospack find uav)/scripts/init_uav_px4.sh > /dev/null" >> ~/.bashrc
+# Add nvm to bashrc as well:
+RUN echo "export NVM_DIR="/usr/local/nvm"" >> ~/.bashrc
+RUN echo "[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"" >> ~/.bashrc
+
+
 
 # Ensure image runs bash
 CMD ["bash"]
