@@ -2,17 +2,25 @@ version: '3.5'
 services:
   simulator:
     image: simulator
-    deploy:
-      resources:
-        limits:
-          memory: "2G"
+#    deploy:
+#      resources:
+#        limits:
+#          memory: "2G"
+    ports:
+    - "2222:22"
     labels:
     - traefik.enable=true
 #    - traefik.http.routers.simulator.rule=Host(`gz.${user_id}.${sim_no}.flight1.dodedodo.com`)
-    - traefik.http.routers.simulator.rule=Host(`gz.ole.one.flight1.dodedodo.com`)
-    - traefik.http.routers.simulator.tls=true
-    - traefik.http.routers.simulator.tls.certresolver=lets-encrypt
-    - traefik.http.services.simulator.loadbalancer.server.port=8080
+    - traefik.http.routers.simulator_gzweb.rule=Host(`gz.ole.one.flight1.dodedodo.com`)
+    - traefik.http.routers.simulator_gzweb.tls=true
+    - traefik.http.routers.simulator_gzweb.tls.certresolver=lets-encrypt
+    - traefik.http.routers.simulator_gzweb.service=simulator_gzweb_s
+    - traefik.http.services.simulator_gzweb_s.loadbalancer.server.port=8080
+    - traefik.http.routers.simulator_webterminal.rule=Host(`term.ole.one.flight1.dodedodo.com`)
+    - traefik.http.routers.simulator_webterminal.tls=true
+    - traefik.http.routers.simulator_webterminal.tls.certresolver=lets-encrypt
+    - traefik.http.routers.simulator_webterminal.service=simulator_webterminal_s
+    - traefik.http.services.simulator_webterminal_s.loadbalancer.server.port=3000    
     tty: true  
     volumes:
     - ./../../ros_packages:/projects
