@@ -4,7 +4,7 @@
  <arg name="world_name" value="$(find collapsed_house_description)/worlds/collapsed_house.world"/>
 
 <!--EDIT YOUR WORLD HERE-->
-  <arg name="gui" default="true" doc="set false for headless environment " />
+  <arg name="gui" default="false" doc="set false for headless environment " />
   <arg name="paused" default="false"/>
   <arg name="debug" default="false"/>
   <arg name="headless" default="false"/>
