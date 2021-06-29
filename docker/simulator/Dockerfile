@@ -143,10 +143,10 @@ CMD ["/usr/sbin/sshd","-D"]
 # Create new simcloud user and simcloud group (id 1000) for running the container
 RUN addgroup --gid 1000 simcloud_group
 RUN adduser --disabled-password --gecos '' --uid 1000 --gid 1000 simcloud_user
-RUN useradd -d /home/term -m -s /bin/bash term
 # Allow simcloud_user to use sudo with no password
 RUN usermod -aG sudo simcloud_user
 RUN echo "simcloud_user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+RUN  echo 'simcloud_user:dobots_rocks' | chpasswd
 USER simcloud_user
 ## source ROS in bashrc for new user as well:
 RUN echo ". /ros_entrypoint.sh" >> ~/.bashrc
@@ -161,8 +161,8 @@ RUN echo ". \$(rospack find uav)/scripts/init_uav_px4.sh > /dev/null" >> ~/.bash
 # Add nvm to bashrc as well:
 RUN echo "export NVM_DIR="/usr/local/nvm"" >> ~/.bashrc
 RUN echo "[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"" >> ~/.bashrc
+USER root
 
 
-
-# Ensure image runs bash
-CMD ["bash"]
+# Ensure image runs bash UPDATE is disabled due to the web terminal
+#CMD ["bash"]

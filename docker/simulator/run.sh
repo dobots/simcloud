@@ -16,9 +16,13 @@
 
 docker run -iPt \
     --rm \
+    -d \
     -v /dev/bus/usb:/dev/bus/usb \
     -v /dev/input:/dev/input \
     -p 8080:8080 \
+    -p 4000:4000 \
+    -p 80:80 \
+    -p 2222:22 \
     --device-cgroup-rule 'a 13:* rwm' \
     --device-cgroup-rule 'a 189:* rwm' \
     --env="DISPLAY=$DISPLAY" \
@@ -30,4 +34,3 @@ docker run -iPt \
     --runtime=nvidia \
     --name="simulator" \
     simulator \
-    bash
