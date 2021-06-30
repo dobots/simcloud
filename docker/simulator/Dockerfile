@@ -133,6 +133,7 @@ RUN npm install -g yarn
 RUN yarn global add wetty
 EXPOSE 3000
 COPY ./web_terminal_scripts/ /web_terminal_scripts/
+RUN cd web_terminal_scripts && chmod +x start_web_terminal.sh
 
 #enable ssh into the container
 RUN apt-get update && apt-get install -y openssh-server
