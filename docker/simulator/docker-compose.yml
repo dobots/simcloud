@@ -1,26 +1,23 @@
 version: '3.5'
 services:
-  simulator:
+  simulator_${user_id}_${sim_no}:
     image: simulator
 #    deploy:
 #      resources:
 #        limits:
 #          memory: "2G"
-    ports:
-    - "2222:22"
     labels:
     - traefik.enable=true
-#    - traefik.http.routers.simulator.rule=Host(`gz.${user_id}.${sim_no}.flight1.dodedodo.com`)
-    - traefik.http.routers.simulator_gzweb.rule=Host(`gz.ole.one.flight1.dodedodo.com`)
-    - traefik.http.routers.simulator_gzweb.tls=true
-    - traefik.http.routers.simulator_gzweb.tls.certresolver=lets-encrypt
-    - traefik.http.routers.simulator_gzweb.service=simulator_gzweb_s
-    - traefik.http.services.simulator_gzweb_s.loadbalancer.server.port=8080
-    - traefik.http.routers.simulator_webterminal.rule=Host(`term.ole.one.flight1.dodedodo.com`)
-    - traefik.http.routers.simulator_webterminal.tls=true
-    - traefik.http.routers.simulator_webterminal.tls.certresolver=lets-encrypt
-    - traefik.http.routers.simulator_webterminal.service=simulator_webterminal_s
-    - traefik.http.services.simulator_webterminal_s.loadbalancer.server.port=3000    
+    - traefik.http.routers.gzweb_${user_id}_${sim_no}.rule=Host(`gz.${user_id}.${sim_no}.flight1.dodedodo.com`)
+    - traefik.http.routers.gzweb_${user_id}_${sim_no}.tls=true
+    - traefik.http.routers.gzweb_${user_id}_${sim_no}.tls.certresolver=lets-encrypt
+    - traefik.http.routers.gzweb_${user_id}_${sim_no}.service=gzweb_service_${user_id}_${sim_no}
+    - traefik.http.services.gzweb_service_${user_id}_${sim_no}.loadbalancer.server.port=8080
+    - traefik.http.routers.webterminal_${user_id}_${sim_no}.rule=Host(`term.${user_id}.${sim_no}.flight1.dodedodo.com`)
+    - traefik.http.routers.webterminal_${user_id}_${sim_no}.tls=true
+    - traefik.http.routers.webterminal_${user_id}_${sim_no}.tls.certresolver=lets-encrypt
+    - traefik.http.routers.webterminal_${user_id}_${sim_no}.service=webterminal_service_${user_id}_${sim_no}
+    - traefik.http.services.webterminal_service_${user_id}_${sim_no}.loadbalancer.server.port=3000    
     tty: true  
     volumes:
     - ./../../ros_packages:/projects
