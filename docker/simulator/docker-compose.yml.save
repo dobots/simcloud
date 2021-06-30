@@ -1,0 +1,24 @@
+version: '3.5'
+services:
+  simulator:
+    image: simulator
+    deploy:
+      resources:
+        limits:
+          memory: "2G"
+    labels:
+    - traefik.enable=true
+#    - traefik.http.routers.simulator.rule=Host(`gz.${user_id}.${sim_no}.flight1.dodedodo.com`)
+    - traefik.http.routers.simulator.rule=Host(`gz.ole.one.flight1.dodedodo.com`)
+    - traefik.http.routers.simulator.tls=true
+    - traefik.http.routers.simulator.tls.certresolver=lets-encrypt
+    - traefik.http.services.simulator.loadbalancer.server.port=8080
+   
+    tty: true  
+    volumes:
+    - ./../../ros_packages:/projects
+   
+networks:
+  default:
+    name: express-simcloud_web
+      
