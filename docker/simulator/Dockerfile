@@ -132,8 +132,8 @@ ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
 RUN npm install -g yarn
 RUN yarn global add wetty
 EXPOSE 3000
-COPY ./web_terminal_scripts/ /web_terminal_scripts/
-RUN cd web_terminal_scripts && chmod +x start_web_terminal.sh
+COPY ./web_scripts/ /web_scripts/
+RUN cd web_scripts && chmod +x start_web_terminal.sh start_gzweb.sh
 
 #enable ssh into the container
 RUN apt-get update && apt-get install -y openssh-server sshpass
