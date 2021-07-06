@@ -17,6 +17,7 @@ services:
     - traefik.http.routers.webterminal_${user_id}_${sim_no}.tls=true
     - traefik.http.routers.webterminal_${user_id}_${sim_no}.tls.certresolver=lets-encrypt
     - traefik.http.routers.webterminal_${user_id}_${sim_no}.service=webterminal_service_${user_id}_${sim_no}
+   # - traefik.http.routers.webterminal_${user_id}_${sim_no}.middlewares=traefik-forward-auth
     - traefik.http.services.webterminal_service_${user_id}_${sim_no}.loadbalancer.server.port=3000    
     tty: true  
     volumes:
@@ -26,3 +27,4 @@ networks:
   default:
     name: express-simcloud_web
       
+
