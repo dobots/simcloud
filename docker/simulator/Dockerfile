@@ -164,6 +164,10 @@ RUN echo ". \$(rospack find uav)/scripts/init_uav_px4.sh > /dev/null" >> ~/.bash
 # Add nvm to bashrc as well:
 RUN echo "export NVM_DIR="/usr/local/nvm"" >> ~/.bashrc
 RUN echo "[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"" >> ~/.bashrc
+# clean up the terminal for wetty
+RUN echo "cd /" >> ~/.bashrc
+RUN echo "clear" >> ~/.bashrc
+# change user to enable wetty launch from a docker container
 USER root
 
 
