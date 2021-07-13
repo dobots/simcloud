@@ -151,6 +151,7 @@ RUN echo "simcloud_user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 RUN  echo 'simcloud_user:dobots_rocks' | chpasswd
 USER simcloud_user
 ## source ROS in bashrc for new user as well:
+RUN echo "export ROS_DISTRO=melodic" >> ~/.bashrc
 RUN echo ". /ros_entrypoint.sh" >> ~/.bashrc
 ## source Gazebo in bashrc:
 RUN echo ". /usr/share/gazebo/setup.sh" >> ~/.bashrc
@@ -158,7 +159,7 @@ RUN echo ". /usr/share/gazebo/setup.sh" >> ~/.bashrc
 RUN echo $'# PX4 catkin workspace\n. /PX4/devel/setup.bash' >> ~/.bashrc
 RUN echo $'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:/PX4/src/avoidance/avoidance/sim/models:/PX4/src/avoidance/avoidance/sim/worlds\n' >> ~/.bashrc
 # (Optional) Add ros_packages and UAV sourcing to bashrc as well:
-RUN echo ". /projects/ros_packages/devel/setup.bash" >> ~/.bashrc
+RUN echo ". /user_data/catkin_ws/devel/setup.bash" >> ~/.bashrc
 RUN echo ". \$(rospack find uav)/scripts/init_uav_px4.sh > /dev/null" >> ~/.bashrc
 # Add nvm to bashrc as well:
 RUN echo "export NVM_DIR="/usr/local/nvm"" >> ~/.bashrc
