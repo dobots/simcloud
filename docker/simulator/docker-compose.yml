@@ -8,21 +8,21 @@ services:
 #          memory: "2G"
     labels:
     - traefik.enable=true
-    - traefik.http.routers.gzweb_${user_id}_${sim_no}.rule=Host(`gz.${user_id}.${sim_no}.flight1.dodedodo.com`)
-    - traefik.http.routers.gzweb_${user_id}_${sim_no}.tls=true
-    - traefik.http.routers.gzweb_${user_id}_${sim_no}.tls.certresolver=lets-encrypt
-    - traefik.http.routers.gzweb_${user_id}_${sim_no}.service=gzweb_service_${user_id}_${sim_no}
-    - traefik.http.services.gzweb_service_${user_id}_${sim_no}.loadbalancer.server.port=8080
-    - traefik.http.routers.webterminal_${user_id}_${sim_no}.rule=Host(`term.${user_id}.${sim_no}.flight1.dodedodo.com`)
-    - traefik.http.routers.webterminal_${user_id}_${sim_no}.tls=true
-    - traefik.http.routers.webterminal_${user_id}_${sim_no}.tls.certresolver=lets-encrypt
-    - traefik.http.routers.webterminal_${user_id}_${sim_no}.service=webterminal_service_${user_id}_${sim_no}
+    - traefik.http.routers.gzweb_${user_id:-reka}_${sim_no:-one}.rule=Host(`gz.${user_id:-reka}.${sim_no:-one}.${domain_name:-flight1.dodedodo.com}`)
+    - traefik.http.routers.gzweb_${user_id:-reka}_${sim_no:-one}.tls=true
+    - traefik.http.routers.gzweb_${user_id:-reka}_${sim_no:-one}.tls.certresolver=lets-encrypt
+    - traefik.http.routers.gzweb_${user_id:-reka}_${sim_no:-one}.service=gzweb_service_${user_id:-reka}_${sim_no:-one}
+    - traefik.http.services.gzweb_service_${user_id:-reka}_${sim_no:-one}.loadbalancer.server.port=8080
+    - traefik.http.routers.webterminal_${user_id:-reka}_${sim_no:-one}.rule=Host(`term.${user_id:-reka}.${sim_no:-one}.${domain_name:-flight1.dodedodo.com}`)
+    - traefik.http.routers.webterminal_${user_id:-reka}_${sim_no:-one}.tls=true
+    - traefik.http.routers.webterminal_${user_id:-reka}_${sim_no:-one}.tls.certresolver=lets-encrypt
+    - traefik.http.routers.webterminal_${user_id:-reka}_${sim_no:-one}.service=webterminal_service_${user_id:-reka}_${sim_no:-one}
    # - traefik.http.routers.webterminal_${user_id}_${sim_no}.middlewares=traefik-forward-auth
-    - traefik.http.services.webterminal_service_${user_id}_${sim_no}.loadbalancer.server.port=3000    
+    - traefik.http.services.webterminal_service_${user_id:-reka}_${sim_no:-one}.loadbalancer.server.port=3000    
     tty: true  
     volumes:
     - ./../../ros_packages:/projects
-   
+
 networks:
   default:
     name: express-simcloud_web
