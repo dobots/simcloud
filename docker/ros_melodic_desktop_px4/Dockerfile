@@ -44,9 +44,9 @@ RUN apt-get install -y ros-melodic-move-base ros-melodic-global-planner ros-melo
 RUN apt-get remove modemmanager -y
 RUN apt-get install -y cmake genromfs ninja-build xxd vim-gtk exiftool
 RUN apt-get install -y python3-pip
-RUN pip3 install empy toml numpy pyros-genmsg jinja2 packaging pyserial pyyaml
+RUN pip3 install empy toml numpy pyros-genmsg jinja2 packaging pyserial pyyaml jsonschema
 # gstreamer for PX4-AutoPilot and QGroundControl
-RUN apt-get install -y gstreamer1.0-plugins-bad gstreamer1.0-libav gstreamer1.0-gl libgstreamer-plugins-base1.0-dev
+RUN apt-get update && apt-get install -y gstreamer1.0-plugins-bad gstreamer1.0-libav gstreamer1.0-gl libgstreamer-plugins-base1.0-dev
 # (Optional) RUN apt-get install -y qtcreator
 
 #### (Optional) Install FastRTPS 1.7.1 and FastCDR-1.0.8
