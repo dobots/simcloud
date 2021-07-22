@@ -35,6 +35,28 @@ RUN echo ". /usr/share/gazebo/setup.sh" >> ~/.bashrc
 
 ## Additional installs:
 
+# install autoware
+RUN apt-get update
+RUN sudo apt install -y python-catkin-pkg python-rosdep ros-$ROS_DISTRO-catkin
+RUN sudo apt install -y python3-pip python3-colcon-common-extensions python3-setuptools python3-vcstool
+RUN pip3 install -U setuptools
+
+RUN mkdir -p autoware.ai/src
+WORKDIR /autoware.ai
+RUN wget -O autoware.ai.repos "https://raw.githubusercontent.com/Autoware-AI/autoware.ai/1.12.0/autoware.ai.repos"
+RUN vcs import src < autoware.ai.repos
+
+#RUN source /opt/ros/melodic/setup.sh
+#RUN source /ros_entrypoint.sh
+RUN rosdep update
+RUN rosdep install -y --from-paths src --ignore-src --rosdistro $ROS_DISTRO
+
+#RUN apt-get install ros-melodic-jsk-recognition-msgs ros-melodic-nmea-msgs ros-melodic-jsk-rviz-plugins ros-melodic-tvm-vendor ros-melodic-lanelet2-core ros-melodic-nmea-navsat-driver ros-melodic-lanelet2-io ros-melodic-lanelet2-maps ros-melodic-lanelet2-projection ros-melodic-lanelet2-routing 
+
+RUN . /opt/ros/melodic/setup.bash;  colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+WORKDIR /
+
+
 ### General ROS packages
 RUN apt-get update && apt-get install -y ros-melodic-teleop-twist-keyboard ros-melodic-teleop-twist-joy ros-melodic-map-server ros-melodic-amcl ros-melodic-gmapping
 RUN apt-get install -y ros-melodic-move-base ros-melodic-global-planner ros-melodic-teb-local-planner
@@ -86,6 +108,7 @@ RUN chmod -R a+rwx /PX4/src/
 
 ### Install QGroundControl:
 WORKDIR /
+RUN apt-get update
 RUN mkdir QGroundControl
 WORKDIR QGroundControl
 RUN wget https://github.com/mavlink/qgroundcontrol/releases/download/v3.5.6/QGroundControl.AppImage
@@ -167,11 +190,17 @@ RUN echo "[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"" >> ~/.bashrc
 # clean up the terminal for wetty
 RUN echo "cd /" >> ~/.bashrc
 RUN echo "clear" >> ~/.bashrc
+
+
+
 # change user to enable wetty launch from a docker container
 USER root
 
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> 61d36ec68f4f120d5e7ff4787b1479938c190003
 # Ensure image runs bash UPDATE is disabled due to the web terminal
 #CMD ["bash"]
