@@ -171,5 +171,7 @@ RUN echo "clear" >> ~/.bashrc
 USER root
 
 
+
+
 # Ensure image runs bash UPDATE is disabled due to the web terminal
 #CMD ["bash"]
