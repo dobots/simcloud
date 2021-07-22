@@ -196,11 +196,5 @@ RUN echo "clear" >> ~/.bashrc
 # change user to enable wetty launch from a docker container
 USER root
 
-<<<<<<< HEAD
-
-
-
-=======
->>>>>>> 61d36ec68f4f120d5e7ff4787b1479938c190003
 # Ensure image runs bash UPDATE is disabled due to the web terminal
 #CMD ["bash"]
