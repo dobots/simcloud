@@ -19,6 +19,7 @@ docker run -iPt \
     -d \
     -v /dev/bus/usb:/dev/bus/usb \
     -v /dev/input:/dev/input \
+    -p 8001:8001 \
     -p 8080:8080 \
     -p 4000:4000 \
     -p 80:80 \

@@ -156,7 +156,7 @@ RUN npm install -g yarn
 RUN yarn global add wetty
 EXPOSE 3000
 COPY ./web_scripts/ /web_scripts/
-RUN cd web_scripts && chmod +x start_web_terminal.sh start_gzweb.sh
+RUN cd web_scripts && chmod +x start_web_terminal.sh start_gzweb.sh start_rvizweb.sh
 
 #enable ssh into the container
 RUN apt-get update && apt-get install -y openssh-server sshpass
@@ -164,6 +164,19 @@ RUN service ssh start
 EXPOSE 22
 CMD ["/usr/sbin/sshd","-D"]
 
+#install rvizweb
+ENV NVM_DIR /usr/local/nvm
+RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
+ENV NODE_VERSION v8.17.0
+RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
+ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
+ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
+WORKDIR /rvizweb_ws
+ARG rvizweb_branch=master
+RUN git clone https://github.com/osrf/rvizweb/ src/rvizweb -b ${rvizweb_branch}
+RUN rosdep install --from-paths src --ignore-src -r -y
+RUN . /opt/ros/melodic/setup.sh && catkin_make install
+WORKDIR /
 
 # Create new simcloud user and simcloud group (id 1000) for running the container
 RUN addgroup --gid 1000 simcloud_group

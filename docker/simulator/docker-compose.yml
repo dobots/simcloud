@@ -8,23 +8,33 @@ services:
 #          memory: "2G"
     labels:
     - traefik.enable=true
+    # gzweb
     - traefik.http.routers.gzweb_${user_id:-reka}_${sim_no:-one}.rule=Host(`gz.${user_id:-reka}.${sim_no:-one}.${domain_name:-flight1.dodedodo.com}`)
     - traefik.http.routers.gzweb_${user_id:-reka}_${sim_no:-one}.tls=true
     - traefik.http.routers.gzweb_${user_id:-reka}_${sim_no:-one}.tls.certresolver=lets-encrypt
     - traefik.http.routers.gzweb_${user_id:-reka}_${sim_no:-one}.service=gzweb_service_${user_id:-reka}_${sim_no:-one}
+    # turn of autodetection of header content type to remove gzweb gui bug
+    - traefik.http.routers.gzweb_${user_id:-reka}_${sim_no:-one}.middlewares=autodetect
+    - traefik.http.middlewares.autodetect.contenttype.autodetect=false
     - traefik.http.services.gzweb_service_${user_id:-reka}_${sim_no:-one}.loadbalancer.server.port=8080
+    # web terminal
     - traefik.http.routers.webterminal_${user_id:-reka}_${sim_no:-one}.rule=Host(`term.${user_id:-reka}.${sim_no:-one}.${domain_name:-flight1.dodedodo.com}`)
     - traefik.http.routers.webterminal_${user_id:-reka}_${sim_no:-one}.tls=true
     - traefik.http.routers.webterminal_${user_id:-reka}_${sim_no:-one}.tls.certresolver=lets-encrypt
     - traefik.http.routers.webterminal_${user_id:-reka}_${sim_no:-one}.service=webterminal_service_${user_id:-reka}_${sim_no:-one}
    # - traefik.http.routers.webterminal_${user_id}_${sim_no}.middlewares=traefik-forward-auth
-    - traefik.http.services.webterminal_service_${user_id:-reka}_${sim_no:-one}.loadbalancer.server.port=3000    
-    tty: true  
+    - traefik.http.services.webterminal_service_${user_id:-reka}_${sim_no:-one}.loadbalancer.server.port=3000
+    # rvizweb
+    - traefik.http.routers.rvizweb_${user_id:-reka}_${sim_no:-one}.rule=Host(`rviz.${user_id:-reka}.${sim_no:-one}.${domain_name:-flight1.dodedodo.com}`)
+    - traefik.http.routers.rvizweb_${user_id:-reka}_${sim_no:-one}.tls=true
+    - traefik.http.routers.rvizweb_${user_id:-reka}_${sim_no:-one}.tls.certresolver=lets-encrypt
+    - traefik.http.routers.rvizweb_${user_id:-reka}_${sim_no:-one}.service=rvizweb_service_${user_id:-reka}_${sim_no:-one}
+    - traefik.http.services.rvizweb_service_${user_id:-reka}_${sim_no:-one}.loadbalancer.server.port=8001
+    tty: true
     volumes:
-    - ./../../ros_packages:/projects
+    - /home/ubuntu/data/keycloak-${user_id:-reka}/files:/user_data
 
 networks:
   default:
     name: express-simcloud_web
-      
 
