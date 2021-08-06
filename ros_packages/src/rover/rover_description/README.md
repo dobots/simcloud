@@ -27,3 +27,10 @@ These contain a set up for a tf broadcaster node.
 ## media
 The material for the artag is defined here. 
 
+## gzweb
+In order for the model to work with gzweb a .SDF of the rover was generated.
+1) use `rosrun xacro xacro` to generate a .URDF file
+2) use `gz sdp -p filename.urdf > filename.sdf` to generate a .SDF file
+3) set the model.config to use the sdf file
+
+Surface textures/logos seem to break the sdf conversion, thus they should be uncommented beforehand 

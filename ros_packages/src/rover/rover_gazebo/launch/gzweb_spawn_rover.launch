@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="robot_name" default="rover_cart"/>
+  <arg name="x" default="0.0"/>
+  <arg name="y" default="0.0"/>
+  <arg name="z" default="0.2"/>
+  <arg name="roll" default="0.0"/>
+  <arg name="pitch" default="0.0"/>
+  <arg name="yaw" default="3.14"/>
+
+  <arg name="rviz" default="false"/>
+  <!-- Show in Rviz -->
+  <node if="$(arg rviz)" name="rviz" pkg="rviz" type="rviz" args="-d $(find rover_gazebo)/rviz/rover.rviz" required="false" output="screen"/>
+
+  <param name="robot_description" command="$(find xacro)/xacro $(find rover_description)/urdf/base_rover_cart.urdf.xacro" />
+
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+    <param name="publish_frequency" value="30.0"/>
+  </node>
+
+  <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher">
+    <param name="rate" value="30.0"/>
+    <param name="use_gui" value="false"/>
+  </node>
+
+  <node pkg="gazebo_ros" type="spawn_model" name="spawn_rover" args="-file $(find rover_description)/base_rover_cart.sdf -sdf -model $(arg robot_name) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)"/>
+
+</launch>
