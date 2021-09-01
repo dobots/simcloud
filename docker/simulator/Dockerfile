@@ -36,24 +36,24 @@ RUN echo ". /usr/share/gazebo/setup.sh" >> ~/.bashrc
 ## Additional installs:
 
 # install autoware
-RUN apt-get update
-RUN sudo apt install -y python-catkin-pkg python-rosdep ros-$ROS_DISTRO-catkin
-RUN sudo apt install -y python3-pip python3-colcon-common-extensions python3-setuptools python3-vcstool
-RUN pip3 install -U setuptools
+#RUN apt-get update
+#RUN sudo apt install -y python-catkin-pkg python-rosdep ros-$ROS_DISTRO-catkin
+#RUN sudo apt install -y python3-pip python3-colcon-common-extensions python3-setuptools python3-vcstool
+#RUN pip3 install -U setuptools
 
-RUN mkdir -p autoware.ai/src
-WORKDIR /autoware.ai
-RUN wget -O autoware.ai.repos "https://raw.githubusercontent.com/Autoware-AI/autoware.ai/1.12.0/autoware.ai.repos"
-RUN vcs import src < autoware.ai.repos
+#RUN mkdir -p autoware.ai/src
+#WORKDIR /autoware.ai
+#RUN wget -O autoware.ai.repos "https://raw.githubusercontent.com/Autoware-AI/autoware.ai/1.12.0/autoware.ai.repos"
+#RUN vcs import src < autoware.ai.repos
 
 #RUN source /opt/ros/melodic/setup.sh
 #RUN source /ros_entrypoint.sh
-RUN rosdep update
-RUN rosdep install -y --from-paths src --ignore-src --rosdistro $ROS_DISTRO
+#RUN rosdep update
+#RUN rosdep install -y --from-paths src --ignore-src --rosdistro $ROS_DISTRO
 
 #RUN apt-get install ros-melodic-jsk-recognition-msgs ros-melodic-nmea-msgs ros-melodic-jsk-rviz-plugins ros-melodic-tvm-vendor ros-melodic-lanelet2-core ros-melodic-nmea-navsat-driver ros-melodic-lanelet2-io ros-melodic-lanelet2-maps ros-melodic-lanelet2-projection ros-melodic-lanelet2-routing 
 
-RUN . /opt/ros/melodic/setup.bash;  colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+#RUN . /opt/ros/melodic/setup.bash;  colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
 WORKDIR /
 
 
@@ -179,35 +179,40 @@ RUN . /opt/ros/melodic/setup.sh && catkin_make install
 WORKDIR /
 
 # Create new simcloud user and simcloud group (id 1000) for running the container
-RUN addgroup --gid 1000 simcloud_group
-RUN adduser --disabled-password --gecos '' --uid 1000 --gid 1000 simcloud_user
+#RUN addgroup --gid 1000 simcloud_group
+#RUN adduser --disabled-password --gecos '' --uid 1000 --gid 1000 simcloud_user
 # Allow simcloud_user to use sudo with no password
-RUN usermod -aG sudo simcloud_user
-RUN echo "simcloud_user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-RUN  echo 'simcloud_user:dobots_rocks' | chpasswd
-USER simcloud_user
+#RUN usermod -aG sudo simcloud_user
+#RUN echo "simcloud_user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+#RUN  echo 'simcloud_user:dobots_rocks' | chpasswd
+#USER simcloud_user
+# set root pw for wetty
+RUN echo "root:dobots_rocks" | chpasswd
+RUN echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
 ## source ROS in bashrc for new user as well:
-RUN echo "export ROS_DISTRO=melodic" >> ~/.bashrc
-RUN echo ". /ros_entrypoint.sh" >> ~/.bashrc
+RUN echo "export ROS_DISTRO=melodic" >> /root/.bashrc
+RUN echo ". /ros_entrypoint.sh" >> /root/.bashrc
 ## source Gazebo in bashrc:
-RUN echo ". /usr/share/gazebo/setup.sh" >> ~/.bashrc
+RUN echo ". /usr/share/gazebo/setup.sh" >> /root/.bashrc
 ## source PX4 workspace in bashrc (this ensures any other catkin workspaces are overlayed):
-RUN echo $'# PX4 catkin workspace\n. /PX4/devel/setup.bash' >> ~/.bashrc
-RUN echo $'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:/PX4/src/avoidance/avoidance/sim/models:/PX4/src/avoidance/avoidance/sim/worlds\n' >> ~/.bashrc
+RUN echo $'# PX4 catkin workspace\n. /PX4/devel/setup.bash' >> /root/.bashrc
+RUN echo $'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:/PX4/src/avoidance/avoidance/sim/models:/PX4/src/avoidance/avoidance/sim/worlds\n' >> /root/.bashrc
 # (Optional) Add ros_packages and UAV sourcing to bashrc as well:
-RUN echo ". /user_data/catkin_ws/devel/setup.bash" >> ~/.bashrc
-RUN echo ". \$(rospack find uav)/scripts/init_uav_px4.sh > /dev/null" >> ~/.bashrc
+RUN echo ". /user_data/catkin_ws/devel/setup.bash" >> /root/.bashrc
+RUN echo ". \$(rospack find uav)/scripts/init_uav_px4.sh > /dev/null" >> /root/.bashrc
 # Add nvm to bashrc as well:
-RUN echo "export NVM_DIR="/usr/local/nvm"" >> ~/.bashrc
-RUN echo "[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"" >> ~/.bashrc
+RUN echo "export NVM_DIR="/usr/local/nvm"" >> /root/.bashrc
+RUN echo "[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"" >> /root/.bashrc
 # clean up the terminal for wetty
-RUN echo "cd /" >> ~/.bashrc
-RUN echo "clear" >> ~/.bashrc
-
-
+RUN echo "cd /" >> /root/.bashrc
+# making sure that gzweb does not crash on start up
+RUN echo "export GAZEBO_MODEL_DATABASE_URI=countvoncount.math" >> /root/.bashrc
+#RUN echo "clear" >> /root/.bashrc
+# add style to wetty
+RUN echo "export PS1='\e[0;36mASIMOVO:\w \e[m '" >> /root/.bashrc
 
 # change user to enable wetty launch from a docker container
-USER root
+#USER root
 
 # Ensure image runs bash UPDATE is disabled due to the web terminal
 #CMD ["bash"]
