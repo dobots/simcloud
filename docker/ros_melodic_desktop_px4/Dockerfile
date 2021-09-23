@@ -1,4 +1,4 @@
-FROM osrf/ros:melodic-ros-core-
+FROM osrf/ros:melodic-desktop-full-stretch 
 # 'desktop-full' includes gazebo9
 
 
