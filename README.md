@@ -34,9 +34,13 @@ To run a demonstration of the simulation environment (drone in a fire station), 
 	cd simcloud
 	```
 
-2. Start your docker container from here using the provided script (If it doesn't work you might need to build this docker image):
+2. Start your docker container from here using the provided script. Make sure to select the right script based on your machine's graphics card! (If it doesn't work you might need to build this docker image):
 	```bash
 	./docker/ros_melodic_desktop_px4/run.sh
+    ```
+    or
+    ```bash
+    ./docker/ros_melodic_desktop_px4/run_intel.sh
 	```
 	**Note:** You can open multiple terminals running in the same docker container. To do this, from the host terminal run:
 	```bash
