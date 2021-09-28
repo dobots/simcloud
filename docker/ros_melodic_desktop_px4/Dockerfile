@@ -1,4 +1,4 @@
-FROM osrf/ros:melodic-desktop-full-stretch 
+FROM ros:melodic-ros-core
 # 'desktop-full' includes gazebo9
 
 
@@ -13,10 +13,11 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 # Basic installs for Image:
 ## (Optional) Update ros packages to the latest version
-RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
 RUN apt-get update -y && apt-get upgrade -y
-RUN apt-get install -y --no-install-recommends apt-utils
+RUN apt-get install -y --no-install-recommends apt-utils curl
 RUN apt-get install -y less nano wget psmisc zip build-essential git mercurial
+RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
+
 # mesa packages for non-nvidia users
 RUN apt-get install -y libgl1-mesa-glx libgl1-mesa-dri
 
@@ -42,7 +43,7 @@ RUN apt-get install -y ros-melodic-move-base ros-melodic-global-planner ros-melo
 ### PX4 installation
 #### Initial setup:
 RUN apt-get remove modemmanager -y
-RUN apt-get install -y cmake genromfs ninja-build xxd vim-gtk exiftool
+RUN apt-get install -y cmake genromfs ninja-build xxd vim-gtk exiftool libgazebo9-dev
 RUN apt-get install -y python3-pip
 RUN pip3 install empy toml numpy pyros-genmsg jinja2 packaging pyserial pyyaml jsonschema
 # gstreamer for PX4-AutoPilot and QGroundControl
