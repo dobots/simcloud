@@ -1,7 +1,6 @@
 FROM ros:melodic-ros-core
 # 'desktop-full' includes gazebo9
 
-
 # nvidia-container-runtime
 ENV NVIDIA_VISIBLE_DEVICES \
     ${NVIDIA_VISIBLE_DEVICES:-all}
@@ -92,6 +91,9 @@ WORKDIR QGroundControl
 RUN wget https://github.com/mavlink/qgroundcontrol/releases/download/v3.5.6/QGroundControl.AppImage
 RUN apt-get install -y libarchive-tools && bsdtar xfp QGroundControl.AppImage
 # Now you may run the app using ./QGroundControl/qgroundcontrol-start.sh (As a non root user)
+
+# add gazebo ros packages
+RUN apt-get install -y ros-melodic-gazebo-ros
 
 ### GazeboWeb (TODO) (Optional):
 WORKDIR /
