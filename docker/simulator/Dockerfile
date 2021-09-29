@@ -87,6 +87,8 @@ RUN wget https://raw.githubusercontent.com/mavlink/mavros/master/mavros/scripts/
 RUN mkdir PX4
 WORKDIR PX4
 RUN git clone https://github.com/PX4/Firmware.git
+# set default of 'RC loss exceptions' to offboard to enable offboard opperations without rc signal - required after px4 update 
+RUN sed -i 's/PARAM_DEFINE_INT32(COM_RCL_EXCEPT, 0);/PARAM_DEFINE_INT32(COM_RCL_EXCEPT, 4);/g' /PX4/Firmware/src/modules/commander/commander_params.c
 WORKDIR /PX4/Firmware
 RUN DONT_RUN=1 make px4_sitl gazebo
 #### (Optional) Clone and build PX4-Avoidance for collision avoidance
