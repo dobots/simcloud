@@ -27,6 +27,6 @@ docker run -iPt \
     --env="XAUTHORITY=$XAUTHORITY" \
     --volume="$PWD:/projects" \
     --runtime=nvidia \
-    --name="dock_px4" \
-    dock_px4 \
+    --name="ros_melodic_desktop_px4" \
+    ros_melodic_desktop_px4 \
     bash
