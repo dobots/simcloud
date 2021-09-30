@@ -42,7 +42,7 @@ RUN apt-get install -y ros-melodic-move-base ros-melodic-global-planner ros-melo
 ### PX4 installation
 #### Initial setup:
 RUN apt-get remove modemmanager -y
-RUN apt-get install -y cmake genromfs ninja-build xxd vim-gtk exiftool libgazebo9-dev
+RUN apt-get install -y cmake genromfs ninja-build xxd vim-gtk exiftool libgazebo9-dev ros-melodic-gazebo-dev ros-melodic-gazebo-ros-pkgs ros-melodic-gazebo-ros
 RUN apt-get install -y python3-pip
 RUN pip3 install empy toml numpy pyros-genmsg jinja2 packaging pyserial pyyaml jsonschema
 # gstreamer for PX4-AutoPilot and QGroundControl
@@ -61,14 +61,18 @@ RUN apt-get update && apt-get install -y gstreamer1.0-plugins-bad gstreamer1.0-l
 # (Optional) RUN apt-get install -y python-rosinstall-generator python-catkin-tools
 RUN apt-get install -y ros-melodic-mavros ros-melodic-mavros-extras ros-melodic-genpy
 RUN wget https://raw.githubusercontent.com/mavlink/mavros/master/mavros/scripts/install_geographiclib_datasets.sh -O - | bash
+
 #### Clone and build PX4-Autopilot
 RUN mkdir PX4
 WORKDIR PX4
-RUN git clone https://github.com/PX4/Firmware.git
+
+RUN git clone https://github.com/PX4/PX4-Autopilot.git Firmware
 # set default of 'RC loss exceptions' to offboard to enable offboard opperations without rc signal - required after px4 update 
 RUN sed -i 's/PARAM_DEFINE_INT32(COM_RCL_EXCEPT, 0);/PARAM_DEFINE_INT32(COM_RCL_EXCEPT, 4);/g' /PX4/Firmware/src/modules/commander/commander_params.c
+
 WORKDIR /PX4/Firmware
 RUN DONT_RUN=1 make px4_sitl gazebo
+
 #### (Optional) Clone and build PX4-Avoidance for collision avoidance
 RUN apt-get install -y libpcl1 ros-melodic-octomap-*
 # Create catkin workspace for PX4

@@ -31,9 +31,9 @@ Pitch up/down(move forward/backward) roll left/right (slide left/right):
    j    k    l
    m    ,    .
 
-
-1 : arm and offboard
-2: land
+1: Offboard
+2: arm
+3: land
 
 r/v : increase/decrease max speeds by 10%
 t/b : increase/decrease only linear speed by 10%
@@ -147,6 +147,7 @@ class PublishThread(threading.Thread):
             twistStamped.twist.angular.z = self.th * self.turn
 
             self.condition.release()
+            twistStamped.header.stamp = rospy.Time.now()
 
             # Publish.
             self.publisher.publish(twistStamped)
@@ -159,7 +160,6 @@ class PublishThread(threading.Thread):
         twistStamped.twist.angular.y = 0
         twistStamped.twist.angular.z = 0
         self.publisher.publish(twistStamped)
-
 
 def getKey(key_timeout):
     tty.setraw(sys.stdin.fileno())
@@ -198,7 +198,6 @@ def setOffboard():
    except rospy.ServiceException, e:
        print("Service arm call failed: %s"%e)
 
-       
 def setLandMode():
    rospy.wait_for_service('/mavros/cmd/land')
    try:
@@ -218,20 +217,18 @@ if __name__=="__main__":
     settings = termios.tcgetattr(sys.stdin)
 
     rospy.init_node('uav_teleop_twist_keyboard')
-    
-    
+
     speed = rospy.get_param("~speed", 0.5)
     turn = rospy.get_param("~turn", 1.0)
     repeat = rospy.get_param("~repeat_rate", 10.0)
-    
+
     key_timeout = rospy.get_param("~key_timeout", 0.0)
-    
+
     if key_timeout == 0.0:
         key_timeout = None
 
     pub_thread = PublishThread(repeat)
-    
-    
+
     x = 0
     y = 0
     z = 0
@@ -241,15 +238,14 @@ if __name__=="__main__":
     try:
         pub_thread.wait_for_subscribers()
         pub_thread.update(x, y, z, th, speed, turn)
-       
+
         print(msg)
         print(vels(speed,turn))
         #r = rospy.Rate(10)
         #while(1):
         while not rospy.is_shutdown():
-            key = getKey(key_timeout) 
-            
-            
+            key = getKey(key_timeout)
+
             if key in moveBindings.keys():
                 x = moveBindings[key][0]
                 y = moveBindings[key][1]
@@ -264,15 +260,17 @@ if __name__=="__main__":
                     print(msg)
                 status = (status + 1) % 15
             elif key == '1':
-                print('arm and offboard')
-                setArm()
+                print('offboard')
                 setOffboard()
 
             elif key == '2':
+                print('arm')
+                setArm()
+
+            elif key == '3':
                 print('land')
                 setLandMode()
-               
-                    
+
             else:
                 # Skip updating cmd_vel if key timeout and robot already
                 # stopped.
@@ -284,11 +282,8 @@ if __name__=="__main__":
                 th = 0
                 if (key == '\x03'):
                     break
- 
+
             pub_thread.update(x, y, z, th, speed, turn)
-           
-            
-            
 
     except Exception as e:
         print(e)
