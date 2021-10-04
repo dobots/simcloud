@@ -92,7 +92,7 @@ RUN sed -i 's/PARAM_DEFINE_INT32(COM_RCL_EXCEPT, 0);/PARAM_DEFINE_INT32(COM_RCL_
 WORKDIR /PX4/Firmware
 RUN DONT_RUN=1 make px4_sitl gazebo
 #### (Optional) Clone and build PX4-Avoidance for collision avoidance
-RUN apt-get install -y libpcl1 ros-melodic-octomap-*
+RUN apt update && apt-get install -y libpcl1 ros-melodic-octomap-*
 # Create catkin workspace for PX4
 WORKDIR /PX4
 RUN mkdir src
@@ -155,7 +155,7 @@ RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use
 ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
 ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
 RUN npm install -g yarn
-RUN yarn global add wetty
+RUN yarn global add wetty@2.0.3
 EXPOSE 3000
 COPY ./web_scripts/ /web_scripts/
 RUN cd web_scripts && chmod +x start_web_terminal.sh start_gzweb.sh start_rvizweb.sh
