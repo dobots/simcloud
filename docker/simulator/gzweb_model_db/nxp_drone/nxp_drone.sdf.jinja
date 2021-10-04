@@ -1,0 +1,515 @@
+{# general parameters #}
+{%- set model_name = 'nxp_drone' if model_name == 'NotSet' else model_name -%}
+{%- set namespace = "" if namespace == "NotSet" else namespace -%}
+{%- set sdf_version = '1.6' if sdf_version == 'NotSet' else sdf_version -%}
+{%- set collision_visual = '0' -%}
+{%- set prop_length = 11.0 if prop_length == 'NotSet' else prop_length -%}
+{%- set motor_model = '5010' if motor_model == 'NotSet' else motor_model -%}
+
+{%- if motor_model == '5010' -%}
+  {%- set motor_color = 'Grey'-%}
+  {%- set prop_color = 'DarkGrey' -%}
+  {%- set prop_height = -0.02 -%}
+  {%- set motor_uri = "model://nxp_drone/meshes/5010Top.stl"-%}
+  {%- set motor_top_pose = "-.025 -.025 -0.042 0 0 0" -%}
+  {%- set motor_c_pose = "0 0 -0.024 0 0 0" -%}
+  {%- set motor_c_r = 0.025 -%}
+  {%- set motor_c_l = 0.010 -%}
+{%- endif %}
+{%- if motor_model == '2212' -%}
+  {%- set motor_color = 'Red'-%}
+  {%- set prop_color = 'White' -%}
+  {%- set prop_height = -0.01 -%}
+  {%- set motor_uri = "model://nxp_drone/meshes/2212Top.stl"-%}
+  {%- set motor_top_pose = "-0.014 -0.014 -0.035 0 0 0" -%}
+  {%- set motor_c_pose = "0 0 -0.024 0 0 0" -%}
+  {%- set motor_c_r = 0.014 -%}
+  {%- set motor_c_l = 0.022 -%}
+{%- endif -%}
+
+{# general geometry #}
+{%- set motor_sep = 0.5 -%}
+{%- set motor_x_sep = 0.5/np.sqrt(2) -%}
+
+{# fuselage #}
+{%- set fuse_m = 2.0 -%}
+{%- set fuse_r = 0.2 -%}
+{%- set fuse_h = 0.1 -%}
+{%- set fuse_ixx = fuse_m/12*(3*fuse_r**2 + fuse_h**2) -%}
+{%- set fuse_iyy = fuse_ixx -%}
+{%- set fuse_izz = fuse_m*fuse_r**2/2 -%}
+
+{# rotors #}
+{%- set rtr_m = 0.019*(prop_length/13.0) -%}           {# mass, kg #}
+{%- set rtr_r = 0.165*(prop_length/13.0) -%}           {# radius, m #}
+{%- set rtr_w = 0.02*(prop_length/13.0) -%}            {# width, m #}
+{%- set rtr_h = 0.001*(prop_length/13.0) -%}           {# thickness, m #}
+{%- set rtr_ixx = rtr_m/12*(rtr_h**2 + rtr_w**2) -%}
+{%- set rtr_iyy = rtr_m/12*(rtr_r**2 + rtr_h**2) -%}
+{%- set rtr_izz = rtr_m/12*(rtr_w**2 + rtr_r**2) -%}
+{%- set rtr_arm_data_list = [
+  {'angle_deg': 45, 'dir': 'ccw', 'l': motor_sep/2},
+  {'angle_deg': -135, 'dir': 'ccw', 'l': motor_sep/2},
+  {'angle_deg': -45, 'dir': 'cw', 'l': motor_sep/2},
+  {'angle_deg': 135, 'dir': 'cw', 'l': motor_sep/2},
+  ]%}
+{%- macro cylinder(r, h) -%}
+<geometry>
+  <cylinder>
+    <radius>{{r}}</radius>
+    <length>{{h}}</length>
+  </cylinder>
+</geometry>
+{%- endmacro -%}
+
+{%- macro box(x, y, z) -%}
+<geometry>
+  <box>
+    <size>{{x}} {{y}} {{z}}</size>
+  </box>
+</geometry>
+{%- endmacro -%}
+
+{%- macro inertial(m, ixx, iyy, izz) -%}
+<inertial>
+  <mass>{{m}}</mass>
+  <inertia>
+    <ixx>{{ixx}}</ixx>
+    <iyy>{{iyy}}</iyy>
+    <izz>{{izz}}</izz>
+  </inertia>
+</inertial>
+{%- endmacro -%}
+
+{%- macro mesh_colored(uri, color, uri_type) -%}
+<geometry>
+  <mesh>
+  {%- if uri_type == "prop" %}
+    <scale>{{ prop_length/13.0 }} {{ prop_length/13.0 }} {{ prop_length/13.0 }}</scale>
+  {%- endif %}
+  {%- if uri_type == "motor" %}
+    <scale>1 1 1</scale>
+  {%- endif %}
+    <uri>{{ uri }}</uri>
+  </mesh>
+</geometry>
+<material>
+  <script>
+    <name>Gazebo/{{ color }}</name>
+    <uri>file://media/materials/scripts/gazebo.material</uri>
+  </script>
+</material>
+{%- endmacro -%}
+
+{%- macro cylinder(c_r, c_l, color) -%}
+<geometry>
+  <cylinder>
+    <radius>{{ c_r }}</radius>
+    <length>{{ c_l }}</length>
+  </cylinder>
+</geometry>
+<material>
+  <script>
+    <name>Gazebo/{{ color }}</name>
+    <uri>file://media/materials/scripts/gazebo.material</uri>
+  </script>
+</material>
+{%- endmacro -%}
+
+{%- macro surface_props() -%}
+<surface>
+  <contact>
+    <ode>
+      <min_depth>0.001</min_depth>
+      <max_vel>0</max_vel>
+    </ode>
+  </contact>
+  <friction>
+    <ode/>
+  </friction>
+</surface>
+{%- endmacro -%}
+
+<?xml version="1.0"?>
+<!-- DO NOT EDIT: Generated from nxp_drone.sdf.jinja -->
+<sdf version='{{ sdf_version }}'>
+  <model name='{{ model_name }}'>
+    <pose>0 0 0 0 0 0</pose>
+    <self_collide>false</self_collide>
+    <static>false</static>
+    <link name="fuselage">
+      {{ inertial(fuse_m, fuse_ixx, fuse_iyy, fuse_izz)|indent(6) }}
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
+      <velocity_decay/>
+      <visual name="fuselage_visual">
+        <pose>0 0 .025 0 0 3.141592654</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://nxp_drone/meshes/NXP-HGD-CF.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    {%- if collision_visual == '1' %}
+      <visual name="fuselage_collision_visual_0">
+        <pose>0 0 .007 0 0 0</pose>
+        {{ box(motor_x_sep, motor_x_sep, 0.05)|indent(8) }}
+        <material>
+          <script>
+            <name>Gazebo/RedTransparent</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <visual name="fuselage_collision_visual_1">
+        <pose>0 -0.098 -.123 -0.35 0 0</pose>
+        {{ box(0.015, 0.015, 0.21)|indent(8) }}
+        <material>
+          <script>
+            <name>Gazebo/YellowTransparent</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <visual name="fuselage_collision_visual_2">
+        <pose>0 0.098 -.123 0.35 0 0</pose>
+        {{ box(0.015, 0.015, 0.21)|indent(8) }}
+        <material>
+          <script>
+            <name>Gazebo/YellowTransparent</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <visual name="fuselage_collision_visual_3">
+        <pose>0 -0.132 -.2195 0 0 0</pose>
+        {{ box(0.25, 0.015, 0.015)|indent(8) }}
+        <material>
+          <script>
+            <name>Gazebo/GreenTransparent</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <visual name="fuselage_collision_visual_4">
+        <pose>0 0.132 -.2195 0 0 0</pose>
+        {{ box(0.25, 0.015, 0.015)|indent(8) }}
+        <material>
+          <script>
+            <name>Gazebo/GreenTransparent</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+    {%- endif %}
+      <collision name="fuselage_collision_0">
+        <pose>0 0 .007 0 0 0</pose>
+        {{ box(motor_x_sep, motor_x_sep, 0.05)|indent(8) }}
+        {{ surface_props()|indent(8) }}
+      </collision>
+      <collision name="fuselage_collision_1">
+        <pose>0 -0.098 -.123 -0.35 0 0</pose>
+        {{ box(0.015, 0.015, 0.21)|indent(8) }}
+        {{ surface_props()|indent(8) }}
+      </collision>
+      <collision name="fuselage_collision_2">
+        <pose>0 0.098 -.123 0.35 0 0</pose>
+        {{ box(0.015, 0.015, 0.21)|indent(8) }}
+        {{ surface_props()|indent(8) }}
+      </collision>
+      <collision name="fuselage_collision_3">
+        <pose>0 -0.132 -.2195 0 0 0</pose>
+        {{ box(0.25, 0.015, 0.015)|indent(8) }}
+        {{ surface_props()|indent(8) }}
+      </collision>
+      <collision name="fuselage_collision_4">
+        <pose>0 0.132 -.2195 0 0 0</pose>
+        {{ box(0.25, 0.015, 0.015)|indent(8) }}
+        {{ surface_props()|indent(8) }}
+      </collision>
+    </link>
+  {%- if sensors != 'NotSet' %}{% for sensor in sensors %}
+    {%- if sensors[sensor].method == "jinja2" %}
+    <link name='{{ sensors[sensor].params.model_name }}_link'>
+      <pose>{{ sensors[sensor].pose }}</pose>
+      <inertial>
+        <pose>0 0 0 0 0 0</pose>
+        <mass>0.0015</mass>
+        <inertia>
+          <ixx>1e-06</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>1e-06</iyy>
+          <iyz>0</iyz>
+          <izz>1e-06</izz>
+        </inertia>
+      </inertial>
+      <sensor type="{{ sensors[sensor].params.type }}" name="{{ sensors[sensor].params.model_name }}">
+        <always_on>true</always_on>
+        <update_rate>{{ sensors[sensor].params.update_rate }}</update_rate>
+        <camera name="head_{{ sensors[sensor].params.model_name }}">
+          <horizontal_fov>{{ sensors[sensor].params.hfov }}</horizontal_fov>
+          <image>
+            <width>{{ sensors[sensor].params.width }}</width>
+            <height>{{ sensors[sensor].params.height }}</height>
+            <format>{{ sensors[sensor].params.format }}</format>
+          </image>
+          <clip>
+            <near>{{ sensors[sensor].params.near }}</near>
+            <far>{{ sensors[sensor].params.far }}</far>
+          </clip>
+          <lens>
+            <type>gnomonical</type>
+            <scale_to_hfov>1</scale_to_hfov>
+          </lens>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.007</stddev>
+          </noise>
+        </camera>
+        <plugin name='{{ sensors[sensor].params.model_name }}_controller' filename='libgazebo_ros_camera.so'>
+          <robotNamespace>{{ namespace }}</robotNamespace>
+          <cameraName>{{ sensors[sensor].params.model_name }}</cameraName>
+          <imageTopicName>image_raw</imageTopicName>
+          <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+          <frameName>{{ sensors[sensor].params.model_name }}_frame</frameName>
+          <hackBaseline>0.07</hackBaseline>
+        </plugin>
+      </sensor>
+    </link>
+    {%- endif %}
+    {%- if sensors[sensor].method == "include" %}
+    <include>
+      <uri>model://{{ sensors[sensor].params.model_name }}</uri>
+      <pose>{{ sensors[sensor].pose }}</pose>
+      <name>{{ sensors[sensor].params.model_name }}</name>
+    </include>
+    {%- endif %}
+    {%- if sensors[sensor].method == "jinja2" %}
+    <joint name="{{ sensors[sensor].params.model_name }}_joint" type="{{ sensors[sensor].joint.type }}">
+      <child>{{ sensors[sensor].params.model_name }}_link</child>
+      <parent>fuselage</parent>
+    </joint> 
+    {%- endif %}
+    {%- if sensors[sensor].method == "include" %}
+    <joint name="{{ sensors[sensor].params.model_name }}_joint" type="{{ sensors[sensor].joint.type }}">
+      <child>{{ sensors[sensor].params.model_name }}::{{ sensors[sensor].params.model_name }}_link</child>
+      <parent>fuselage</parent>
+    </joint> 
+    {%- endif %}
+  {%- endfor %}{%- endif %}
+    <link name='{{ model_name }}/imu_link'>
+      <pose>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>0 0 0 0 0 0</pose>
+        <mass>0.015</mass>
+        <inertia>
+          <ixx>1e-05</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>1e-05</iyy>
+          <iyz>0</iyz>
+          <izz>1e-05</izz>
+        </inertia>
+      </inertial>
+    </link>
+    <joint name='imu_{{ model_name }}_joint' type='revolute'>
+      <child>{{ model_name }}/imu_link</child>
+      <parent>fuselage</parent>
+      <axis>
+        <xyz>1 0 0</xyz>
+        <limit>
+          <lower>0</lower>
+          <upper>0</upper>
+          <effort>0</effort>
+          <velocity>0</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+    </joint>
+
+    {% for n in range(4) -%}
+
+      {% set l = rtr_arm_data_list[n]['l'] %}
+      {% set angle = np.deg2rad(rtr_arm_data_list[n]['angle_deg']) %}
+      {% set dir = rtr_arm_data_list[n]['dir'] %}
+      {% set pos = l*np.array([np.cos(angle), -np.sin(angle), 0]) %}
+      {% set rtr_pos = pos + np.array([0, 0, 0.06]) %}
+
+      {% if dir == 'ccw' %}
+        {% set rtr_fwd = [0, 1, 0]%}
+        {% set rtr_up = [0, 0, 1]%}
+        {% set rtr_dir = "ccw" %}
+      {% elif dir== 'cw' %}
+        {% set rtr_fwd = [0, -1, 0]%}
+        {% set rtr_up = [0, 0, 1]%}
+        {% set rtr_dir = "cw" %}
+      {% endif %}
+
+      {% set prop_uri = "model://nxp_drone/meshes/1345_prop_{:s}.stl".format(rtr_dir) %}
+
+    <!--Rotor {{n}} -->
+    <link name="rotor_{{n}}">
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
+      <velocity_decay/>
+      <pose>{{ rtr_pos|join(' ') }} 0 0 0</pose>
+      {{ inertial(rtr_m, rtr_ixx, rtr_iyy, rtr_izz) | indent(8) }}
+      <visual name="rotor_{{n}}_visual">
+        <pose>{{ -0.026*(prop_length/13.0) }} {{ -0.173*(prop_length/13.0) }} {{ prop_height }} 0 0 0</pose>
+        {{ mesh_colored(prop_uri, prop_color, "prop") | indent(8) }}
+      </visual>
+      <visual name="rotor_{{n}}_visual_motor_top">
+        <pose>{{ motor_top_pose }}</pose>
+        {{ mesh_colored(motor_uri, motor_color, "motor") | indent(8) }}
+      </visual>
+      <visual name="rotor_{{n}}_visual_motor_bottom">
+        <pose>{{ motor_c_pose }}</pose>
+        {{ cylinder(motor_c_r, motor_c_l, "Black") | indent(8) }}
+      </visual>
+      <collision name="rotor_{{n}}_collision">
+        <pose>0 0 0 0 0 0 </pose>
+        {{ box(2*rtr_r, rtr_w, rtr_h) | indent(8) }}
+        {{ surface_props()|indent(8) }}
+      </collision>
+    </link>
+    <joint name="rotor_{{n}}_joint" type="revolute">
+      <parent>fuselage</parent>
+      <child>rotor_{{n}}</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+    </joint>
+    <plugin name='rotor_{{n}}_motor_model' filename='libgazebo_motor_model.so'>
+      <robotNamespace></robotNamespace>
+      <jointName>rotor_{{n}}_joint</jointName>
+      <linkName>rotor_{{n}}</linkName>
+      <turningDirection>{{rtr_dir}}</turningDirection>
+      <timeConstantUp>0.0125</timeConstantUp>
+      <timeConstantDown>0.025</timeConstantDown>
+      <maxRotVelocity>1100</maxRotVelocity>
+      <motorConstant>8.54858e-06</motorConstant>
+      <momentConstant>0.06</momentConstant>
+      <commandSubTopic>/gazebo/command/motor_speed</commandSubTopic>
+      <motorNumber>{{n}}</motorNumber>
+      <rotorDragCoefficient>0.000806428</rotorDragCoefficient>
+      <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+      <motorSpeedPubTopic>/motor_speed/{{n}}</motorSpeedPubTopic>
+      <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+    </plugin>
+    {% endfor %}
+    {%- set gps_model_name = "gps" if gps_model_name == 'NotSet' else gps_model_name %}
+    <include>
+      <uri>model://gps</uri>
+      <pose>0 0 0 0 0 0</pose>
+      <name>gps0</name>
+    </include>
+    <joint name='gps0_joint' type='fixed'>
+      <child>gps0::link</child>
+      <parent>fuselage</parent>
+    </joint>
+    <plugin name='groundtruth_plugin' filename='libgazebo_groundtruth_plugin.so'>
+      <robotNamespace/>
+    </plugin>
+    <plugin name='magnetometer_plugin' filename='libgazebo_magnetometer_plugin.so'>
+      <robotNamespace/>
+      <pubRate>100</pubRate>
+      <noiseDensity>0.0004</noiseDensity>
+      <randomWalk>6.4e-06</randomWalk>
+      <biasCorrelationTime>600</biasCorrelationTime>
+      <magTopic>/mag</magTopic>
+    </plugin>
+    <plugin name='barometer_plugin' filename='libgazebo_barometer_plugin.so'>
+      <robotNamespace/>
+      <pubRate>50</pubRate>
+      <baroTopic>/baro</baroTopic>
+      <baroDriftPaPerSec>0</baroDriftPaPerSec>
+    </plugin>
+    <plugin name='mavlink_interface' filename='libgazebo_mavlink_interface.so'>
+      <robotNamespace/>
+      <imuSubTopic>/imu</imuSubTopic>
+      <magSubTopic>/mag</magSubTopic>
+      <baroSubTopic>/baro</baroSubTopic>
+      <mavlink_addr>INADDR_ANY</mavlink_addr>
+      <mavlink_udp_port>{{ mavlink_udp_port }}</mavlink_udp_port>
+      <mavlink_tcp_port>{{ mavlink_tcp_port }}</mavlink_tcp_port>
+      <serialEnabled>{{ serial_enabled }}</serialEnabled>
+      <serialDevice>{{ serial_device }}</serialDevice>
+      <baudRate>{{ serial_baudrate }}</baudRate>
+      <qgc_addr>INADDR_ANY</qgc_addr>
+      <qgc_udp_port>{{ qgc_udp_port }}</qgc_udp_port>
+      <sdk_addr>INADDR_ANY</sdk_addr>
+      <sdk_udp_port>{{ sdk_udp_port }}</sdk_udp_port>
+      <hil_mode>{{ hil_mode }}</hil_mode>
+      <hil_state_level>0</hil_state_level>
+      <send_vision_estimation>0</send_vision_estimation>
+      <send_odometry>1</send_odometry>
+      <enable_lockstep>{{ enable_lockstep }}</enable_lockstep>
+      <use_tcp>1</use_tcp>
+      <motorSpeedCommandPubTopic>/gazebo/command/motor_speed</motorSpeedCommandPubTopic>
+      <control_channels>
+        <channel name='rotor1'>
+          <input_index>0</input_index>
+          <input_offset>0</input_offset>
+          <input_scaling>1000</input_scaling>
+          <zero_position_disarmed>0</zero_position_disarmed>
+          <zero_position_armed>100</zero_position_armed>
+          <joint_control_type>velocity</joint_control_type>
+        </channel>
+        <channel name='rotor2'>
+          <input_index>1</input_index>
+          <input_offset>0</input_offset>
+          <input_scaling>1000</input_scaling>
+          <zero_position_disarmed>0</zero_position_disarmed>
+          <zero_position_armed>100</zero_position_armed>
+          <joint_control_type>velocity</joint_control_type>
+        </channel>
+        <channel name='rotor3'>
+          <input_index>2</input_index>
+          <input_offset>0</input_offset>
+          <input_scaling>1000</input_scaling>
+          <zero_position_disarmed>0</zero_position_disarmed>
+          <zero_position_armed>100</zero_position_armed>
+          <joint_control_type>velocity</joint_control_type>
+        </channel>
+        <channel name='rotor4'>
+          <input_index>3</input_index>
+          <input_offset>0</input_offset>
+          <input_scaling>1000</input_scaling>
+          <zero_position_disarmed>0</zero_position_disarmed>
+          <zero_position_armed>100</zero_position_armed>
+          <joint_control_type>velocity</joint_control_type>
+        </channel>
+      </control_channels>
+    </plugin>
+    <static>0</static>
+    <plugin name='gazebo_imu_plugin' filename='libgazebo_imu_plugin.so'>
+      <robotNamespace/>
+      <linkName>{{ model_name }}/imu_link</linkName>
+      <imuTopic>/imu</imuTopic>
+      <gyroscopeNoiseDensity>0.00018665</gyroscopeNoiseDensity>
+      <gyroscopeRandomWalk>3.8785e-05</gyroscopeRandomWalk>
+      <gyroscopeBiasCorrelationTime>1000.0</gyroscopeBiasCorrelationTime>
+      <gyroscopeTurnOnBiasSigma>0.0087</gyroscopeTurnOnBiasSigma>
+      <accelerometerNoiseDensity>0.00186</accelerometerNoiseDensity>
+      <accelerometerRandomWalk>0.006</accelerometerRandomWalk>
+      <accelerometerBiasCorrelationTime>300.0</accelerometerBiasCorrelationTime>
+      <accelerometerTurnOnBiasSigma>0.196</accelerometerTurnOnBiasSigma>
+    </plugin>
+  </model>
+</sdf>
