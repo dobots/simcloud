@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- stationplein -->
+    <env name="PX4_HOME_LAT" value="51.923345" />
+    <env name="PX4_HOME_LON" value="4.470345" />
+    <env name="PX4_HOME_ALT" value="488.0" />
+    
+    <!-- START THE AUTOPILOT -->
+    <include file="$(find px4)/launch/px4.launch"></include>
+    <include file="$(find uav)/launch/start_mavros.launch"></include>    
+    
+    <!-- ADD POSE FOR UAV -->
+    <arg name="x" default="0"/>
+    <arg name="y" default="0"/>
+    <arg name="z" default="0.3"/>
+    <arg name="roll" default="0"/>
+    <arg name="pitch" default="0"/>
+    <arg name="yaw" default="0"/>
+    
+    <arg name="uav_model" default="nxp_drone"/> <!--uses iris model from px4 firmware package and adds a ros usb_cam--> <!-- iris,iris_camera, iris_opt_flow, iris_rplidar, solo, typhoon_h480 -->
+    <node name="spawn_uav" pkg="gazebo_ros" type="spawn_model" args="-file $(find uav)/gazebo_model/models/$(arg uav_model)/$(arg uav_model).sdf -sdf -model $(arg uav_model) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)" /> 
+    
+       
+    <!-- launch static broadcasters for the UAV model -->
+    <include file="$(find uav)/launch/model_tf.launch">
+        <arg name="sensor_model" value="$(arg uav_model)" />
+    </include>
+    
+	<!-- ADD AR TRACK FOLLOWING -->
+    <!--<include file="$(find uav)/launch/start_ar_track_alvar.launch"></include>  -->
+    
+
+</launch>
