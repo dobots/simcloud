@@ -26,4 +26,7 @@
 
   <node pkg="gazebo_ros" type="spawn_model" name="spawn_rover" args="-file $(find rover_description)/base_rover_cart.sdf -sdf -model $(arg robot_name) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)"/>
 
+  <!-- node to ensure gzweb can find the sdf model -->    
+  <node pkg="gzweb_model" name="foo" type="gzweb_model.bash" args="$(find rover_description)"/>
+
 </launch>
