@@ -2,7 +2,7 @@
   "ssh": {
         "host": "localhost",
         "auth": "password",
-        "user": "simcloud_user",
+        "user": "root",
         "pass": "dobots_rocks",
         "port": 22
     },

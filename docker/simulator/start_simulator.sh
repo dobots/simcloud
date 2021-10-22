@@ -5,7 +5,7 @@ export user_id="reka" sim_no="one"
 web_terminal=true
 gzweb=true
 
-docker-compose -p _{$user_id}_{$sim_no} up -d
+docker-compose -p _{$user_id}_{$sim_no} --compatibility up -d
 
 #start of the web terminal
 if [ "$web_terminal" = true ] ; then
