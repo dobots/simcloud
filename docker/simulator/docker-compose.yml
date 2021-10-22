@@ -2,10 +2,10 @@ version: '3.5'
 services:
   simulator:
     image: simulator
-#    deploy:
-#      resources:
-#        limits:
-#          memory: "2G"
+    deploy:
+      resources:
+        limits:
+          memory: "2G"
     labels:
     - traefik.enable=true
     # gzweb
