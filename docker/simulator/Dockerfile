@@ -29,9 +29,16 @@ RUN apt-get install -y jstest-gtk
 ## source ROS:
 ### Fix entrypoint.sh file
 RUN sed -i 's/set -e//' /ros_entrypoint.sh
-RUN echo ". /ros_entrypoint.sh" >> ~/.bashrc
+
+## setup source folder:
+RUN mkdir /source_scripts
+RUN echo 'for i in /source_scripts/*; do source $i; done' >> /source_me.bash
+RUN echo 'echo "ROS_PACKAGE_PATH := $ROS_PACKAGE_PATH"' >> /source_me.bash
+RUN echo 'source /source_me.bash' >> /root/.bashrc
+## source ROS_DISTRO
+RUN echo 'source "/opt/ros/$ROS_DISTRO/setup.bash"' >> /source_scripts/0defaults
 ## source Gazebo:
-RUN echo ". /usr/share/gazebo/setup.sh" >> ~/.bashrc
+RUN echo "source /usr/share/gazebo/setup.sh" >> /source_scripts/0defaults
 
 ## Additional installs:
 
@@ -79,18 +86,23 @@ RUN apt-get install -y gstreamer1.0-plugins-bad gstreamer1.0-libav gstreamer1.0-
 # RUN cd eProsima_FastCDR-1.0.8-Linux && ./configure --libdir=/usr/lib && make -j4 && make install
 # RUN cd eProsima_FastRTPS-1.7.2-Linux && ./configure --libdir=/usr/lib && make -j4 && make install
 # RUN rm -rf requiredcomponents eprosima_fastrtps-1-7-2-linux.tar.gz
+
 #### Install MAVROS
 # (Optional) RUN apt-get install -y python-rosinstall-generator python-catkin-tools
 RUN apt-get install -y ros-melodic-mavros ros-melodic-mavros-extras ros-melodic-genpy
 RUN wget https://raw.githubusercontent.com/mavlink/mavros/master/mavros/scripts/install_geographiclib_datasets.sh -O - | bash
+
 #### Clone and build PX4-Autopilot
 RUN mkdir PX4
 WORKDIR PX4
-RUN git clone https://github.com/PX4/Firmware.git
+
+RUN git clone https://github.com/PX4/PX4-Autopilot.git Firmware
 # set default of 'RC loss exceptions' to offboard to enable offboard opperations without rc signal - required after px4 update 
 RUN sed -i 's/PARAM_DEFINE_INT32(COM_RCL_EXCEPT, 0);/PARAM_DEFINE_INT32(COM_RCL_EXCEPT, 4);/g' /PX4/Firmware/src/modules/commander/commander_params.c
+
 WORKDIR /PX4/Firmware
 RUN DONT_RUN=1 make px4_sitl gazebo
+
 #### (Optional) Clone and build PX4-Avoidance for collision avoidance
 RUN apt update && apt-get install -y libpcl1 ros-melodic-octomap-*
 # Create catkin workspace for PX4
@@ -99,9 +111,11 @@ RUN mkdir src
 WORKDIR /PX4/src
 RUN git clone https://github.com/dobots/PX4-Avoidance.git
 RUN /bin/bash -c '. /ros_entrypoint.sh; catkin_make -C /PX4'
-# Source PX4 catkin workspace in bashrc (this ensures any other catkin workspaces are overlayed)
-RUN echo $'# PX4 catkin workspace\n. /PX4/devel/setup.bash' >> ~/.bashrc
-RUN echo $'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:/PX4/src/avoidance/avoidance/sim/models:/PX4/src/avoidance/avoidance/sim/worlds\n' >> ~/.bashrc
+
+# Source PX4 catkin workspace in bashrc (More later, when our ros_packages are included)
+RUN echo 'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:/PX4/src/avoidance/avoidance/sim/models:/PX4/src/avoidance/avoidance/sim/worlds\n' >> /source_scripts/2px4
+RUN echo 'export ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH}:/PX4/src' >> /source_scripts/2px4
+
 # Give all users permission to use PX4 catkin workspace
 RUN chmod -R a+rw /PX4/
 RUN chmod -R a+rwx /PX4/build/
@@ -188,24 +202,16 @@ WORKDIR /
 #RUN echo "simcloud_user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 #RUN  echo 'simcloud_user:dobots_rocks' | chpasswd
 #USER simcloud_user
-# set root pw for wetty
+
+# set root pw for wetty - (LUDO) Is this really necessary? Open passwords in Github?
 RUN echo "root:dobots_rocks" | chpasswd
 RUN echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
-## source ROS in bashrc for new user as well:
-RUN echo "export ROS_DISTRO=melodic" >> /root/.bashrc
-RUN echo ". /ros_entrypoint.sh" >> /root/.bashrc
-## source Gazebo in bashrc:
-RUN echo ". /usr/share/gazebo/setup.sh" >> /root/.bashrc
-## source PX4 workspace in bashrc (this ensures any other catkin workspaces are overlayed):
-RUN echo $'# PX4 catkin workspace\n. /PX4/devel/setup.bash' >> /root/.bashrc
-RUN echo $'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:/PX4/src/avoidance/avoidance/sim/models:/PX4/src/avoidance/avoidance/sim/worlds\n' >> /root/.bashrc
-# (Optional) Add ros_packages and UAV sourcing to bashrc as well:
-RUN echo ". /user_data/catkin_ws/devel/setup.bash" >> /root/.bashrc
-RUN echo ". \$(rospack find uav)/scripts/init_uav_px4.sh > /dev/null" >> /root/.bashrc
+
 # Add nvm to bashrc as well:
 RUN echo "export NVM_DIR="/usr/local/nvm"" >> /root/.bashrc
 RUN echo "[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"" >> /root/.bashrc
-# clean up the terminal for wetty
+
+# clean up the terminal for wetty - (LUDO) This is nasty! Don't navigate on arbitrary bash startups!
 RUN echo "cd /" >> /root/.bashrc
 # making sure that gzweb does not crash on start up
 RUN echo "export GAZEBO_MODEL_DATABASE_URI=countvoncount.math" >> /root/.bashrc
@@ -213,8 +219,11 @@ RUN echo "export GAZEBO_MODEL_DATABASE_URI=countvoncount.math" >> /root/.bashrc
 # add style to wetty
 RUN echo "export PS1='\e[0;36mASIMOVO:\w \e[m '" >> /root/.bashrc
 
-# change user to enable wetty launch from a docker container
-#USER root
+# Add ros_packages and UAV sourcing to bashrc as well: (TODO: remove CMakeCache.txt if in build folder)
+COPY ./ros_packages /our_ros_packages
+RUN /bin/bash -c '. /source_me.bash; catkin_make -C /our_ros_packages'
+RUN echo '. /our_ros_packages/devel/setup.bash' >> /source_scripts/1our_ros_packages
+RUN echo '. $(rospack find uav)/scripts/init_uav_px4.sh' >> /source_scripts/2px4
 
-# Ensure image runs bash UPDATE is disabled due to the web terminal
+# Ensure image runs bash - (BART?) UPDATE is disabled due to the web terminal
 #CMD ["bash"]
