@@ -1,6 +1,7 @@
 FROM ros:melodic-ros-core
 # 'desktop-full' includes gazebo9
 
+
 # nvidia-container-runtime
 ENV NVIDIA_VISIBLE_DEVICES \
     ${NVIDIA_VISIBLE_DEVICES:-all}
@@ -15,10 +16,9 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 RUN apt-get update -y && apt-get upgrade -y
 RUN apt-get install -y --no-install-recommends apt-utils curl
 RUN apt-get install -y less nano wget psmisc zip build-essential git mercurial
-RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
-
 # mesa packages for non-nvidia users
 RUN apt-get install -y libgl1-mesa-glx libgl1-mesa-dri
+RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
 
 # install joystick package
 RUN apt-get install -y jstest-gtk
@@ -29,22 +29,30 @@ RUN apt-get install -y jstest-gtk
 ## source ROS:
 ### Fix entrypoint.sh file
 RUN sed -i 's/set -e//' /ros_entrypoint.sh
-RUN echo ". /ros_entrypoint.sh" >> ~/.bashrc
+
+## setup source folder:
+RUN mkdir /source_scripts
+RUN echo 'for i in /source_scripts/*; do source $i; done' >> /source_me.bash
+RUN echo 'echo "ROS_PACKAGE_PATH := $ROS_PACKAGE_PATH"' >> /source_me.bash
+RUN echo 'source /source_me.bash' >> /root/.bashrc
+## source ROS_DISTRO
+RUN echo 'source "/opt/ros/$ROS_DISTRO/setup.bash"' >> /source_scripts/0defaults
 ## source Gazebo:
-RUN echo ". /usr/share/gazebo/setup.sh" >> ~/.bashrc
+RUN echo "source /usr/share/gazebo/setup.sh" >> /source_scripts/0defaults
 
 ## Additional installs:
 
 ### General ROS packages
-RUN apt-get update && apt-get install -y ros-melodic-teleop-twist-keyboard ros-melodic-teleop-twist-joy ros-melodic-map-server ros-melodic-amcl ros-melodic-gmapping
-RUN apt-get install -y ros-melodic-move-base ros-melodic-global-planner ros-melodic-teb-local-planner
+RUN apt-get update && apt-get install -y ros-melodic-teleop-twist-keyboard ros-melodic-teleop-twist-joy ros-melodic-map-server ros-melodic-amcl ros-melodic-gmapping ros-melodic-jsk-rviz-plugins
+RUN apt-get install -y ros-melodic-gazebo-ros ros-melodic-gazebo-ros-pkgs ros-melodic-gazebo-ros-control
+RUN apt-get install -y ros-melodic-move-base ros-melodic-global-planner ros-melodic-teb-local-planner ros-melodic-position-controllers ros-melodic-effort-controllers ros-melodic-joint-state-controller
 
 ### PX4 installation
 #### Initial setup:
 RUN apt-get remove modemmanager -y
 RUN apt-get install -y cmake genromfs ninja-build xxd vim-gtk exiftool libgazebo9-dev ros-melodic-gazebo-dev ros-melodic-gazebo-ros-pkgs ros-melodic-gazebo-ros
 RUN apt-get install -y python3-pip
-RUN pip3 install empy toml numpy pyros-genmsg jinja2 packaging pyserial pyyaml jsonschema
+RUN pip3 install empy toml numpy pyros-genmsg jinja2 packaging pyserial pyyaml jsonschema kconfiglib
 # gstreamer for PX4-AutoPilot and QGroundControl
 RUN apt-get update && apt-get install -y gstreamer1.0-plugins-bad gstreamer1.0-libav gstreamer1.0-gl libgstreamer-plugins-base1.0-dev
 # (Optional) RUN apt-get install -y qtcreator
@@ -57,6 +65,7 @@ RUN apt-get update && apt-get install -y gstreamer1.0-plugins-bad gstreamer1.0-l
 # RUN cd eProsima_FastCDR-1.0.8-Linux && ./configure --libdir=/usr/lib && make -j4 && make install
 # RUN cd eProsima_FastRTPS-1.7.2-Linux && ./configure --libdir=/usr/lib && make -j4 && make install
 # RUN rm -rf requiredcomponents eprosima_fastrtps-1-7-2-linux.tar.gz
+
 #### Install MAVROS
 # (Optional) RUN apt-get install -y python-rosinstall-generator python-catkin-tools
 RUN apt-get install -y ros-melodic-mavros ros-melodic-mavros-extras ros-melodic-genpy
@@ -81,9 +90,11 @@ RUN mkdir src
 WORKDIR /PX4/src
 RUN git clone https://github.com/dobots/PX4-Avoidance.git
 RUN /bin/bash -c '. /ros_entrypoint.sh; catkin_make -C /PX4'
-# Source PX4 catkin workspace in bashrc (this ensures any other catkin workspaces are overlayed)
-RUN echo $'# PX4 catkin workspace\n. /PX4/devel/setup.bash' >> ~/.bashrc
-RUN echo $'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:/PX4/src/avoidance/avoidance/sim/models:/PX4/src/avoidance/avoidance/sim/worlds\n' >> ~/.bashrc
+
+# Source PX4 catkin workspace in bashrc (More later, when our ros_packages are included)
+RUN echo 'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:/PX4/src/avoidance/avoidance/sim/models:/PX4/src/avoidance/avoidance/sim/worlds\n' >> /source_scripts/2px4
+RUN echo 'export ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH}:/PX4/src' >> /source_scripts/2px4
+
 # Give all users permission to use PX4 catkin workspace
 RUN chmod -R a+rw /PX4/
 RUN chmod -R a+rwx /PX4/build/
@@ -98,32 +109,105 @@ RUN wget https://github.com/mavlink/qgroundcontrol/releases/download/v3.5.6/QGro
 RUN apt-get install -y libarchive-tools && bsdtar xfp QGroundControl.AppImage
 # Now you may run the app using ./QGroundControl/qgroundcontrol-start.sh (As a non root user)
 
-# add gazebo ros packages
-RUN apt-get install -y ros-melodic-gazebo-ros
-
-### GazeboWeb (TODO) (Optional):
+### GazeboWeb
+#dependencies
 WORKDIR /
-# EXPOSE 8080
-# RUN apt-get install -y nodejs libjansson-dev libboost-dev imagemagick libtinyxml-dev astyle
-# RUN apt-get install -y ant openjdk-8-jdk openjdk-8-jre
+EXPOSE 8080
+RUN apt-get install -y nodejs libjansson-dev libboost-dev imagemagick libtinyxml-dev mercurial cmake build-essential libgts-dev astyle
+RUN apt-get install -y ant openjdk-8-jdk openjdk-8-jre
+
+#instalation of nvm (older versions of nodejs and npm are required)
+ENV NVM_DIR /usr/local/nvm
+RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
+ENV NODE_VERSION v8.9.0
+RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
+ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
+ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
+
+#add db of used models requirment of gzweb
+COPY ./gzweb_model_db/ /gzweb_db/
+
+#build of gzweb
+RUN git clone https://github.com/osrf/gzweb
+WORKDIR /gzweb
+RUN git checkout gzweb_1.4.1
+RUN /bin/bash -c "source /usr/share/gazebo/setup.sh && export GAZEBO_MODEL_PATH=/gzweb_db:$GAZEBO_MODEL_PATH && npm run deploy --- -m local"
+RUN sed -i 's|ws://|wss://|' http/client/gz3d.gui.js
+RUN sed -i "s|'http://'|'https://'|" http/client/gz3d.gui.js
+#RUN /bin/bash -c "./updateGZ3D.sh" 
+
+
+#ensure the right entry point for the docker container
+WORKDIR /
+
+#install wetty
+ENV NVM_DIR /usr/local/nvm
+RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
+ENV NODE_VERSION v14.16.1
+RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
+ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
+ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
+RUN npm install -g yarn
+RUN yarn global add wetty@2.0.3
+EXPOSE 3000
+COPY ./web_scripts/ /web_scripts/
+RUN cd web_scripts && chmod +x start_web_terminal.sh start_gzweb.sh start_rvizweb.sh
+
+#enable ssh into the container
+RUN apt-get update && apt-get install -y openssh-server sshpass
+RUN service ssh start
+EXPOSE 22
+CMD ["/usr/sbin/sshd","-D"]
+
+#install rvizweb
+#initialize rosdep
+RUN apt-get update && apt-get install -y python-rosdep-modules python-rosdep
+RUN rosdep init
+RUN rosdep update
+
+#actually install rvizweb
+ENV NVM_DIR /usr/local/nvm
+RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
+ENV NODE_VERSION v8.17.0
+RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
+ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
+ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
+WORKDIR /rvizweb_ws
+ARG rvizweb_branch=master
+RUN git clone https://github.com/osrf/rvizweb/ src/rvizweb -b ${rvizweb_branch}
+RUN rosdep install --from-paths src --ignore-src -r -y
+RUN . /opt/ros/melodic/setup.sh && catkin_make install
+WORKDIR /
 
 # Create new simcloud user and simcloud group (id 1000) for running the container
-RUN addgroup --gid 1000 simcloud_group
-RUN adduser --disabled-password --gecos '' --uid 1000 --gid 1000 simcloud_user
+#RUN addgroup --gid 1000 simcloud_group
+#RUN adduser --disabled-password --gecos '' --uid 1000 --gid 1000 simcloud_user
 # Allow simcloud_user to use sudo with no password
-RUN usermod -aG sudo simcloud_user
-RUN echo "simcloud_user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-USER simcloud_user
-## source ROS in bashrc for new user as well:
-RUN echo ". /ros_entrypoint.sh" >> ~/.bashrc
-## source Gazebo in bashrc:
-RUN echo ". /usr/share/gazebo/setup.sh" >> ~/.bashrc
-## source PX4 workspace in bashrc (this ensures any other catkin workspaces are overlayed):
-RUN echo $'# PX4 catkin workspace\n. /PX4/devel/setup.bash' >> ~/.bashrc
-RUN echo $'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:/PX4/src/avoidance/avoidance/sim/models:/PX4/src/avoidance/avoidance/sim/worlds\n' >> ~/.bashrc
-# (Optional) Add ros_packages and UAV sourcing to bashrc as well:
-RUN echo ". /projects/ros_packages/devel/setup.bash" >> ~/.bashrc
-RUN echo ". \$(rospack find uav)/scripts/init_uav_px4.sh > /dev/null" >> ~/.bashrc
+#RUN usermod -aG sudo simcloud_user
+#RUN echo "simcloud_user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+#RUN  echo 'simcloud_user:dobots_rocks' | chpasswd
+#USER simcloud_user
 
-# Ensure image runs bash
-CMD ["bash"]
+# set root pw for wetty - (LUDO) Is this really necessary? Open passwords in Github?
+RUN echo "root:dobots_rocks" | chpasswd
+RUN echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
+
+# Add nvm to bashrc as well:
+RUN echo "export NVM_DIR="/usr/local/nvm"" >> /root/.bashrc
+RUN echo "[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"" >> /root/.bashrc
+
+# clean up the terminal for wetty - (LUDO) This is nasty! Don't navigate on arbitrary bash startups!
+RUN echo "cd /" >> /root/.bashrc
+#RUN echo "clear" >> /root/.bashrc
+
+# making sure that gzweb does not crash on start up
+RUN echo "export GAZEBO_MODEL_DATABASE_URI=countvoncount.math" >> /root/.bashrc
+
+# Add ros_packages and UAV sourcing to bashrc as well: (TODO: remove CMakeCache.txt if in build folder)
+COPY ./ros_packages /our_ros_packages
+RUN /bin/bash -c '. /source_me.bash; catkin_make -C /our_ros_packages'
+RUN echo '. /our_ros_packages/devel/setup.bash' >> /source_scripts/1our_ros_packages
+RUN echo '. $(rospack find uav)/scripts/init_uav_px4.sh' >> /source_scripts/2px4
+
+# Ensure image runs bash - (BART?) UPDATE is disabled due to the web terminal
+#CMD ["bash"]
