@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package>
+  <name>gzweb_model</name>
+  <version>1.0.0</version>
+  <description>a package which helps gzweb to find .sdf models</description>
+
+  <maintainer email="ole@dobots.nl">Ole Luhmann</maintainer>
+
+  <license>BSD</license>
+
+ <!-- <url type="website">http://wiki.ros.org/teleop_twist_keyboard</url>-->
+
+ <!-- <author>Graylin Trevor Jay</author>-->
+
+  <buildtool_depend>catkin</buildtool_depend>
+</package>
