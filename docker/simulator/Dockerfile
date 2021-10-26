@@ -71,7 +71,7 @@ RUN apt-get install -y ros-melodic-move-base ros-melodic-global-planner ros-melo
 ### PX4 installation
 #### Initial setup:
 RUN apt-get remove modemmanager -y
-RUN apt-get install -y cmake genromfs ninja-build xxd vim-gtk exiftool
+RUN apt-get install -y cmake genromfs xxd vim-gtk exiftool
 RUN apt-get install -y python3-pip
 RUN pip3 install empy toml numpy pyros-genmsg jinja2 packaging pyserial pyyaml jsonschema kconfiglib
 # gstreamer for PX4-AutoPilot and QGroundControl
@@ -110,11 +110,12 @@ WORKDIR /PX4
 RUN mkdir src
 WORKDIR /PX4/src
 RUN git clone https://github.com/dobots/PX4-Avoidance.git
-RUN /bin/bash -c '. /ros_entrypoint.sh; catkin_make -C /PX4'
+RUN rm -f CMakeLists.txt; source /source_me.bash; catkin_init_workspace
+RUN /bin/bash -c 'source /source_me.bash; catkin_make -C /PX4'
 
 # Source PX4 catkin workspace in bashrc (More later, when our ros_packages are included)
-RUN echo 'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:/PX4/src/avoidance/avoidance/sim/models:/PX4/src/avoidance/avoidance/sim/worlds\n' >> /source_scripts/2px4
-RUN echo 'export ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH}:/PX4/src' >> /source_scripts/2px4
+RUN echo 'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:/PX4/src/avoidance/avoidance/sim/models:/PX4/src/avoidance/avoidance/sim/worlds\n' >> /source_scripts/1system
+RUN echo 'source /PX4/devel/setup.bash' >> /source_scripts/1system
 
 # Give all users permission to use PX4 catkin workspace
 RUN chmod -R a+rw /PX4/
@@ -191,7 +192,7 @@ WORKDIR /rvizweb_ws
 ARG rvizweb_branch=master
 RUN git clone https://github.com/osrf/rvizweb/ src/rvizweb -b ${rvizweb_branch}
 RUN rosdep install --from-paths src --ignore-src -r -y
-RUN . /opt/ros/melodic/setup.sh && catkin_make install
+RUN source /source_me.bash && catkin_make install
 WORKDIR /
 
 # Create new simcloud user and simcloud group (id 1000) for running the container
@@ -221,9 +222,11 @@ RUN echo "export PS1='\e[0;36mASIMOVO:\w \e[m '" >> /root/.bashrc
 
 # Add ros_packages and UAV sourcing to bashrc as well: (TODO: remove CMakeCache.txt if in build folder)
 COPY ./ros_packages /our_ros_packages
-RUN /bin/bash -c '. /source_me.bash; catkin_make -C /our_ros_packages'
-RUN echo '. /our_ros_packages/devel/setup.bash' >> /source_scripts/1our_ros_packages
-RUN echo '. $(rospack find uav)/scripts/init_uav_px4.sh' >> /source_scripts/2px4
+RUN cd /our_ros_packages; rm -rf build devel
+RUN cd /our_ros_packages/src; rm -f CMakeLists.txt; source /source_me.bash; catkin_init_workspace
+RUN /bin/bash -c 'source /source_me.bash; catkin_make -C /our_ros_packages'
+RUN echo '. /our_ros_packages/devel/setup.bash' >> /source_scripts/1system
+RUN echo '. $(rospack find uav)/scripts/init_uav_px4.sh' >> /source_scripts/999px4Firmware
 
 # Ensure image runs bash - (BART?) UPDATE is disabled due to the web terminal
 #CMD ["bash"]
