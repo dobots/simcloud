@@ -114,7 +114,7 @@ RUN rm -f CMakeLists.txt; source /source_me.bash; catkin_init_workspace
 RUN /bin/bash -c 'source /source_me.bash; catkin_make -C /PX4'
 
 # Source PX4 catkin workspace in bashrc (More later, when our ros_packages are included)
-RUN echo 'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:/PX4/src/avoidance/avoidance/sim/models:/PX4/src/avoidance/avoidance/sim/worlds\n' >> /source_scripts/1system
+RUN echo 'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:/PX4/src/avoidance/avoidance/sim/models:/PX4/src/avoidance/avoidance/sim/worlds' >> /source_scripts/1system
 RUN echo 'source /PX4/devel/setup.bash' >> /source_scripts/1system
 
 # Give all users permission to use PX4 catkin workspace
@@ -153,7 +153,7 @@ COPY ./gzweb_model_db/ /gzweb_db/
 RUN git clone https://github.com/osrf/gzweb
 WORKDIR /gzweb
 RUN git checkout gzweb_1.4.1
-RUN /bin/bash -c "source /usr/share/gazebo/setup.sh && export GAZEBO_MODEL_PATH=/gzweb_db:$GAZEBO_MODEL_PATH && npm run deploy --- -m local"
+RUN /bin/bash -c "source /source_me.bash && export GAZEBO_MODEL_PATH=/gzweb_db:$GAZEBO_MODEL_PATH && npm run deploy --- -m local"
 RUN sed -i 's|ws://|wss://|' http/client/gz3d.gui.js
 RUN sed -i "s|'http://'|'https://'|" http/client/gz3d.gui.js
 #RUN /bin/bash -c "./updateGZ3D.sh" 
@@ -220,7 +220,7 @@ RUN echo "export GAZEBO_MODEL_DATABASE_URI=countvoncount.math" >> /root/.bashrc
 # add style to wetty
 RUN echo "export PS1='\e[0;36mASIMOVO:\w \e[m '" >> /root/.bashrc
 
-# Add ros_packages and UAV sourcing to bashrc as well: (TODO: remove CMakeCache.txt if in build folder)
+# Add ros_packages and UAV sourcing to bashrc as well:
 COPY ./ros_packages /our_ros_packages
 RUN cd /our_ros_packages; rm -rf build devel
 RUN cd /our_ros_packages/src; rm -f CMakeLists.txt; source /source_me.bash; catkin_init_workspace
