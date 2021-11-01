@@ -99,9 +99,10 @@ WORKDIR PX4
 RUN git clone https://github.com/PX4/PX4-Autopilot.git Firmware
 # set default of 'RC loss exceptions' to offboard to enable offboard opperations without rc signal - required after px4 update 
 RUN sed -i 's/PARAM_DEFINE_INT32(COM_RCL_EXCEPT, 0);/PARAM_DEFINE_INT32(COM_RCL_EXCEPT, 4);/g' /PX4/Firmware/src/modules/commander/commander_params.c
-
+RUN sed -i '/interactive/s/true/false/' /PX4/Firmware/launch/px4.launch
 WORKDIR /PX4/Firmware
-RUN DONT_RUN=1 make px4_sitl gazebo
+
+RUN HEADLESS=1 DONT_RUN=1 make px4_sitl gazebo
 
 #### (Optional) Clone and build PX4-Avoidance for collision avoidance
 RUN apt update && apt-get install -y libpcl1 ros-melodic-octomap-*
