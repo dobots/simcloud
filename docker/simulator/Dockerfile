@@ -154,6 +154,11 @@ COPY ./gzweb_model_db/ /gzweb_db/
 RUN git clone https://github.com/osrf/gzweb
 WORKDIR /gzweb
 RUN git checkout gzweb_1.4.1
+#Trying to fix null pointer segfault:
+COPY ./gzbridge.patch /gzweb/gzbridge/
+WORKDIR /gzweb/gzbridge
+RUN patch -p0 < gzbridge.patch
+WORKDIR /gzweb
 RUN /bin/bash -c "source /source_me.bash && export GAZEBO_MODEL_PATH=/gzweb_db:$GAZEBO_MODEL_PATH && npm run deploy --- -m local"
 RUN sed -i 's|ws://|wss://|' http/client/gz3d.gui.js
 RUN sed -i "s|'http://'|'https://'|" http/client/gz3d.gui.js
