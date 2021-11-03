@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
 <launch>
 
+<arg name="gui" default="true"/>
 <include file="$(find roffa_description)/launch/start_roffa_world.launch">
+    <arg name="gui" default="$(arg gui)"/>
 </include>
 
 </launch>
