@@ -1,4 +1,4 @@
-FROM ros:melodic-ros-core
+FROM ros:melodic-ros-core as build
 # 'desktop-full' includes gazebo9
 
 # Relative static changes:
@@ -73,6 +73,9 @@ RUN sed -i '/interactive/s/true/false/' /PX4/Firmware/launch/px4.launch
 WORKDIR /PX4/Firmware
 
 RUN HEADLESS=1 DONT_RUN=1 make px4_sitl gazebo
+WORKDIR /PX4/Firmware/build/px4_sitl_default/
+RUN sed -i '/CPACK_PACKAGE_VERSION/s/CPACK_PACKAGE_VERSION "v/CPACK_PACKAGE_VERSION "/' /PX4/Firmware/build/px4_sitl_default/CPackConfig.cmake
+RUN make; cpack -G DEB; dpkg -i *.deb
 
 #### (Optional) Clone and build PX4-Avoidance for collision avoidance
 # Create catkin workspace for PX4
@@ -81,7 +84,7 @@ RUN git clone https://github.com/dobots/PX4-Avoidance.git
 RUN rm -f CMakeLists.txt; source /source_me.bash; catkin_init_workspace
 RUN /bin/bash -c 'source /source_me.bash; catkin_make -C /PX4'
 
-# Source PX4 catkin workspace in bashrc (More later, when our ros_packages are included)
+# Source PX4 Avoidance catkin workspace in bashrc (More later, when our ros_packages are included)
 RUN echo 'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:/PX4/src/avoidance/avoidance/sim/models:/PX4/src/avoidance/avoidance/sim/worlds' >> /source_scripts/1system
 RUN echo 'source /PX4/devel/setup.bash' >> /source_scripts/1system
 
@@ -92,6 +95,7 @@ RUN echo 'source /PX4/devel/setup.bash' >> /source_scripts/1system
 #RUN chmod -R a+rwx /PX4/src/
 
 WORKDIR /
+RUN rm -rf /PX4/Firmware
 
 #### (Optional) Install FastRTPS 1.7.1 and FastCDR-1.0.8
 # RUN wget https://www.eprosima.com/index.php/component/ars/repository/eprosima-fast-dds/eprosima-fast-rtps-1-7-2/eprosima_fastrtps-1-7-2-linux-tar-gz?format=raw -O eprosima_fastrtps-1-7-2-linux.tar.gz
@@ -177,11 +181,32 @@ RUN cd /our_ros_packages; rm -rf build devel
 RUN cd /our_ros_packages/src; rm -f CMakeLists.txt; source /source_me.bash; catkin_init_workspace
 RUN /bin/bash -c 'source /source_me.bash; catkin_make -C /our_ros_packages'
 RUN echo '. /our_ros_packages/devel/setup.bash' >> /source_scripts/1system
-RUN echo '. $(rospack find uav)/scripts/init_uav_px4.sh' >> /source_scripts/999px4Firmware
+RUN echo '. $(rospack find uav)/scripts/init_uav_px4_deb.sh' >> /source_scripts/999px4Firmware
 
 # Finally double-check if there are any updates:
 RUN apt-get update -y && apt-get dist-upgrade -y && rm -rf /var/lib/apt/lists/*
 
 # Ensure image runs bash - (BART?) UPDATE is disabled due to the web terminal
 #CMD ["bash"]
+
+#Now drop history and cleanup:
+FROM scratch
+
+COPY --from=build / /
+WORKDIR /
+
+# nvidia-container-runtime
+ENV NVIDIA_VISIBLE_DEVICES \
+    ${NVIDIA_VISIBLE_DEVICES:-all}
+ENV NVIDIA_DRIVER_CAPABILITIES \
+    ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
+
+CMD ["/usr/sbin/sshd","-D"]
+# Ensure image runs bash - (BART?) UPDATE is disabled due to the web terminal
+#CMD ["bash"]
+
+ENV ROS_DISTRO melodic
+ENV NVM_DIR /usr/local/nvm
+EXPOSE 8080 3000 22
+
 

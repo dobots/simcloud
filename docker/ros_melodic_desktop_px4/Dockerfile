@@ -55,13 +55,6 @@ RUN bsdtar xfp QGroundControl.AppImage
 WORKDIR /
 RUN apt-get update -y && apt-get install -y --no-install-recommends libgazebo9-dev ros-melodic-gazebo-dev ros-melodic-gazebo-ros-pkgs ros-melodic-gazebo-ros ros-melodic-mavros ros-melodic-mavros-extras ros-melodic-genpy ros-melodic-pcl-ros ros-melodic-octomap-* && rm -rf /var/lib/apt/lists/*
 
-#add db of used models requirment of gzweb
-COPY ./gzweb_model_db/ /gzweb_db/
-
-#add copy of our webscripts:
-COPY ./web_scripts/ /web_scripts/
-RUN cd /web_scripts && chmod +x start_web_terminal.sh start_gzweb.sh start_rvizweb.sh
-
 #### Clone and build PX4-Autopilot
 RUN mkdir -p PX4/src
 WORKDIR PX4
@@ -73,6 +66,9 @@ RUN sed -i '/interactive/s/true/false/' /PX4/Firmware/launch/px4.launch
 WORKDIR /PX4/Firmware
 
 RUN HEADLESS=1 DONT_RUN=1 make px4_sitl gazebo
+WORKDIR /PX4/Firmware/build/px4_sitl_default/
+RUN sed -i '/CPACK_PACKAGE_VERSION/s/CPACK_PACKAGE_VERSION "v/CPACK_PACKAGE_VERSION "/' /PX4/Firmware/build/px4_sitl_default/CPackConfig.cmake
+RUN make; cpack -G DEB; dpkg -i *.deb
 
 #### (Optional) Clone and build PX4-Avoidance for collision avoidance
 # Create catkin workspace for PX4
@@ -81,58 +77,14 @@ RUN git clone https://github.com/dobots/PX4-Avoidance.git
 RUN rm -f CMakeLists.txt; source /source_me.bash; catkin_init_workspace
 RUN /bin/bash -c 'source /source_me.bash; catkin_make -C /PX4'
 
-# Source PX4 catkin workspace in bashrc (More later, when our ros_packages are included)
+# Source PX4 Avoidance catkin workspace in bashrc (More later, when our ros_packages are included)
 RUN echo 'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:/PX4/src/avoidance/avoidance/sim/models:/PX4/src/avoidance/avoidance/sim/worlds' >> /source_scripts/1system
 RUN echo 'source /PX4/devel/setup.bash' >> /source_scripts/1system
 
-# Give all users permission to use PX4 catkin workspace
-#RUN chmod -R a+rw /PX4/
-#RUN chmod -R a+rwx /PX4/build/
-#RUN chmod -R a+rwx /PX4/devel/
-#RUN chmod -R a+rwx /PX4/src/
-
 WORKDIR /
-
-#### (Optional) Install FastRTPS 1.7.1 and FastCDR-1.0.8
-# RUN wget https://www.eprosima.com/index.php/component/ars/repository/eprosima-fast-dds/eprosima-fast-rtps-1-7-2/eprosima_fastrtps-1-7-2-linux-tar-gz?format=raw -O eprosima_fastrtps-1-7-2-linux.tar.gz
-# RUN tar -xzf eprosima_fastrtps-1-7-2-linux.tar.gz eProsima_FastRTPS-1.7.2-Linux
-# RUN tar -xzf eprosima_fastrtps-1-7-2-linux.tar.gz requiredcomponents
-# RUN tar -xzf requiredcomponents/eProsima_FastCDR-1.0.8-Linux.tar.gz
-# RUN cd eProsima_FastCDR-1.0.8-Linux && ./configure --libdir=/usr/lib && make -j4 && make install
-# RUN cd eProsima_FastRTPS-1.7.2-Linux && ./configure --libdir=/usr/lib && make -j4 && make install
-# RUN rm -rf requiredcomponents eprosima_fastrtps-1-7-2-linux.tar.gz
-
-#build of gzweb
-ENV NODE_VERSION v8.9.0
-RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
-ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
-ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
-
-RUN git clone https://github.com/osrf/gzweb
-WORKDIR /gzweb
-RUN git checkout gzweb_1.4.1
-#Trying to fix null pointer segfault:
-COPY ./gzbridge.patch /gzweb/gzbridge/
-WORKDIR /gzweb/gzbridge
-RUN patch -p0 < gzbridge.patch
-WORKDIR /gzweb
-RUN /bin/bash -c "source /source_me.bash && export GAZEBO_MODEL_PATH=/gzweb_db:$GAZEBO_MODEL_PATH && npm run deploy --- -m local"
-RUN sed -i 's|ws://|wss://|' http/client/gz3d.gui.js
-RUN sed -i "s|'http://'|'https://'|" http/client/gz3d.gui.js
-#RUN /bin/bash -c "./updateGZ3D.sh" 
-WORKDIR /
+RUN rm -rf /PX4/Firmware
 
 RUN wget https://raw.githubusercontent.com/mavlink/mavros/master/mavros/scripts/install_geographiclib_datasets.sh -O - | bash
-
-#install wetty
-RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
-ENV NODE_VERSION v14.16.1
-RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
-ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
-ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
-RUN npm install -g yarn
-RUN yarn global add wetty@2.0.3
-
 
 # Expected to change more often:
 RUN apt-get update -y && apt-get dist-upgrade -y  && rm -rf /var/lib/apt/lists/*
@@ -142,46 +94,18 @@ RUN apt-get update -y && apt-get install -y ros-melodic-teleop-twist-keyboard ro
 RUN apt-get update -y && apt-get install -y --no-install-recommends libgl1-mesa-glx libgl1-mesa-dri   && rm -rf /var/lib/apt/lists/*
 #install rvizweb
 
-#actually install rvizweb
-ENV NODE_VERSION v8.17.0
-RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
-ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
-ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
-
-RUN mkdir /rvizweb_ws
-WORKDIR /rvizweb_ws
-ARG rvizweb_branch=master
-RUN git clone https://github.com/osrf/rvizweb/ src/rvizweb -b ${rvizweb_branch}
-RUN rosdep init && apt-get update -y && rosdep update && rosdep install --from-paths src --ignore-src -r -y && rm -rf /var/lib/apt/lists/*
-RUN source /source_me.bash && catkin_make install
-
-WORKDIR /
-
-#enable ssh into the container
-RUN service ssh start
-CMD ["/usr/sbin/sshd","-D"]
-
-# set root pw for wetty - (LUDO) Is this really necessary? Open passwords in Github?
-RUN echo "root:dobots_rocks" | chpasswd
-RUN echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
-
-# clean up the terminal for wetty - (LUDO) This is nasty! Don't navigate on arbitrary bash startups!
-RUN echo "cd /" >> /root/.bashrc
-
-# making sure that gzweb does not crash on start up
-RUN echo "export GAZEBO_MODEL_DATABASE_URI=countvoncount.math" >> /root/.bashrc
-
 # Add ros_packages and UAV sourcing to bashrc as well:
 COPY ./ros_packages /our_ros_packages
 RUN cd /our_ros_packages; rm -rf build devel
 RUN cd /our_ros_packages/src; rm -f CMakeLists.txt; source /source_me.bash; catkin_init_workspace
 RUN /bin/bash -c 'source /source_me.bash; catkin_make -C /our_ros_packages'
 RUN echo '. /our_ros_packages/devel/setup.bash' >> /source_scripts/1system
-RUN echo '. $(rospack find uav)/scripts/init_uav_px4.sh' >> /source_scripts/999px4Firmware
+RUN echo '. $(rospack find uav)/scripts/init_uav_px4_deb.sh' >> /source_scripts/999px4Firmware
 
 # Finally double-check if there are any updates:
 RUN apt-get update -y && apt-get dist-upgrade -y && rm -rf /var/lib/apt/lists/*
 
-# Ensure image runs bash - (BART?) UPDATE is disabled due to the web terminal
-#CMD ["bash"]
+# Ensure image runs bash
+CMD ["bash"]
+
 
