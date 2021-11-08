@@ -68,6 +68,10 @@ WORKDIR /
 RUN apt-get update && apt-get install -y ros-melodic-teleop-twist-keyboard ros-melodic-teleop-twist-joy ros-melodic-map-server ros-melodic-amcl ros-melodic-gmapping ros-melodic-jsk-rviz-plugins
 RUN apt-get install -y ros-melodic-move-base ros-melodic-global-planner ros-melodic-teb-local-planner
 
+# install rosbridge
+RUN apt-get install ros-melodic-rosbridge-suite -y
+
+
 ### PX4 installation
 #### Initial setup:
 RUN apt-get remove modemmanager -y
@@ -164,6 +168,16 @@ RUN sed -i 's|ws://|wss://|' http/client/gz3d.gui.js
 RUN sed -i "s|'http://'|'https://'|" http/client/gz3d.gui.js
 #RUN /bin/bash -c "./updateGZ3D.sh" 
 
+### WebViz
+RUN git clone https://github.com/cruise-automation/webviz.git
+WORKDIR webviz
+ENV NODE_VERSION v14.16.1
+RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
+ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
+ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
+RUN npm run bootstrap
+RUN npm run build-static-webviz
+WORKDIR /
 
 #ensure the right entry point for the docker container
 WORKDIR /
@@ -179,27 +193,13 @@ RUN npm install -g yarn
 RUN yarn global add wetty@2.0.3
 EXPOSE 3000
 COPY ./web_scripts/ /web_scripts/
-RUN cd web_scripts && chmod +x start_web_terminal.sh start_gzweb.sh start_rvizweb.sh
+RUN cd web_scripts && chmod +x start_web_terminal.sh start_gzweb.sh start_rvizweb.sh start_webviz.sh
 
 #enable ssh into the container
 RUN apt-get update && apt-get install -y openssh-server sshpass
 RUN service ssh start
 EXPOSE 22
 CMD ["/usr/sbin/sshd","-D"]
-
-#install rvizweb
-ENV NVM_DIR /usr/local/nvm
-RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
-ENV NODE_VERSION v8.17.0
-RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
-ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
-ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
-WORKDIR /rvizweb_ws
-ARG rvizweb_branch=master
-RUN git clone https://github.com/osrf/rvizweb/ src/rvizweb -b ${rvizweb_branch}
-RUN rosdep install --from-paths src --ignore-src -r -y
-RUN source /source_me.bash && catkin_make install
-WORKDIR /
 
 # Create new simcloud user and simcloud group (id 1000) for running the container
 #RUN addgroup --gid 1000 simcloud_group
