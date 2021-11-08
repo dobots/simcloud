@@ -171,6 +171,7 @@ RUN sed -i "s|'http://'|'https://'|" http/client/gz3d.gui.js
 #RUN /bin/bash -c "./updateGZ3D.sh" 
 
 ### WebViz
+WORKDIR /
 RUN git clone https://github.com/cruise-automation/webviz.git
 WORKDIR webviz
 ENV NODE_VERSION v14.16.1
@@ -179,7 +180,9 @@ ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
 ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
 RUN npm run bootstrap
 RUN npm run build-static-webviz
+RUN sed -i 's/http-server __static_webviz__/http-server --port 8081 __static_webviz__/g' ./package.json
 WORKDIR /
+
 
 #ensure the right entry point for the docker container
 WORKDIR /
