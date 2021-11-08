@@ -60,12 +60,15 @@ RUN mkdir -p PX4/src
 WORKDIR PX4
 
 RUN git clone https://github.com/PX4/PX4-Autopilot.git Firmware
+WORKDIR /PX4/Firmware
+RUN git checkout v1.12.3
+
 # set default of 'RC loss exceptions' to offboard to enable offboard opperations without rc signal - required after px4 update 
 RUN sed -i 's/PARAM_DEFINE_INT32(COM_RCL_EXCEPT, 0);/PARAM_DEFINE_INT32(COM_RCL_EXCEPT, 4);/g' /PX4/Firmware/src/modules/commander/commander_params.c
 RUN sed -i '/interactive/s/true/false/' /PX4/Firmware/launch/px4.launch
-WORKDIR /PX4/Firmware
 
 RUN HEADLESS=1 DONT_RUN=1 make px4_sitl gazebo
+
 WORKDIR /PX4/Firmware/build/px4_sitl_default/
 RUN sed -i '/CPACK_PACKAGE_VERSION/s/CPACK_PACKAGE_VERSION "v/CPACK_PACKAGE_VERSION "/' /PX4/Firmware/build/px4_sitl_default/CPackConfig.cmake
 RUN make; cpack -G DEB; dpkg -i *.deb
