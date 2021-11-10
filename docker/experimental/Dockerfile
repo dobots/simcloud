@@ -60,7 +60,7 @@ COPY ./gzweb_model_db/ /gzweb_db/
 
 #add copy of our webscripts:
 COPY ./web_scripts/ /web_scripts/
-RUN cd /web_scripts && chmod +x start_web_terminal.sh start_gzweb.sh start_rvizweb.sh
+RUN cd /web_scripts && chmod +x start_web_terminal.sh start_gzweb.sh start_webviz.sh
 
 #### Clone and build PX4-Autopilot
 RUN mkdir -p PX4/src

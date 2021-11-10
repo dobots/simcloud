@@ -198,7 +198,7 @@ RUN npm install -g yarn
 RUN yarn global add wetty@2.0.3
 EXPOSE 3000
 COPY ./web_scripts/ /web_scripts/
-RUN cd web_scripts && chmod +x start_web_terminal.sh start_gzweb.sh start_rvizweb.sh start_webviz.sh
+RUN cd web_scripts && chmod +x start_web_terminal.sh start_gzweb.sh start_webviz.sh
 
 #enable ssh into the container
 RUN apt-get update && apt-get install -y openssh-server sshpass
