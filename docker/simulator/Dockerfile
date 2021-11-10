@@ -36,7 +36,7 @@ RUN echo 'for i in /source_scripts/*; do source $i; done' >> /source_me.bash
 RUN echo 'echo "ROS_PACKAGE_PATH := $ROS_PACKAGE_PATH"' >> /source_me.bash
 RUN echo 'source /source_me.bash' >> /root/.bashrc
 ## source ROS_DISTRO
-RUN echo 'source "/opt/ros/$ROS_DISTRO/setup.bash"' >> /source_scripts/0defaults
+RUN echo 'source "/opt/ros/melodic/setup.bash"' >> /source_scripts/0defaults
 ## source Gazebo:
 RUN echo "source /usr/share/gazebo/setup.sh" >> /source_scripts/0defaults
 

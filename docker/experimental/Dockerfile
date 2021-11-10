@@ -130,6 +130,19 @@ WORKDIR /
 
 RUN wget https://raw.githubusercontent.com/mavlink/mavros/master/mavros/scripts/install_geographiclib_datasets.sh -O - | bash
 
+### WebViz
+WORKDIR /
+RUN git clone https://github.com/cruise-automation/webviz.git
+WORKDIR webviz
+ENV NODE_VERSION v14.16.1
+RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
+ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
+ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
+RUN npm run bootstrap
+RUN npm run build-static-webviz
+RUN sed -i 's/http-server __static_webviz__/http-server --port 8081 __static_webviz__/g' ./package.json
+WORKDIR /
+
 #install wetty
 RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
 ENV NODE_VERSION v14.16.1
@@ -146,20 +159,10 @@ RUN apt-get update -y && apt-get dist-upgrade -y  && rm -rf /var/lib/apt/lists/*
 RUN apt-get update -y && apt-get install -y ros-melodic-teleop-twist-keyboard ros-melodic-teleop-twist-joy ros-melodic-map-server ros-melodic-amcl ros-melodic-gmapping ros-melodic-jsk-rviz-plugins ros-melodic-gazebo-ros ros-melodic-gazebo-ros-pkgs ros-melodic-gazebo-ros-control ros-melodic-move-base ros-melodic-global-planner ros-melodic-teb-local-planner ros-melodic-position-controllers ros-melodic-effort-controllers ros-melodic-joint-state-controller  && rm -rf /var/lib/apt/lists/*
 ## mesa packages for non-nvidia users
 RUN apt-get update -y && apt-get install -y --no-install-recommends libgl1-mesa-glx libgl1-mesa-dri   && rm -rf /var/lib/apt/lists/*
-#install rvizweb
 
-#actually install rvizweb
-ENV NODE_VERSION v8.17.0
-RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
-ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
-ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
+# install rosbridge
+RUN apt-get install ros-melodic-rosbridge-suite -y
 
-RUN mkdir /rvizweb_ws
-WORKDIR /rvizweb_ws
-ARG rvizweb_branch=master
-RUN git clone https://github.com/osrf/rvizweb/ src/rvizweb -b ${rvizweb_branch}
-RUN rosdep init && apt-get update -y && rosdep update && rosdep install --from-paths src --ignore-src -r -y && rm -rf /var/lib/apt/lists/*
-RUN source /source_me.bash && catkin_make install
 
 WORKDIR /
 
