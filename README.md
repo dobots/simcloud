@@ -11,9 +11,9 @@ This repository contains packages and setup files to run ROS-based robot simulat
 
 
 ### List of robots:
- |Rover | UAV | 
-| ------------- |:-------------:| 
-|<img src="images/rover.png" width = "200"/>|<img src="images/uav.png" width = "200"/>|
+ |Rover | UAV | NXP Drone |
+| ------------- |:-------------:| :-------------:| 
+|<img src="images/rover.png" width = "200"/>|<img src="images/uav.png" width = "200"/>|<img src="images/nxp_drone.png" width = "200"/>|
 
 
 ## Building the docker image:
@@ -121,6 +121,10 @@ To run a demonstration of the simulation environment (drone in a fire station), 
 * Spawn an UAV in a certain configuration, currently available [iris_camera, iris_depth_camera, iris_front_camera, iris_lidar, iris_rplidar]  (TODO: add parameters to spawn multiple robots):
 	```bash
 	roslaunch uav spawn_uav.launch uav_model:=iris_camera
+	``` 
+	Or spawn the NXP drone:
+	```bash
+	roslaunch uav spawn_nxp.launch
 	``` 
 	You can command the UAV (position control) using the scripts in `pos_control`. For example, in a new terminal, run:
 	```bash

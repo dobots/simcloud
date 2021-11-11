@@ -29,9 +29,16 @@ RUN apt-get install -y jstest-gtk
 ## source ROS:
 ### Fix entrypoint.sh file
 RUN sed -i 's/set -e//' /ros_entrypoint.sh
-RUN echo ". /ros_entrypoint.sh" >> ~/.bashrc
+
+## setup source folder:
+RUN mkdir /source_scripts
+RUN echo 'for i in /source_scripts/*; do source $i; done' >> /source_me.bash
+RUN echo 'echo "ROS_PACKAGE_PATH := $ROS_PACKAGE_PATH"' >> /source_me.bash
+RUN echo 'source /source_me.bash' >> /root/.bashrc
+## source ROS_DISTRO
+RUN echo 'source "/opt/ros/melodic/setup.bash"' >> /source_scripts/0defaults
 ## source Gazebo:
-RUN echo ". /usr/share/gazebo/setup.sh" >> ~/.bashrc
+RUN echo "source /usr/share/gazebo/setup.sh" >> /source_scripts/0defaults
 
 ## Additional installs:
 
@@ -58,15 +65,19 @@ WORKDIR /
 
 
 ### General ROS packages
-RUN apt-get update && apt-get install -y ros-melodic-teleop-twist-keyboard ros-melodic-teleop-twist-joy ros-melodic-map-server ros-melodic-amcl ros-melodic-gmapping
+RUN apt-get update && apt-get install -y ros-melodic-teleop-twist-keyboard ros-melodic-teleop-twist-joy ros-melodic-map-server ros-melodic-amcl ros-melodic-gmapping ros-melodic-jsk-rviz-plugins
 RUN apt-get install -y ros-melodic-move-base ros-melodic-global-planner ros-melodic-teb-local-planner
+
+# install rosbridge
+RUN apt-get install ros-melodic-rosbridge-suite -y
+
 
 ### PX4 installation
 #### Initial setup:
 RUN apt-get remove modemmanager -y
-RUN apt-get install -y cmake genromfs ninja-build xxd vim-gtk exiftool
+RUN apt-get install -y cmake genromfs xxd vim-gtk exiftool
 RUN apt-get install -y python3-pip
-RUN pip3 install empy toml numpy pyros-genmsg jinja2 packaging pyserial pyyaml jsonschema
+RUN pip3 install empy toml numpy pyros-genmsg jinja2 packaging pyserial pyyaml jsonschema kconfiglib
 # gstreamer for PX4-AutoPilot and QGroundControl
 RUN apt-get install -y gstreamer1.0-plugins-bad gstreamer1.0-libav gstreamer1.0-gl libgstreamer-plugins-base1.0-dev
 # (Optional) RUN apt-get install -y qtcreator
@@ -79,18 +90,26 @@ RUN apt-get install -y gstreamer1.0-plugins-bad gstreamer1.0-libav gstreamer1.0-
 # RUN cd eProsima_FastCDR-1.0.8-Linux && ./configure --libdir=/usr/lib && make -j4 && make install
 # RUN cd eProsima_FastRTPS-1.7.2-Linux && ./configure --libdir=/usr/lib && make -j4 && make install
 # RUN rm -rf requiredcomponents eprosima_fastrtps-1-7-2-linux.tar.gz
+
 #### Install MAVROS
 # (Optional) RUN apt-get install -y python-rosinstall-generator python-catkin-tools
 RUN apt-get install -y ros-melodic-mavros ros-melodic-mavros-extras ros-melodic-genpy
 RUN wget https://raw.githubusercontent.com/mavlink/mavros/master/mavros/scripts/install_geographiclib_datasets.sh -O - | bash
+
 #### Clone and build PX4-Autopilot
 RUN mkdir PX4
 WORKDIR PX4
-RUN git clone https://github.com/PX4/Firmware.git
+
+RUN git clone https://github.com/PX4/PX4-Autopilot.git Firmware
 # set default of 'RC loss exceptions' to offboard to enable offboard opperations without rc signal - required after px4 update 
-RUN sed -i 's/PARAM_DEFINE_INT32(COM_RCL_EXCEPT, 0);/PARAM_DEFINE_INT32(COM_RCL_EXCEPT, 4);/g' /PX4/Firmware/src/modules/commander/commander_params.c
 WORKDIR /PX4/Firmware
-RUN DONT_RUN=1 make px4_sitl gazebo
+RUN git checkout v1.12.3
+
+RUN sed -i 's/PARAM_DEFINE_INT32(COM_RCL_EXCEPT, 0);/PARAM_DEFINE_INT32(COM_RCL_EXCEPT, 4);/g' /PX4/Firmware/src/modules/commander/commander_params.c
+RUN sed -i '/interactive/s/true/false/' /PX4/Firmware/launch/px4.launch
+
+RUN HEADLESS=1 DONT_RUN=1 make px4_sitl gazebo
+
 #### (Optional) Clone and build PX4-Avoidance for collision avoidance
 RUN apt update && apt-get install -y libpcl1 ros-melodic-octomap-*
 # Create catkin workspace for PX4
@@ -98,10 +117,13 @@ WORKDIR /PX4
 RUN mkdir src
 WORKDIR /PX4/src
 RUN git clone https://github.com/dobots/PX4-Avoidance.git
-RUN /bin/bash -c '. /ros_entrypoint.sh; catkin_make -C /PX4'
-# Source PX4 catkin workspace in bashrc (this ensures any other catkin workspaces are overlayed)
-RUN echo $'# PX4 catkin workspace\n. /PX4/devel/setup.bash' >> ~/.bashrc
-RUN echo $'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:/PX4/src/avoidance/avoidance/sim/models:/PX4/src/avoidance/avoidance/sim/worlds\n' >> ~/.bashrc
+RUN rm -f CMakeLists.txt; source /source_me.bash; catkin_init_workspace
+RUN /bin/bash -c 'source /source_me.bash; catkin_make -C /PX4'
+
+# Source PX4 catkin workspace in bashrc (More later, when our ros_packages are included)
+RUN echo 'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:/PX4/src/avoidance/avoidance/sim/models:/PX4/src/avoidance/avoidance/sim/worlds' >> /source_scripts/1system
+RUN echo 'source /PX4/devel/setup.bash' >> /source_scripts/1system
+
 # Give all users permission to use PX4 catkin workspace
 RUN chmod -R a+rw /PX4/
 RUN chmod -R a+rwx /PX4/build/
@@ -138,10 +160,28 @@ COPY ./gzweb_model_db/ /gzweb_db/
 RUN git clone https://github.com/osrf/gzweb
 WORKDIR /gzweb
 RUN git checkout gzweb_1.4.1
-RUN /bin/bash -c "source /usr/share/gazebo/setup.sh && export GAZEBO_MODEL_PATH=/gzweb_db:$GAZEBO_MODEL_PATH && npm run deploy --- -m local"
+#Trying to fix null pointer segfault:
+COPY ./gzbridge.patch /gzweb/gzbridge/
+WORKDIR /gzweb/gzbridge
+RUN patch -p0 < gzbridge.patch
+WORKDIR /gzweb
+RUN /bin/bash -c "source /source_me.bash && export GAZEBO_MODEL_PATH=/gzweb_db:$GAZEBO_MODEL_PATH && npm run deploy --- -m local"
 RUN sed -i 's|ws://|wss://|' http/client/gz3d.gui.js
 RUN sed -i "s|'http://'|'https://'|" http/client/gz3d.gui.js
 #RUN /bin/bash -c "./updateGZ3D.sh" 
+
+### WebViz
+WORKDIR /
+RUN git clone https://github.com/cruise-automation/webviz.git
+WORKDIR webviz
+ENV NODE_VERSION v14.16.1
+RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
+ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
+ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
+RUN npm run bootstrap
+RUN npm run build-static-webviz
+RUN sed -i 's/http-server __static_webviz__/http-server --port 8081 __static_webviz__/g' ./package.json
+WORKDIR /
 
 
 #ensure the right entry point for the docker container
@@ -158,27 +198,13 @@ RUN npm install -g yarn
 RUN yarn global add wetty@2.0.3
 EXPOSE 3000
 COPY ./web_scripts/ /web_scripts/
-RUN cd web_scripts && chmod +x start_web_terminal.sh start_gzweb.sh start_rvizweb.sh
+RUN cd web_scripts && chmod +x start_web_terminal.sh start_gzweb.sh start_webviz.sh
 
 #enable ssh into the container
 RUN apt-get update && apt-get install -y openssh-server sshpass
 RUN service ssh start
 EXPOSE 22
 CMD ["/usr/sbin/sshd","-D"]
-
-#install rvizweb
-ENV NVM_DIR /usr/local/nvm
-RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
-ENV NODE_VERSION v8.17.0
-RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
-ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
-ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
-WORKDIR /rvizweb_ws
-ARG rvizweb_branch=master
-RUN git clone https://github.com/osrf/rvizweb/ src/rvizweb -b ${rvizweb_branch}
-RUN rosdep install --from-paths src --ignore-src -r -y
-RUN . /opt/ros/melodic/setup.sh && catkin_make install
-WORKDIR /
 
 # Create new simcloud user and simcloud group (id 1000) for running the container
 #RUN addgroup --gid 1000 simcloud_group
@@ -188,24 +214,16 @@ WORKDIR /
 #RUN echo "simcloud_user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 #RUN  echo 'simcloud_user:dobots_rocks' | chpasswd
 #USER simcloud_user
-# set root pw for wetty
+
+# set root pw for wetty - (LUDO) Is this really necessary? Open passwords in Github?
 RUN echo "root:dobots_rocks" | chpasswd
 RUN echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
-## source ROS in bashrc for new user as well:
-RUN echo "export ROS_DISTRO=melodic" >> /root/.bashrc
-RUN echo ". /ros_entrypoint.sh" >> /root/.bashrc
-## source Gazebo in bashrc:
-RUN echo ". /usr/share/gazebo/setup.sh" >> /root/.bashrc
-## source PX4 workspace in bashrc (this ensures any other catkin workspaces are overlayed):
-RUN echo $'# PX4 catkin workspace\n. /PX4/devel/setup.bash' >> /root/.bashrc
-RUN echo $'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:/PX4/src/avoidance/avoidance/sim/models:/PX4/src/avoidance/avoidance/sim/worlds\n' >> /root/.bashrc
-# (Optional) Add ros_packages and UAV sourcing to bashrc as well:
-RUN echo ". /user_data/catkin_ws/devel/setup.bash" >> /root/.bashrc
-RUN echo ". \$(rospack find uav)/scripts/init_uav_px4.sh > /dev/null" >> /root/.bashrc
+
 # Add nvm to bashrc as well:
 RUN echo "export NVM_DIR="/usr/local/nvm"" >> /root/.bashrc
 RUN echo "[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"" >> /root/.bashrc
-# clean up the terminal for wetty
+
+# clean up the terminal for wetty - (LUDO) This is nasty! Don't navigate on arbitrary bash startups!
 RUN echo "cd /" >> /root/.bashrc
 # making sure that gzweb does not crash on start up
 RUN echo "export GAZEBO_MODEL_DATABASE_URI=countvoncount.math" >> /root/.bashrc
@@ -213,8 +231,13 @@ RUN echo "export GAZEBO_MODEL_DATABASE_URI=countvoncount.math" >> /root/.bashrc
 # add style to wetty
 RUN echo "export PS1='\e[0;36mASIMOVO:\w \e[m '" >> /root/.bashrc
 
-# change user to enable wetty launch from a docker container
-#USER root
+# Add ros_packages and UAV sourcing to bashrc as well:
+COPY ./ros_packages /our_ros_packages
+RUN cd /our_ros_packages; rm -rf build devel
+RUN cd /our_ros_packages/src; rm -f CMakeLists.txt; source /source_me.bash; catkin_init_workspace
+RUN /bin/bash -c 'source /source_me.bash; catkin_make -C /our_ros_packages'
+RUN echo '. /our_ros_packages/devel/setup.bash' >> /source_scripts/1system
+RUN echo '. $(rospack find uav)/scripts/init_uav_px4.sh' >> /source_scripts/999px4Firmware
 
-# Ensure image runs bash UPDATE is disabled due to the web terminal
+# Ensure image runs bash - (BART?) UPDATE is disabled due to the web terminal
 #CMD ["bash"]
