@@ -16,7 +16,5 @@ docker run -iPt \
     --env="DISPLAY=$DISPLAY" \
     --env="XAUTHORITY=$XAUTHORITY" \
     --volume="$XAUTHORITY:$XAUTHORITY" \
-    --volume="$PWD:/projects" \
-    --name="ros_melodic_desktop_px4" \
-    ros_melodic_desktop_px4 \
+    experimental \
     bash

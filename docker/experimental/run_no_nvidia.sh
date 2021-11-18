@@ -11,12 +11,14 @@
 
 docker run -iPt \
     --rm \
-    --volume=/tmp/.X11-unix:/tmp/.X11-unix \
-    --device=/dev/dri:/dev/dri \
     --env="DISPLAY=$DISPLAY" \
-    --env="XAUTHORITY=$XAUTHORITY" \
+    --env="QT_X11_NO_MITSHM=1" \
+    --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
+    #--net=host \
     --volume="$XAUTHORITY:$XAUTHORITY" \
+    --device=/dev/dri \
+    --env="XAUTHORITY=$XAUTHORITY" \
     --volume="$PWD:/projects" \
-    --name="ros_melodic_desktop_px4" \
-    ros_melodic_desktop_px4 \
+    --name="experimental" \
+    experimental \
     bash

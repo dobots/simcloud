@@ -1,5 +1,9 @@
 #!/bin/bash
 
+#bluetooth setup
+#service dbus start
+#bluetoothd &
+
 #check if there is a /build and /devel in the current PWD
 # if [ -f devel/.catkin ]; then
 # echo "Starting from Catkin Workspace: $PWD, preparing it's ROS_PACKAGE_PATH."
@@ -9,14 +13,20 @@
 # echo -n "`cat devel/.catkin`;/projects/src" > devel/.catkin
 # fi
 
+
 docker run -iPt \
     --rm \
-    --volume=/tmp/.X11-unix:/tmp/.X11-unix \
-    --device=/dev/dri:/dev/dri \
+    -v /dev/bus/usb:/dev/bus/usb \
+    -v /dev/input:/dev/input \
+    --device-cgroup-rule 'a 13:* rwm' \
+    --device-cgroup-rule 'a 189:* rwm' \
     --env="DISPLAY=$DISPLAY" \
-    --env="XAUTHORITY=$XAUTHORITY" \
+    --env="QT_X11_NO_MITSHM=1" \
+    --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
     --volume="$XAUTHORITY:$XAUTHORITY" \
+    --env="XAUTHORITY=$XAUTHORITY" \
     --volume="$PWD:/projects" \
-    --name="ros_melodic_desktop_px4" \
-    ros_melodic_desktop_px4 \
+    --runtime=nvidia \
+    --name="experimental" \
+    experimental \
     bash
