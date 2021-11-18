@@ -1,0 +1,15 @@
+material logo
+{
+  receive_shadows off
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture DoBotsLogo.png
+        scale 1 1
+      }
+    }
+  }
+}
