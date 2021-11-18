@@ -81,17 +81,17 @@ WORKDIR /
 
 
 ### WebViz
-#WORKDIR /
-#RUN git clone https://github.com/cruise-automation/webviz.git
-#WORKDIR webviz
-#ENV NODE_VERSION v14.16.1
-#RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
-#ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
-#ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
-#RUN npm run bootstrap
-#RUN npm run build-static-webviz
-#RUN sed -i 's/http-server __static_webviz__/http-server --port 8081 __static_webviz__/g' ./package.json
-#WORKDIR /
+WORKDIR /
+RUN git clone https://github.com/cruise-automation/webviz.git
+WORKDIR webviz
+ENV NODE_VERSION v14.16.1
+RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
+ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
+ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
+RUN npm run bootstrap
+RUN npm run build-static-webviz
+RUN sed -i 's/http-server __static_webviz__/http-server --port 8081 __static_webviz__/g' ./package.json
+WORKDIR /
 
 #install wetty
 ENV NVM_DIR /usr/local/nvm
