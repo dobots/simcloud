@@ -28,7 +28,7 @@ RUN sed -i 's/set -e//' /ros_entrypoint.sh
 ## setup source folder:
 RUN mkdir /source_scripts
 RUN echo 'for i in /source_scripts/*; do source $i; done' >> /source_me.bash
-RUN echo 'echo "ROS_PACKAGE_PATH := $ROS_PACKAGE_PATH"' >> /source_me.bash
+RUN echo 'echo "COLCON_PREFIX_PATH := $COLCON_PREFIX_PATH"' >> /source_me.bash
 RUN echo 'source /source_me.bash' >> /root/.bashrc
 ## source ROS_DISTRO
 RUN echo 'source "/opt/ros/foxy/setup.bash"' >> /source_scripts/0defaults
@@ -123,17 +123,17 @@ RUN echo "export NVM_DIR="/usr/local/nvm"" >> /root/.bashrc
 RUN echo "[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"" >> /root/.bashrc
 
 # clean up the terminal for wetty - (LUDO) This is nasty! Don't navigate on arbitrary bash startups!
-RUN echo "cd /" >> /root/.bashrc
+#RUN echo "cd /" >> /root/.bashrc
 # making sure that gzweb does not crash on start up
 RUN echo "export GAZEBO_MODEL_DATABASE_URI=countvoncount.math" >> /root/.bashrc
 #RUN echo "clear" >> /root/.bashrc
 # add style to wetty
-RUN echo "export PS1='\e[0;36mASIMOVO:\w \e[m '" >> /root/.bashrc
+#RUN echo "export PS1='\e[0;36mASIMOVO:\w \e[m '" >> /root/.bashrc
 
 # Add ros_packages and UAV sourcing to bashrc as well:
 RUN mkdir /our_ros_packages; cd /our_ros_packages; mkdir src
-RUN cd /our_ros_packages/src; git clone --single-branch --branch foxy https://github.com/husarion/rosbot_description.git
-RUN source /opt/ros/foxy/setup.bash; cd /our_ros_packages; rosdep install --from-paths src --ignore-src -r -y; colcon build --symlink-install; source /source_me.bash
+RUN cd /our_ros_packages/src; git clone --single-branch --branch foxy https://github.com/husarion/rosbot_description.git; git clone --single-branch --branch ros2 https://github.com/lukaszmitka/rplidar_ros.git
+RUN source /opt/ros/foxy/setup.bash; cd /our_ros_packages; rosdep install --from-paths src --ignore-src -r -y; colcon build; source /source_me.bash
 RUN /bin/bash -c 'source /source_me.bash'
 RUN echo '. /our_ros_packages/install/setup.sh' >> /source_scripts/1system
 
