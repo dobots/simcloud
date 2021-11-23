@@ -221,12 +221,12 @@ RUN echo "export NVM_DIR="/usr/local/nvm"" >> /root/.bashrc
 RUN echo "[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"" >> /root/.bashrc
 
 # clean up the terminal for wetty - (LUDO) This is nasty! Don't navigate on arbitrary bash startups!
-RUN echo "cd /" >> /root/.bashrc
+#RUN echo "cd /" >> /root/.bashrc
 # making sure that gzweb does not crash on start up
 RUN echo "export GAZEBO_MODEL_DATABASE_URI=countvoncount.math" >> /root/.bashrc
 #RUN echo "clear" >> /root/.bashrc
 # add style to wetty
-RUN echo "export PS1='\e[0;36mASIMOVO:\w \e[m '" >> /root/.bashrc
+#RUN echo "export PS1='\e[0;36mASIMOVO:\w \e[m '" >> /root/.bashrc
 
 # Add ros_packages and UAV sourcing to bashrc as well:
 COPY ./ros_packages /our_ros_packages
