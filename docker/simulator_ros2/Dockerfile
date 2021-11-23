@@ -81,17 +81,17 @@ WORKDIR /
 
 
 ### WebViz
-WORKDIR /
-RUN git clone https://github.com/cruise-automation/webviz.git
-WORKDIR webviz
-ENV NODE_VERSION v14.16.1
-RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
-ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
-ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
-RUN npm run bootstrap
-RUN npm run build-static-webviz
-RUN sed -i 's/http-server __static_webviz__/http-server --port 8081 __static_webviz__/g' ./package.json
-WORKDIR /
+#WORKDIR /
+#RUN git clone https://github.com/cruise-automation/webviz.git
+#WORKDIR webviz
+#ENV NODE_VERSION v14.16.1
+#RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
+#ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
+#ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
+#RUN npm run bootstrap
+#RUN npm run build-static-webviz
+#RUN sed -i 's/http-server __static_webviz__/http-server --port 8081 __static_webviz__/g' ./package.json
+#WORKDIR /
 
 #install wetty
 ENV NVM_DIR /usr/local/nvm
@@ -128,7 +128,7 @@ RUN echo "[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"" >> /root/.bashrc
 RUN echo "export GAZEBO_MODEL_DATABASE_URI=countvoncount.math" >> /root/.bashrc
 #RUN echo "clear" >> /root/.bashrc
 # add style to wetty
-#RUN echo "export PS1='\e[0;36mASIMOVO:\w \e[m '" >> /root/.bashrc
+#RUN echo "export PS1='ASIMOVO:\W '" >> /root/.bashrc
 
 # Add ros_packages and UAV sourcing to bashrc as well:
 RUN mkdir /our_ros_packages; cd /our_ros_packages; mkdir src
