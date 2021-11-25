@@ -132,7 +132,7 @@ RUN echo "export GAZEBO_MODEL_DATABASE_URI=countvoncount.math" >> /root/.bashrc
 
 # Add ros_packages and UAV sourcing to bashrc as well:
 RUN mkdir /our_ros_packages; cd /our_ros_packages; mkdir src
-RUN cd /our_ros_packages/src; git clone --single-branch --branch foxy https://github.com/husarion/rosbot_description.git; git clone --single-branch --branch ros2 https://github.com/lukaszmitka/rplidar_ros.git
+RUN cd /our_ros_packages/src; git clone --single-branch --branch foxy https://github.com/husarion/rosbot_description.git; 
 RUN source /opt/ros/foxy/setup.bash; cd /our_ros_packages; rosdep install --from-paths src --ignore-src -r -y; colcon build; source /source_me.bash
 RUN /bin/bash -c 'source /source_me.bash'
 RUN echo '. /our_ros_packages/install/setup.sh' >> /source_scripts/1system
