@@ -2,7 +2,7 @@ FROM ros:melodic-ros-core
 # 'desktop-full' includes gazebo9
 
 # Relative static changes:
-EXPOSE 8080 3000 22
+EXPOSE 8080 3000 22 
 
 # nvidia-container-runtime
 ENV NVIDIA_VISIBLE_DEVICES \
@@ -97,7 +97,7 @@ RUN apt-get update -y && apt-get install -y ros-melodic-teleop-twist-keyboard ro
 RUN apt-get update -y && apt-get install -y --no-install-recommends libgl1-mesa-glx libgl1-mesa-dri   && rm -rf /var/lib/apt/lists/*
 
 # install rosbridge
-RUN apt-get install ros-melodic-rosbridge-suite -y
+RUN apt-get update -y &&  apt-get install ros-melodic-rosbridge-suite -y
 
 #install velodyne packages
 RUN apt-get update -y && apt-get install -y ros-melodic-velodyne-simulator
