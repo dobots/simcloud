@@ -95,7 +95,12 @@ RUN apt-get update -y && apt-get dist-upgrade -y  && rm -rf /var/lib/apt/lists/*
 RUN apt-get update -y && apt-get install -y ros-melodic-teleop-twist-keyboard ros-melodic-teleop-twist-joy ros-melodic-map-server ros-melodic-amcl ros-melodic-gmapping ros-melodic-jsk-rviz-plugins ros-melodic-gazebo-ros ros-melodic-gazebo-ros-pkgs ros-melodic-gazebo-ros-control ros-melodic-move-base ros-melodic-global-planner ros-melodic-teb-local-planner ros-melodic-position-controllers ros-melodic-effort-controllers ros-melodic-joint-state-controller  && rm -rf /var/lib/apt/lists/*
 ## mesa packages for non-nvidia users
 RUN apt-get update -y && apt-get install -y --no-install-recommends libgl1-mesa-glx libgl1-mesa-dri   && rm -rf /var/lib/apt/lists/*
-#install rvizweb
+
+# install rosbridge
+RUN apt-get install ros-melodic-rosbridge-suite -y
+
+#install velodyne packages
+RUN apt-get update -y && apt-get install -y ros-melodic-velodyne-simulator
 
 # Add ros_packages and UAV sourcing to bashrc as well:
 COPY ./ros_packages /our_ros_packages
