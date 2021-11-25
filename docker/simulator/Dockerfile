@@ -184,6 +184,9 @@ WORKDIR /
 #ensure the right entry point for the docker container
 WORKDIR /
 
+#install velodyne packages
+RUN apt-get update -y && apt-get install -y ros-melodic-velodyne-simulator
+
 #install wetty
 ENV NVM_DIR /usr/local/nvm
 RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
