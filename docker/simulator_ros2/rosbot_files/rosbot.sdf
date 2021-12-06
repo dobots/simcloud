@@ -32,8 +32,8 @@
         <pose>0 0 0 1.5707 0 1.5707</pose>
         <geometry>
           <mesh>
-            <uri>box.dae</uri>
-            <scale>1 1 1</scale>
+            <uri>model://rosbot_description/meshes/box.dae</uri>
+            <scale>0.001 0.001 0.001</scale>
           </mesh>
         </geometry>
         <material>
@@ -85,8 +85,8 @@
         <pose>0 0 0 1.5707 0 1.5707</pose>
         <geometry>
           <mesh>
-            <uri>upper.dae</uri>
-            <scale>1 1 1</scale>
+       	  <uri>model://rosbot_description/meshes/upper.dae</uri>
+            <scale>0.001 0.001 0.001</scale>
           </mesh>
         </geometry>
         <material>
@@ -153,8 +153,8 @@
         <pose>0 0 0 0 0 1.5707</pose>
         <geometry>
           <mesh>
-            <uri>wheel.dae</uri>
-            <scale>1 1 1</scale>
+            <uri>model://rosbot_description/meshes/wheel.dae</uri>
+	    <scale>0.001 0.001 0.001</scale>
           </mesh>
         </geometry>
         <material>
@@ -216,8 +216,8 @@
         <pose>0 0 0 0 0 -1.5707</pose>
         <geometry>
           <mesh>
-            <uri>wheel.dae</uri>
-            <scale>1 1 1</scale>
+            <uri>model://rosbot_description/meshes/wheel.dae</uri>
+            <scale>0.001 0.001 0.001</scale>
           </mesh>
         </geometry>
         <material>
@@ -279,8 +279,8 @@
         <pose>0 0 0 0 0 1.5707</pose>
         <geometry>
           <mesh>
-            <uri>wheel.dae</uri>
-            <scale>1 1 1</scale>
+            <uri>model://rosbot_description/meshes/wheel.dae</uri>
+            <scale>0.001 0.001 0.001</scale>
           </mesh>
         </geometry>
         <material>
@@ -343,8 +343,8 @@
         <pose>0 0 0 0 0 -1.5707</pose>
         <geometry>
           <mesh>
-            <uri>wheel.dae</uri>
-            <scale>1 1 1</scale>
+            <uri>model://rosbot_description/meshes/wheel.dae</uri>
+            <scale>0.001 0.001 0.001</scale>
           </mesh>
         </geometry>
         <material>
@@ -462,8 +462,8 @@
         <pose>0 0 0 1.5707 0 1.5707</pose>
         <geometry>
           <mesh>
-            <uri>astra.dae</uri>
-            <scale>1 1 1</scale>
+            <uri>model://rosbot_description/meshes/astra.dae</uri>
+            <scale>0.001 0.001 0.001</scale>
           </mesh>
         </geometry>
         <material>
@@ -549,8 +549,8 @@
         <pose>0 0 0 1.5707 0 1.5707</pose>
         <geometry>
           <mesh>
-            <uri>rplidar.dae</uri>
-            <scale>1 1 1</scale>
+            <uri>model://rosbot_description/meshes/rplidar.dae</uri>
+            <scale>0.001 0.001 0.001</scale>
           </mesh>
         </geometry>
         <material>

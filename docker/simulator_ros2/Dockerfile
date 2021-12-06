@@ -136,9 +136,11 @@ RUN cd /our_ros_packages/src; git clone --single-branch --branch foxy https://gi
 RUN source /opt/ros/foxy/setup.bash; cd /our_ros_packages; rosdep install --from-paths src --ignore-src -r -y; colcon build; source /source_me.bash
 RUN /bin/bash -c 'source /source_me.bash'
 RUN echo '. /our_ros_packages/install/setup.sh' >> /source_scripts/1system
-
-
-
+RUN cp -r /gzweb_db/rosbot_description /gzweb/http/client/assets/
+# Add gzweb package modifications
+COPY ./rosbot_files/ /our_ros_packages/rosbot_files/
+RUN cp /our_ros_packages/rosbot_files/* /our_ros_packages/install/rosbot_description/share/rosbot_description/ 
+RUN sed -i 's|/models/rosbot|/rosbot|' /our_ros_packages/install/rosbot_description/share/rosbot_description/launch/rosbot_spawn.launch.py
 
 
 
