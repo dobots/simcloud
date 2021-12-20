@@ -92,7 +92,7 @@ RUN wget https://raw.githubusercontent.com/mavlink/mavros/master/mavros/scripts/
 # Expected to change more often:
 RUN apt-get update -y && apt-get dist-upgrade -y  && rm -rf /var/lib/apt/lists/*
 ## General ROS packages
-RUN apt-get update -y && apt-get install -y ros-melodic-teleop-twist-keyboard ros-melodic-teleop-twist-joy ros-melodic-map-server ros-melodic-amcl ros-melodic-gmapping ros-melodic-jsk-rviz-plugins ros-melodic-gazebo-ros ros-melodic-gazebo-ros-pkgs ros-melodic-gazebo-ros-control ros-melodic-move-base ros-melodic-global-planner ros-melodic-teb-local-planner ros-melodic-position-controllers ros-melodic-effort-controllers ros-melodic-joint-state-controller  && rm -rf /var/lib/apt/lists/*
+RUN apt-get update -y && apt-get install -y ros-melodic-teleop-twist-keyboard ros-melodic-teleop-twist-joy ros-melodic-map-server ros-melodic-amcl ros-melodic-gmapping ros-melodic-jsk-rviz-plugins ros-melodic-gazebo-ros ros-melodic-gazebo-ros-pkgs ros-melodic-gazebo-ros-control ros-melodic-move-base ros-melodic-global-planner ros-melodic-teb-local-planner ros-melodic-position-controllers ros-melodic-effort-controllers ros-melodic-joint-state-controller ros-melodic-tf2-web-republisher  && rm -rf /var/lib/apt/lists/*
 ## mesa packages for non-nvidia users
 RUN apt-get update -y && apt-get install -y --no-install-recommends libgl1-mesa-glx libgl1-mesa-dri   && rm -rf /var/lib/apt/lists/*
 
