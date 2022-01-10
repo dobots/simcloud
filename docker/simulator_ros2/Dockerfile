@@ -80,18 +80,18 @@ WORKDIR /
 
 
 
-### WebViz
-#WORKDIR /
-#RUN git clone https://github.com/cruise-automation/webviz.git
-#WORKDIR webviz
-#ENV NODE_VERSION v14.16.1
-#RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
-#ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
-#ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
-#RUN npm run bootstrap
-#RUN npm run build-static-webviz
-#RUN sed -i 's/http-server __static_webviz__/http-server --port 8081 __static_webviz__/g' ./package.json
-#WORKDIR /
+## WebViz
+WORKDIR /
+RUN git clone https://github.com/cruise-automation/webviz.git
+WORKDIR webviz
+ENV NODE_VERSION v14.16.1
+RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
+ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
+ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
+RUN npm run bootstrap
+RUN npm run build-static-webviz
+RUN sed -i 's/http-server __static_webviz__/http-server --port 8081 __static_webviz__/g' ./package.json
+WORKDIR /
 
 #install wetty
 ENV NVM_DIR /usr/local/nvm
@@ -104,7 +104,7 @@ RUN npm install -g yarn
 RUN yarn global add wetty@2.0.3
 EXPOSE 3000
 COPY ./web_scripts/ /web_scripts/
-RUN cd web_scripts && chmod +x start_web_terminal.sh start_gzweb.sh start_rvizweb.sh
+RUN cd web_scripts && chmod +x start_web_terminal.sh start_gzweb.sh start_webviz.sh
  
 #enable ssh into the container
 RUN apt-get update && apt-get install -y openssh-server sshpass
