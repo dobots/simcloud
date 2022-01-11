@@ -40,9 +40,14 @@ WORKDIR /
 # install rosbridge
 RUN apt-get install ros-foxy-rosbridge-suite -y
 
-
 ### General ROS packages
 RUN apt-get update && apt-get install -y ros-foxy-teleop-twist-keyboard ros-foxy-teleop-twist-joy  
+
+### Install ROS1 noetic and rosbridge for bridge to webviz 
+RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+RUN apt update -y && sudo apt install -y ros-noetic-ros-base && sudo apt install -y ros-noetic-rosbridge-server
+RUN apt install -y ros-foxy-ros1-bridge
+
 ### GazeboWeb
 #dependencies
 WORKDIR /
