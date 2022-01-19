@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
 <launch>
 
+<arg name="gui" default="true"/>
 <include file="$(find simple_shapes_description)/launch/simple_shapes_world.launch">
+    <arg name="gui" default="$(arg gui)"/>
 </include>
 
 </launch>

@@ -36,37 +36,21 @@ RUN echo 'for i in /source_scripts/*; do source $i; done' >> /source_me.bash
 RUN echo 'echo "ROS_PACKAGE_PATH := $ROS_PACKAGE_PATH"' >> /source_me.bash
 RUN echo 'source /source_me.bash' >> /root/.bashrc
 ## source ROS_DISTRO
-RUN echo 'source "/opt/ros/$ROS_DISTRO/setup.bash"' >> /source_scripts/0defaults
+RUN echo 'source "/opt/ros/melodic/setup.bash"' >> /source_scripts/0defaults
 ## source Gazebo:
 RUN echo "source /usr/share/gazebo/setup.sh" >> /source_scripts/0defaults
 
 ## Additional installs:
 
-# install autoware
-#RUN apt-get update
-#RUN sudo apt install -y python-catkin-pkg python-rosdep ros-$ROS_DISTRO-catkin
-#RUN sudo apt install -y python3-pip python3-colcon-common-extensions python3-setuptools python3-vcstool
-#RUN pip3 install -U setuptools
-
-#RUN mkdir -p autoware.ai/src
-#WORKDIR /autoware.ai
-#RUN wget -O autoware.ai.repos "https://raw.githubusercontent.com/Autoware-AI/autoware.ai/1.12.0/autoware.ai.repos"
-#RUN vcs import src < autoware.ai.repos
-
-#RUN source /opt/ros/melodic/setup.sh
-#RUN source /ros_entrypoint.sh
-#RUN rosdep update
-#RUN rosdep install -y --from-paths src --ignore-src --rosdistro $ROS_DISTRO
-
-#RUN apt-get install ros-melodic-jsk-recognition-msgs ros-melodic-nmea-msgs ros-melodic-jsk-rviz-plugins ros-melodic-tvm-vendor ros-melodic-lanelet2-core ros-melodic-nmea-navsat-driver ros-melodic-lanelet2-io ros-melodic-lanelet2-maps ros-melodic-lanelet2-projection ros-melodic-lanelet2-routing 
-
-#RUN . /opt/ros/melodic/setup.bash;  colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
 WORKDIR /
-
 
 ### General ROS packages
 RUN apt-get update && apt-get install -y ros-melodic-teleop-twist-keyboard ros-melodic-teleop-twist-joy ros-melodic-map-server ros-melodic-amcl ros-melodic-gmapping ros-melodic-jsk-rviz-plugins
 RUN apt-get install -y ros-melodic-move-base ros-melodic-global-planner ros-melodic-teb-local-planner
+
+# install rosbridge
+RUN apt-get install ros-melodic-rosbridge-suite -y
+
 
 ### PX4 installation
 #### Initial setup:
@@ -98,10 +82,13 @@ WORKDIR PX4
 
 RUN git clone https://github.com/PX4/PX4-Autopilot.git Firmware
 # set default of 'RC loss exceptions' to offboard to enable offboard opperations without rc signal - required after px4 update 
-RUN sed -i 's/PARAM_DEFINE_INT32(COM_RCL_EXCEPT, 0);/PARAM_DEFINE_INT32(COM_RCL_EXCEPT, 4);/g' /PX4/Firmware/src/modules/commander/commander_params.c
-
 WORKDIR /PX4/Firmware
-RUN DONT_RUN=1 make px4_sitl gazebo
+RUN git checkout v1.12.3
+
+RUN sed -i 's/PARAM_DEFINE_INT32(COM_RCL_EXCEPT, 0);/PARAM_DEFINE_INT32(COM_RCL_EXCEPT, 4);/g' /PX4/Firmware/src/modules/commander/commander_params.c
+RUN sed -i '/interactive/s/true/false/' /PX4/Firmware/launch/px4.launch
+
+RUN HEADLESS=1 DONT_RUN=1 make px4_sitl gazebo
 
 #### (Optional) Clone and build PX4-Avoidance for collision avoidance
 RUN apt update && apt-get install -y libpcl1 ros-melodic-octomap-*
@@ -153,14 +140,52 @@ COPY ./gzweb_model_db/ /gzweb_db/
 RUN git clone https://github.com/osrf/gzweb
 WORKDIR /gzweb
 RUN git checkout gzweb_1.4.1
+#Trying to fix null pointer segfault:
+COPY ./gzbridge.patch /gzweb/gzbridge/
+WORKDIR /gzweb/gzbridge
+RUN patch -p0 < gzbridge.patch
+WORKDIR /gzweb
 RUN /bin/bash -c "source /source_me.bash && export GAZEBO_MODEL_PATH=/gzweb_db:$GAZEBO_MODEL_PATH && npm run deploy --- -m local"
 RUN sed -i 's|ws://|wss://|' http/client/gz3d.gui.js
 RUN sed -i "s|'http://'|'https://'|" http/client/gz3d.gui.js
 #RUN /bin/bash -c "./updateGZ3D.sh" 
 
+### WebViz
+WORKDIR /
+RUN git clone https://github.com/cruise-automation/webviz.git
+WORKDIR webviz
+ENV NODE_VERSION v14.16.1
+RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
+ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
+ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
+RUN npm run bootstrap
+RUN npm run build-static-webviz
+RUN sed -i 's/http-server __static_webviz__/http-server --port 8081 __static_webviz__/g' ./package.json
+WORKDIR /
+
+# install autoware
+RUN apt-get update
+RUN sudo apt install -y python-catkin-pkg python-rosdep ros-$ROS_DISTRO-catkin
+RUN sudo apt install -y python3-pip python3-colcon-common-extensions python3-setuptools python3-vcstool
+RUN pip3 install -U setuptools
+RUN mkdir -p autoware.ai/src
+WORKDIR /autoware.ai
+RUN wget -O autoware.ai.repos "https://raw.githubusercontent.com/Autoware-AI/autoware.ai/1.12.0/autoware.ai.repos"
+RUN vcs import src < autoware.ai.repos
+RUN source /opt/ros/melodic/setup.sh
+RUN source /ros_entrypoint.sh
+RUN rosdep update
+RUN rosdep install -y --from-paths src --ignore-src --rosdistro $ROS_DISTRO
+RUN apt-get install -y ros-melodic-jsk-recognition-msgs ros-melodic-nmea-msgs ros-melodic-jsk-rviz-plugins ros-melodic-tvm-vendor ros-melodic-lanelet2-core ros-melodic-nmea-navsat-driver ros-melodic-lanelet2-io ros-melodic-lanelet2-maps ros-melodic-lanelet2-projection ros-melodic-lanelet2-routing  
+RUN . /opt/ros/melodic/setup.bash;  colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+RUN echo 'source /autoware.ai/install/setup.bash' >> /source_scripts/1system
+WORKDIR / 
 
 #ensure the right entry point for the docker container
 WORKDIR /
+
+#install velodyne packages
+RUN apt-get update -y && apt-get install -y ros-melodic-velodyne-simulator
 
 #install wetty
 ENV NVM_DIR /usr/local/nvm
@@ -173,27 +198,13 @@ RUN npm install -g yarn
 RUN yarn global add wetty@2.0.3
 EXPOSE 3000
 COPY ./web_scripts/ /web_scripts/
-RUN cd web_scripts && chmod +x start_web_terminal.sh start_gzweb.sh start_rvizweb.sh
+RUN cd web_scripts && chmod +x start_web_terminal.sh start_gzweb.sh start_webviz.sh
 
 #enable ssh into the container
 RUN apt-get update && apt-get install -y openssh-server sshpass
 RUN service ssh start
 EXPOSE 22
 CMD ["/usr/sbin/sshd","-D"]
-
-#install rvizweb
-ENV NVM_DIR /usr/local/nvm
-RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
-ENV NODE_VERSION v8.17.0
-RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
-ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
-ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
-WORKDIR /rvizweb_ws
-ARG rvizweb_branch=master
-RUN git clone https://github.com/osrf/rvizweb/ src/rvizweb -b ${rvizweb_branch}
-RUN rosdep install --from-paths src --ignore-src -r -y
-RUN source /source_me.bash && catkin_make install
-WORKDIR /
 
 # Create new simcloud user and simcloud group (id 1000) for running the container
 #RUN addgroup --gid 1000 simcloud_group
@@ -213,12 +224,12 @@ RUN echo "export NVM_DIR="/usr/local/nvm"" >> /root/.bashrc
 RUN echo "[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"" >> /root/.bashrc
 
 # clean up the terminal for wetty - (LUDO) This is nasty! Don't navigate on arbitrary bash startups!
-RUN echo "cd /" >> /root/.bashrc
+#RUN echo "cd /" >> /root/.bashrc
 # making sure that gzweb does not crash on start up
 RUN echo "export GAZEBO_MODEL_DATABASE_URI=countvoncount.math" >> /root/.bashrc
 #RUN echo "clear" >> /root/.bashrc
 # add style to wetty
-RUN echo "export PS1='\e[0;36mASIMOVO:\w \e[m '" >> /root/.bashrc
+#RUN echo "export PS1='\e[0;36mASIMOVO:\w \e[m '" >> /root/.bashrc
 
 # Add ros_packages and UAV sourcing to bashrc as well:
 COPY ./ros_packages /our_ros_packages

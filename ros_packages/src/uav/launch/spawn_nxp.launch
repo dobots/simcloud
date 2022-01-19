@@ -21,8 +21,10 @@
     <node name="spawn_uav" pkg="gazebo_ros" type="spawn_model" args="-file $(find uav)/gazebo_model/models/$(arg uav_model)/$(arg uav_model).sdf -sdf -model $(arg uav_model) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)" /> 
     
        
+    <arg name="start_rviz" default="false"/>
     <!-- launch static broadcasters for the UAV model -->
     <include file="$(find uav)/launch/model_tf.launch">
+        <arg name="start_rviz" value="$(arg start_rviz)"/>
         <arg name="sensor_model" value="$(arg uav_model)" />
     </include>
     
