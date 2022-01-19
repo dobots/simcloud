@@ -140,7 +140,8 @@ To run a demonstration of the simulation environment (drone in a fire station), 
 	* ```iris_camera```  holds a downward facing camera
 	* ```iris_front_camera``` has a front facing camera	
 	* ```iris_rplidar``` has a 2D rplidar on top
-	* ```iris_lidar``` has a 3D velodyne lidar beneath <-- this is however not working correctly
+	* ```iris_lidar``` has a 3D velodyne lidar on top
+	* ```iris_lidar_camera``` has a 3D velodyne lidar on top and a front facing camera --> however the tf tree seems broken for the lidar. 
 	
 	Add the name of these models as value for the ```uav_model``` argument, for example:
  

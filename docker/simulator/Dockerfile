@@ -184,6 +184,9 @@ WORKDIR /
 #ensure the right entry point for the docker container
 WORKDIR /
 
+#install velodyne packages
+RUN apt-get update -y && apt-get install -y ros-melodic-velodyne-simulator
+
 #install wetty
 ENV NVM_DIR /usr/local/nvm
 RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
@@ -221,12 +224,12 @@ RUN echo "export NVM_DIR="/usr/local/nvm"" >> /root/.bashrc
 RUN echo "[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"" >> /root/.bashrc
 
 # clean up the terminal for wetty - (LUDO) This is nasty! Don't navigate on arbitrary bash startups!
-RUN echo "cd /" >> /root/.bashrc
+#RUN echo "cd /" >> /root/.bashrc
 # making sure that gzweb does not crash on start up
 RUN echo "export GAZEBO_MODEL_DATABASE_URI=countvoncount.math" >> /root/.bashrc
 #RUN echo "clear" >> /root/.bashrc
 # add style to wetty
-RUN echo "export PS1='\e[0;36mASIMOVO:\w \e[m '" >> /root/.bashrc
+#RUN echo "export PS1='\e[0;36mASIMOVO:\w \e[m '" >> /root/.bashrc
 
 # Add ros_packages and UAV sourcing to bashrc as well:
 COPY ./ros_packages /our_ros_packages
