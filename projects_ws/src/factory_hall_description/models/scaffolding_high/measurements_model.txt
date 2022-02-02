@@ -1,0 +1,3 @@
+height 2.05m
+wide 2.10m
+length 4.55m

@@ -1,0 +1,8 @@
+prefix=/projects/projects_ws/devel
+
+Name: factory_hall_description
+Description: Description of factory_hall_description
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
