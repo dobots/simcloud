@@ -1,3 +1,6 @@
+!project_ws/
 project_ws/*
-project_ws/*/
-!.project_ws/src
+
+!project_ws/src
+project_ws/src/*
+
