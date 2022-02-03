@@ -1,0 +1,4 @@
+project_ws/src/*
+project_ws/devel
+project_ws/build
+project_ws/install

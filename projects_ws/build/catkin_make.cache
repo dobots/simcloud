@@ -1,2 +1,0 @@
-factory_hall_description
--DCATKIN_DEVEL_PREFIX=/projects/projects_ws/devel -DCMAKE_INSTALL_PREFIX=/projects/projects_ws/install -G Unix Makefiles
