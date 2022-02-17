@@ -49,8 +49,6 @@ RUN wget https://github.com/mavlink/qgroundcontrol/releases/download/v3.5.6/QGro
 RUN bsdtar xfp QGroundControl.AppImage
 # Now you may run the app using ./QGroundControl/qgroundcontrol-start.sh (As a non root user)
 
-
-
 # Expensive builds
 WORKDIR /
 RUN apt-get update -y && apt-get install -y --no-install-recommends libgazebo9-dev ros-melodic-gazebo-dev ros-melodic-gazebo-ros-pkgs ros-melodic-gazebo-ros ros-melodic-mavros ros-melodic-mavros-extras ros-melodic-genpy ros-melodic-pcl-ros ros-melodic-octomap-* && rm -rf /var/lib/apt/lists/*
@@ -109,6 +107,9 @@ RUN cd /our_ros_packages/src; rm -f CMakeLists.txt; source /source_me.bash; catk
 RUN /bin/bash -c 'source /source_me.bash; catkin_make -C /our_ros_packages'
 RUN echo '. /our_ros_packages/devel/setup.bash' >> /source_scripts/1system
 RUN echo '. $(rospack find uav)/scripts/init_uav_px4_deb.sh' >> /source_scripts/999px4Firmware
+
+# Put the project_ws folder in the source scripts
+RUN echo 'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:/projects/projects_ws/src' >> /source_scripts/1system
 
 # Finally double-check if there are any updates:
 RUN apt-get update -y && apt-get dist-upgrade -y && rm -rf /var/lib/apt/lists/*
