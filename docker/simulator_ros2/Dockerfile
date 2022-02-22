@@ -128,6 +128,9 @@ CMD ["/usr/sbin/sshd","-D"]
 
 WORKDIR /
 
+# install Xvfb for headless rendering of the camera topics
+RUN apt-get update && apt-get install -y xvfb
+
 # set root pw for wetty - (LUDO) Is this really necessary? Open passwords in Github?
 RUN echo "root:dobots_rocks" | chpasswd
 RUN echo "PermitRootLogin yes" >> /etc/ssh/sshd_config

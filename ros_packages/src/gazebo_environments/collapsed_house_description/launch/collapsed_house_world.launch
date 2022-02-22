@@ -8,6 +8,7 @@
   <arg name="paused" default="false"/>
   <arg name="debug" default="false"/>
   <arg name="headless" default="false"/>
+  <arg name="verbose" default="false"/>
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="world_name" default="$(arg world_name)"/>
@@ -15,6 +16,7 @@
     <arg name="paused" default="$(arg paused)"/>
     <arg name="debug" default="$(arg debug)"/>
     <arg name="headless" default="$(arg headless)"/>
+    <arg name="verbose" default="$(arg verbose)"/>
   </include>
 
 
