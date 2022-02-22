@@ -181,7 +181,6 @@ WORKDIR /
 #RUN echo 'source /autoware.ai/install/setup.bash' >> /source_scripts/1system
 #WORKDIR / 
 
-
 # install xvfb for headless rendering of the camera
 RUN apt update && apt-get install -y xvfb
 
