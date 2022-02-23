@@ -83,12 +83,11 @@ RUN sed -i "s|'http://'|'https://'|" http/client/gz3d.gui.js
 #ensure the right entry point for the docker container
 WORKDIR /
 
-
-
 ## WebViz
 WORKDIR /
 RUN git clone https://github.com/cruise-automation/webviz.git
 WORKDIR webviz
+RUN git checkout ce401383f0f487df8264d68fd09990fa1706e74d
 ENV NODE_VERSION v14.16.1
 RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
 ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
@@ -131,6 +130,9 @@ WORKDIR /
 # install Xvfb for headless rendering of the camera topics
 RUN apt-get update && apt-get install -y xvfb
 
+# install svn
+RUN apt-get install subversion -y
+
 # set root pw for wetty - (LUDO) Is this really necessary? Open passwords in Github?
 RUN echo "root:dobots_rocks" | chpasswd
 RUN echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
@@ -147,17 +149,21 @@ RUN echo "export GAZEBO_MODEL_DATABASE_URI=countvoncount.math" >> /root/.bashrc
 # add style to wetty
 #RUN echo "export PS1='ASIMOVO:\W '" >> /root/.bashrc
 
+
 # Add ros_packages and UAV sourcing to bashrc as well:
 RUN mkdir /our_ros_packages; cd /our_ros_packages; mkdir src
 RUN cd /our_ros_packages/src; git clone --single-branch --branch foxy https://github.com/husarion/rosbot_description.git; 
+# Add gzweb package for copying the models to the ros package folder
+COPY ./ros2_packages/src/gzweb_model /our_ros_packages/src/gzweb_model
+
 RUN source /opt/ros/foxy/setup.bash; cd /our_ros_packages; rosdep install --from-paths src --ignore-src -r -y; colcon build; source /source_me.bash
 RUN /bin/bash -c 'source /source_me.bash'
 RUN echo '. /our_ros_packages/install/setup.sh' >> /source_scripts/1system
 RUN cp -r /gzweb_db/rosbot_description /gzweb/http/client/assets/
+
 # Add gzweb package modifications
 COPY ./rosbot_files/ /our_ros_packages/rosbot_files/
 RUN cp /our_ros_packages/rosbot_files/* /our_ros_packages/install/rosbot_description/share/rosbot_description/ 
 RUN sed -i 's|/models/rosbot|/rosbot|' /our_ros_packages/install/rosbot_description/share/rosbot_description/launch/rosbot_spawn.launch.py
-
 
 
