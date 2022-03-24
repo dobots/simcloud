@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<launch>
+
+ <arg name="world_name" value="$(find parking_garage_description)/worlds/parking_garage.world"/>
+
+  <!--EDIT YOUR WORLD HERE-->
+  <arg name="gui" default="true" doc="set false for headless environment " />
+  <arg name="paused" default="false"/>
+  <arg name="debug" default="true"/>
+  <arg name="headless" default="false"/>
+  <arg name="verbose" value="true"/>
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" default="$(arg world_name)"/>
+    <arg name="gui" default="$(arg gui)"/>
+    <arg name="paused" default="$(arg paused)"/>
+    <arg name="debug" default="$(arg debug)"/>
+    <arg name="headless" default="$(arg headless)"/>
+  </include>
+
+  <arg name="x_" default="0.0"/>
+  <arg name="y_" default="-0.3"/>
+  <arg name="z_" default="0.12"/>
+  
+  <arg name="roll_" default="0"/>
+  <arg name="pitch_" default="0"/>
+  <arg name="yaw_" default="3.14"/>
+
+  <arg name="cart" default="rover"/>
+  <param name="robot_description" command="$(find xacro)/xacro $(find rover_description)/urdf/base_rover_big_top.urdf.xacro" />
+
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+    <param name="publish_frequency" value="30.0"/>
+  </node>
+
+  <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher">
+    <param name="rate" value="30.0"/>
+    <param name="use_gui" value="false"/>
+  </node>
+
+  <node name="spawn_cart" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model $(arg cart) -x $(arg x_) -y $(arg y_) -z $(arg z_) -R $(arg roll_) -P $(arg pitch_) -Y $(arg yaw_)"/> 
+
+  <!-- ADD POSE FOR UAV -->
+  <!-- GAZEBO COORDINATE FRAME IS ORIGIN -->
+  <!-- VALUES IN METER AND RADIANT -->
+  <arg name="x" value="0.35"/>
+  <arg name="y" value="-0.6"/>
+  <arg name="z" value="0.3"/>
+  
+  <arg name="roll" default="0"/>
+  <arg name="pitch" default="0"/>
+  <arg name="yaw" default="0"/>
+
+  <arg name="uav_model" default="iris_camera"/> <!--uses iris model from px4 firmware package and adds a ros usb_cam--> <!-- iris,iris_camera, iris_opt_flow, iris_rplida, solo, typhoon_h480 -->	
+
+  <node name="spawn_uav" pkg="gazebo_ros" type="spawn_model" args="-file $(find uav)/gazebo_model/models/$(arg uav_model)/$(arg uav_model).sdf -sdf -model $(arg uav_model) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)" />
+
+</launch>

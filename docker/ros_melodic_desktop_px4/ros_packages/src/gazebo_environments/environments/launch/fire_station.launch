@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+
+
+<arg name="gui" default="true"/>
+<include file="$(find fire_station_description)/launch/fire_station_world.launch">
+    <arg name="gui" default="$(arg gui)"/>
+</include>
+
+</launch>

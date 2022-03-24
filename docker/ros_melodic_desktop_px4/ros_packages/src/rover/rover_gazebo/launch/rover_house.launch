@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- Arguments -->
+  <arg name="empty_world" default="false"/>
+  <arg name="world_name" default="$(find rover_gazebo)/worlds/house.world"/>
+  
+  <arg name="robot_name" default="rover_cart"/>
+  <arg name="x" default="0.0"/>
+  <arg name="y" default="0.0"/>
+  <arg name="z" default="0.2"/>
+  <arg name="roll" default="0.0"/>
+  <arg name="pitch" default="0.0"/>
+  <arg name="yaw" default="3.14"/>
+
+  <arg name="rviz" default="false"/>
+
+  <!-- Show in Rviz -->
+  <node if="$(arg rviz)" name="rviz" pkg="rviz" type="rviz" args="-d $(find rover_gazebo)/rviz/rover.rviz" required="false" output="screen"/>
+
+  <!-- Start Gazebo   -->
+  <include file="$(find rover_gazebo)/launch/gazebo.launch">
+     <arg name="world_name" value="$(arg world_name)"/>
+     <arg name="empty_world" value="$(arg empty_world)"/>
+  </include>
+
+  <!-- Spawn rover_bot -->
+  <include file="$(find rover_gazebo)/launch/spawn_rover.launch">
+    <arg name="robot_name"  value="$(arg robot_name)" />
+    <arg name="x" value="$(arg x)" />
+    <arg name="y" value="$(arg y)" />
+    <arg name="z" value="$(arg z)" />
+    <arg name="roll" value="$(arg roll)" />
+    <arg name="pitch" value="$(arg pitch)" />
+    <arg name="yaw" value="$(arg yaw)" />
+  </include>
+
+</launch>

@@ -9,7 +9,7 @@
 # echo -n "`cat devel/.catkin`;/projects/src" > devel/.catkin
 # fi
 
-docker run -iPt \
+docker run -i \
     --rm \
     --env="DISPLAY=$DISPLAY" \
     --env="QT_X11_NO_MITSHM=1" \

@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="map" default="$(find rover_localization)/map/house.yaml"/>
+
+    <node name="map_server" pkg="map_server" type="map_server" args="$(arg map)"/>
+</launch>

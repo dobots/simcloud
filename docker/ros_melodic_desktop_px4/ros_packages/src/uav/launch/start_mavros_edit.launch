@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<launch>
+   <!--DO NOT TOUCH IF YOU DON'T KNOW WHAT YOU DO-->
+
+    <arg name="fcu_url" default="udp://127.0.0.1:14540@127.0.0.1:14557" />
+    <arg name="gcs_url" default="" />
+    <!--<arg name="gcs_url" default="udp://127.0.0.1:14558@127.0.0.1:14559" />-->
+    <arg name="tgt_system" default="1" />
+    <arg name="tgt_component" default="1" />
+    <arg name="pluginlists_yaml" value="$(find mavros)/launch/px4_pluginlists.yaml" />
+    <arg name="config_yaml" value="$(find uav)/cfg/px4_config.yaml" />
+    <arg name="log_output" default="screen" />
+    <arg name="fcu_protocol" default="v2.0" />
+    <arg name="respawn_mavros" default="false" />
+
+
+	<node pkg="mavros" type="mavros_node" name="mavros" required="$(eval not respawn_mavros)" clear_params="true" output="$(arg log_output)" respawn="$(arg respawn_mavros)">
+		<param name="fcu_url" value="$(arg fcu_url)" />
+		<param name="gcs_url" value="$(arg gcs_url)" />
+		<param name="target_system_id" value="$(arg tgt_system)" />
+		<param name="target_component_id" value="$(arg tgt_component)" />
+		<param name="fcu_protocol" value="$(arg fcu_protocol)" />
+
+		<!-- load blacklist, config -->
+		<rosparam command="load" file="$(arg pluginlists_yaml)" />
+		<rosparam command="load" file="$(arg config_yaml)" />
+	</node>
+</launch>

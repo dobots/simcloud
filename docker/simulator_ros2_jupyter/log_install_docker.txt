@@ -1,0 +1,555 @@
+Script started on 2022-03-24 11:48:04+01:00 [TERM="xterm-256color" TTY="/dev/pts/0" COLUMNS="211" LINES="56"]
+]0;dobots@dobots: ~/simcloud/docker/simulator_ros2[01;32mdobots@dobots[00m:[01;34m~/simcloud/docker/simulator_ros2[00m$ lsdocker build -t simulator_ros2_asimovo .
+Sending build context to Docker daemon  557.1kBSending build context to Docker daemon  4.824MB
+Step 1/90 : FROM osrf/ros:foxy-desktop
+ ---> 942df0cc4fa6
+Step 2/90 : ENV NVIDIA_VISIBLE_DEVICES     ${NVIDIA_VISIBLE_DEVICES:-all}
+ ---> Using cache
+ ---> ff487501abf9
+Step 3/90 : ENV NVIDIA_DRIVER_CAPABILITIES     ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
+ ---> Using cache
+ ---> 04ae5afae3c2
+Step 4/90 : RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+ ---> Using cache
+ ---> d13def9b78cb
+Step 5/90 : RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
+ ---> Using cache
+ ---> 9739156b6280
+Step 6/90 : RUN apt-get update -y && apt-get upgrade -y
+ ---> Using cache
+ ---> c700ebbf70f6
+Step 7/90 : RUN apt-get install -y --no-install-recommends apt-utils
+ ---> Using cache
+ ---> 61c551fbd67c
+Step 8/90 : RUN apt-get install -y less nano wget psmisc zip build-essential git mercurial vim
+ ---> Using cache
+ ---> 3dc6e1e77b3c
+Step 9/90 : RUN apt-get install -y libgl1-mesa-glx libgl1-mesa-dri
+ ---> Using cache
+ ---> d69967bf22e0
+Step 10/90 : RUN apt-get install -y gazebo11 libgazebo11-dev ros-foxy-gazebo-ros-pkgs
+ ---> Using cache
+ ---> 2f64a1965cd9
+Step 11/90 : RUN sed -i 's/set -e//' /ros_entrypoint.sh
+ ---> Using cache
+ ---> b7acf34a3524
+Step 12/90 : RUN mkdir /source_scripts
+ ---> Using cache
+ ---> 502d0b7047a1
+Step 13/90 : RUN echo 'for i in /source_scripts/*; do source $i; done' >> /source_me.bash
+ ---> Using cache
+ ---> ffc82de5eb88
+Step 14/90 : RUN echo 'echo "COLCON_PREFIX_PATH := $COLCON_PREFIX_PATH"' >> /source_me.bash
+ ---> Using cache
+ ---> e4e2141bd34d
+Step 15/90 : RUN echo 'source /source_me.bash' >> /root/.bashrc
+ ---> Using cache
+ ---> 1e056b08d312
+Step 16/90 : RUN echo 'source "/opt/ros/foxy/setup.bash"' >> /source_scripts/0defaults
+ ---> Using cache
+ ---> 4655cda594db
+Step 17/90 : RUN echo "source /usr/share/gazebo/setup.sh" >> /source_scripts/0defaults
+ ---> Using cache
+ ---> feb455c33b1b
+Step 18/90 : WORKDIR /
+ ---> Using cache
+ ---> 6348dcb556c9
+Step 19/90 : RUN apt-get install ros-foxy-rosbridge-suite -y
+ ---> Using cache
+ ---> cfde47b0f768
+Step 20/90 : RUN apt-get update && apt-get install -y ros-foxy-teleop-twist-keyboard ros-foxy-teleop-twist-joy
+ ---> Using cache
+ ---> 65c0bdf46159
+Step 21/90 : RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+ ---> Using cache
+ ---> 41e688e52389
+Step 22/90 : RUN apt update -y && sudo apt install -y ros-noetic-ros-base && sudo apt install -y ros-noetic-rosbridge-server
+ ---> Using cache
+ ---> 7231f697b1f3
+Step 23/90 : RUN apt install -y ros-foxy-ros1-bridge
+ ---> Using cache
+ ---> 888ccf1cdc3d
+Step 24/90 : WORKDIR /
+ ---> Using cache
+ ---> 780b32e50522
+Step 25/90 : EXPOSE 8080
+ ---> Using cache
+ ---> c4a3a0586024
+Step 26/90 : RUN apt-get update && apt-get install -y libjansson-dev libboost-dev imagemagick libtinyxml-dev mercurial cmake build-essential libgts-dev
+ ---> Using cache
+ ---> 04d44f21f3bf
+Step 27/90 : ENV NVM_DIR /usr/local/nvm
+ ---> Using cache
+ ---> 4a35c2d9d78e
+Step 28/90 : RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
+ ---> Using cache
+ ---> bf4c27bcc5a8
+Step 29/90 : ENV NODE_VERSION v8.9.0
+ ---> Using cache
+ ---> 42233c86708c
+Step 30/90 : RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefi $NODE_VERSION"
+ ---> Using cache
+ ---> d64a66194ee0
+Step 31/90 : ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
+ ---> Using cache
+ ---> 2414b1bf6b71
+Step 32/90 : ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
+ ---> Using cache
+ ---> 811d40e23fe2
+Step 33/90 : COPY ./gzweb_model_db/ /gzweb_db/
+ ---> Using cache
+ ---> 7cd54ac38ca9
+Step 34/90 : RUN ln -s /usr/bin/python2.7 /usr/bin/python
+ ---> Using cache
+ ---> 073a69c3a3f0
+Step 35/90 : RUN git clone https://github.com/osrf/gzweb
+ ---> Using cache
+ ---> 1b27ef88df8c
+Step 36/90 : WORKDIR /gzweb
+ ---> Using cache
+ ---> 45e7c524bcc3
+Step 37/90 : RUN git checkout gzweb_1.4.1
+ ---> Using cache
+ ---> 58fda21da1df
+Step 38/90 : COPY ./gzbridge.patch /gzweb/gzbridge/
+ ---> Using cache
+ ---> 4d5a0f6ca381
+Step 39/90 : WORKDIR /gzweb/gzbridge
+ ---> Using cache
+ ---> e7a440b7fb6b
+Step 40/90 : RUN patch -p0 < gzbridge.patch
+ ---> Using cache
+ ---> 5675ffbe59a7
+Step 41/90 : WORKDIR /gzweb
+ ---> Using cache
+ ---> ab94b4bb6ea2
+Step 42/90 : RUN /bin/bash -c "source /source_me.bash && export GAZEBO_MODEL_PATH=/gzweb_db:$GAZEBO_MODEL_PATH && npm run deploy --- -m local"
+ ---> Using cache
+ ---> 654e2a1a128a
+Step 43/90 : RUN sed -i 's|ws://|wss://|' http/client/gz3d.gui.js
+ ---> Using cache
+ ---> b20d4a888975
+Step 44/90 : RUN sed -i "s|'http://'|'https://'|" http/client/gz3d.gui.js
+ ---> Using cache
+ ---> 552141536767
+Step 45/90 : WORKDIR /
+ ---> Using cache
+ ---> 0defa32d2a43
+Step 46/90 : WORKDIR /
+ ---> Using cache
+ ---> 2b30c81e434f
+Step 47/90 : RUN git clone https://github.com/cruise-automation/webviz.git
+ ---> Using cache
+ ---> f04fd09129f9
+Step 48/90 : WORKDIR webviz
+ ---> Using cache
+ ---> d9327cb1d856
+Step 49/90 : ENV NODE_VERSION v14.16.1
+ ---> Using cache
+ ---> 4ab9279ad577
+Step 50/90 : RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
+ ---> Using cache
+ ---> 9d509ecd86b3
+Step 51/90 : ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
+ ---> Using cache
+ ---> 44a605c97a01
+Step 52/90 : ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
+ ---> Using cache
+ ---> ae8d3ed9234e
+Step 53/90 : RUN npm i -g npm@latest
+ ---> Using cache
+ ---> d77f887e8a4b
+Step 54/90 : RUN npm run bootstrap
+ ---> Using cache
+ ---> 5129427bd34d
+Step 55/90 : RUN npm run build-static-webviz
+ ---> Using cache
+ ---> be8c8e2e14c6
+Step 56/90 : RUN sed -i 's/http-server __static_webviz__/http-server --port 8081 __static_webviz__/g' ./package.json
+ ---> Using cache
+ ---> 203c14970f82
+Step 57/90 : WORKDIR /
+ ---> Using cache
+ ---> af93e8d738ac
+Step 58/90 : ENV NVM_DIR /usr/local/nvm
+ ---> Using cache
+ ---> 73d59b094cb3
+Step 59/90 : RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
+ ---> Using cache
+ ---> 5711337a8797
+Step 60/90 : ENV NODE_VERSION v14.16.1
+ ---> Using cache
+ ---> efc987aa700a
+Step 61/90 : RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
+ ---> Using cache
+ ---> e911d7f48dfb
+Step 62/90 : ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
+ ---> Using cache
+ ---> 5db12de1739c
+Step 63/90 : ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
+ ---> Using cache
+ ---> 94befa69d1a0
+Step 64/90 : RUN npm install -g yarn
+ ---> Using cache
+ ---> d6e9448587a1
+Step 65/90 : RUN yarn global add wetty@2.0.3
+ ---> Using cache
+ ---> fa791b03e416
+Step 66/90 : EXPOSE 3000
+ ---> Using cache
+ ---> 9612f2de5716
+Step 67/90 : COPY ./web_scripts/ /web_scripts/
+ ---> Using cache
+ ---> 1e70de788d78
+Step 68/90 : RUN cd web_scripts && chmod +x start_web_terminal.sh start_gzweb.sh start_webviz.sh
+ ---> Using cache
+ ---> 1002fcd69cbd
+Step 69/90 : RUN apt-get update && apt-get install -y openssh-server sshpass
+ ---> Using cache
+ ---> 267f3297e7c4
+Step 70/90 : RUN service ssh start
+ ---> Using cache
+ ---> a3372015ff8f
+Step 71/90 : EXPOSE 22
+ ---> Using cache
+ ---> 7daf305f4f41
+Step 72/90 : CMD ["/usr/sbin/sshd","-D"]
+ ---> Using cache
+ ---> 293aae6e4fea
+Step 73/90 : WORKDIR /
+ ---> Using cache
+ ---> e406bb6a3d7e
+Step 74/90 : RUN echo "root:dobots_rocks" | chpasswd
+ ---> Using cache
+ ---> 2c8e70ead2fe
+Step 75/90 : RUN echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
+ ---> Using cache
+ ---> 61de7a11474e
+Step 76/90 : RUN echo "export NVM_DIR="/usr/local/nvm"" >> /root/.bashrc
+ ---> Using cache
+ ---> 03c6dd5646b1
+Step 77/90 : RUN echo "[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"" >> /root/.bashrc
+ ---> Using cache
+ ---> cc9bbf3a05f2
+Step 78/90 : RUN echo "export GAZEBO_MODEL_DATABASE_URI=countvoncount.math" >> /root/.bashrc
+ ---> Using cache
+ ---> 1303efb732e5
+Step 79/90 : RUN mkdir /our_ros_packages; cd /our_ros_packages; mkdir src
+ ---> Using cache
+ ---> 40b534b47f06
+Step 80/90 : RUN cd /our_ros_packages/src; git clone --single-branch --branch foxy https://github.com/husarion/rosbot_description.git;
+ ---> Using cache
+ ---> d3fd0a8222b2
+Step 81/90 : RUN source /opt/ros/foxy/setup.bash; cd /our_ros_packages; rosdep install --from-paths src --ignore-src -r -y; colcon build; source /source_me.bash
+ ---> Using cache
+ ---> 517cec62d98b
+Step 82/90 : RUN /bin/bash -c 'source /source_me.bash'
+ ---> Using cache
+ ---> d51c32365436
+Step 83/90 : RUN echo '. /our_ros_packages/install/setup.sh' >> /source_scripts/1system
+ ---> Using cache
+ ---> d81f77673306
+Step 84/90 : RUN cp -r /gzweb_db/rosbot_description /gzweb/http/client/assets/
+ ---> Using cache
+ ---> 4429e3574c49
+Step 85/90 : COPY ./rosbot_files/ /our_ros_packages/rosbot_files/
+ ---> Using cache
+ ---> 6e079303a09d
+Step 86/90 : RUN cp /our_ros_packages/rosbot_files/* /our_ros_packages/install/rosbot_description/share/rosbot_description/
+ ---> Using cache
+ ---> 8a7e6deac941
+Step 87/90 : RUN sed -i 's|/models/rosbot|/rosbot|' /our_ros_packages/install/rosbot_description/share/rosbot_description/launch/rosbot_spawn.launch.py
+ ---> Using cache
+ ---> d80ef6246446
+Step 88/90 : RUN sudo apt-get -y install python3-pip
+ ---> Running in e794cc36f533
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  python-pip-whl python3-wheel
+The following NEW packages will be installed:
+  python-pip-whl python3-pip python3-wheel
+0 upgraded, 3 newly installed, 0 to remove and 9 not upgraded.
+Need to get 2060 kB of archives.
+After this operation, 3465 kB of additional disk space will be used.
+Get:1 http://archive.ubuntu.com/ubuntu focal-updates/universe amd64 python-pip-whl all 20.0.2-5ubuntu1.6 [1805 kB]
+Get:2 http://archive.ubuntu.com/ubuntu focal/universe amd64 python3-wheel all 0.34.2-1 [23.8 kB]
+Get:3 http://archive.ubuntu.com/ubuntu focal-updates/universe amd64 python3-pip all 20.0.2-5ubuntu1.6 [231 kB]
+[91mdebconf: unable to initialize frontend: Dialog
+debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
+debconf: falling back to frontend: Readline
+[0m[91mdebconf: unable to initialize frontend: Readline
+debconf: (This frontend requires a controlling tty.)
+debconf: falling back to frontend: Teletype
+[0m[91mdpkg-preconfigure: unable to re-open stdin: 
+[0mFetched 2060 kB in 4s (469 kB/s)
+Selecting previously unselected package python-pip-whl.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 140672 files and directories currently installed.)
+Preparing to unpack .../python-pip-whl_20.0.2-5ubuntu1.6_all.deb ...
+Unpacking python-pip-whl (20.0.2-5ubuntu1.6) ...
+Selecting previously unselected package python3-wheel.
+Preparing to unpack .../python3-wheel_0.34.2-1_all.deb ...
+Unpacking python3-wheel (0.34.2-1) ...
+Selecting previously unselected package python3-pip.
+Preparing to unpack .../python3-pip_20.0.2-5ubuntu1.6_all.deb ...
+Unpacking python3-pip (20.0.2-5ubuntu1.6) ...
+Setting up python3-wheel (0.34.2-1) ...
+Setting up python-pip-whl (20.0.2-5ubuntu1.6) ...
+Setting up python3-pip (20.0.2-5ubuntu1.6) ...
+Removing intermediate container e794cc36f533
+ ---> a7efd3d6c1fd
+Step 89/90 : RUN pip3 install jupyter jupyterlab jupytext jupyter-book
+ ---> Running in f0dbca1db58e
+Collecting jupyter
+  Downloading jupyter-1.0.0-py2.py3-none-any.whl (2.7 kB)
+Collecting jupyterlab
+  Downloading jupyterlab-3.3.2-py3-none-any.whl (8.7 MB)
+Collecting jupytext
+  Downloading jupytext-1.13.7-py3-none-any.whl (297 kB)
+Collecting jupyter-book
+  Downloading jupyter_book-0.12.2-py3-none-any.whl (43 kB)
+Collecting ipywidgets
+  Downloading ipywidgets-7.7.0-py2.py3-none-any.whl (123 kB)
+Collecting qtconsole
+  Downloading qtconsole-5.2.2-py3-none-any.whl (120 kB)
+Collecting nbconvert
+  Downloading nbconvert-6.4.4-py3-none-any.whl (561 kB)
+Collecting jupyter-console
+  Downloading jupyter_console-6.4.3-py3-none-any.whl (22 kB)
+Collecting notebook
+  Downloading notebook-6.4.10-py3-none-any.whl (9.9 MB)
+Collecting ipykernel
+  Downloading ipykernel-6.9.2-py3-none-any.whl (130 kB)
+Requirement already satisfied: packaging in /usr/lib/python3/dist-packages (from jupyterlab) (20.3)
+Collecting tornado>=6.1.0
+  Downloading tornado-6.1-cp38-cp38-manylinux2010_x86_64.whl (427 kB)
+Collecting jupyterlab-server~=2.10
+  Downloading jupyterlab_server-2.11.2-py3-none-any.whl (50 kB)
+Collecting jupyter-core
+  Downloading jupyter_core-4.9.2-py3-none-any.whl (86 kB)
+Collecting ipython
+  Downloading ipython-8.1.1-py3-none-any.whl (750 kB)
+Collecting jinja2>=2.1
+  Downloading Jinja2-3.0.3-py3-none-any.whl (133 kB)
+Collecting jupyter-server~=1.4
+  Downloading jupyter_server-1.15.6-py3-none-any.whl (341 kB)
+Collecting nbclassic~=0.2
+  Downloading nbclassic-0.3.7-py3-none-any.whl (13 kB)
+Collecting toml
+  Downloading toml-0.10.2-py2.py3-none-any.whl (16 kB)
+Collecting nbformat
+  Downloading nbformat-5.2.0-py3-none-any.whl (74 kB)
+Requirement already satisfied: pyyaml in /usr/lib/python3/dist-packages (from jupytext) (5.3.1)
+Collecting mdit-py-plugins
+  Downloading mdit_py_plugins-0.3.0-py3-none-any.whl (43 kB)
+Collecting markdown-it-py~=1.0
+  Downloading markdown_it_py-1.1.0-py3-none-any.whl (83 kB)
+Collecting sphinx-multitoc-numbering~=0.1.3
+  Downloading sphinx_multitoc_numbering-0.1.3-py3-none-any.whl (4.6 kB)
+Collecting sphinx-panels~=0.6.0
+  Downloading sphinx_panels-0.6.0-py3-none-any.whl (87 kB)
+Collecting sphinx-book-theme~=0.1.4
+  Downloading sphinx_book_theme-0.1.10-py3-none-any.whl (94 kB)
+Collecting sphinx<5,>=3
+  Downloading Sphinx-4.4.0-py3-none-any.whl (3.1 MB)
+Collecting sphinx-togglebutton
+  Downloading sphinx_togglebutton-0.3.0-py3-none-any.whl (7.8 kB)
+Collecting linkify-it-py~=1.0.1
+  Downloading linkify_it_py-1.0.3-py3-none-any.whl (19 kB)
+Collecting sphinx-copybutton
+  Downloading sphinx_copybutton-0.5.0-py3-none-any.whl (12 kB)
+Collecting sphinx-comments
+  Downloading sphinx_comments-0.0.3-py3-none-any.whl (4.6 kB)
+Collecting myst-nb~=0.13.1
+  Downloading myst_nb-0.13.2-py3-none-any.whl (41 kB)
+Requirement already satisfied: docutils<0.18,>=0.15 in /usr/lib/python3/dist-packages (from jupyter-book) (0.16)
+Collecting sphinx-external-toc~=0.2.3
+  Downloading sphinx_external_toc-0.2.4-py3-none-any.whl (25 kB)
+Collecting click<9,>=7.1
+  Downloading click-8.0.4-py3-none-any.whl (97 kB)
+Collecting sphinx-jupyterbook-latex~=0.4.6
+  Downloading sphinx_jupyterbook_latex-0.4.6-py3-none-any.whl (13 kB)
+Collecting sphinx-thebe~=0.1.1
+  Downloading sphinx_thebe-0.1.1-py3-none-any.whl (8.3 kB)
+Collecting jsonschema<4
+  Downloading jsonschema-3.2.0-py2.py3-none-any.whl (56 kB)
+Collecting sphinxcontrib-bibtex<=2.5.0,>=2.2.0
+  Downloading sphinxcontrib_bibtex-2.4.1-py3-none-any.whl (38 kB)
+Collecting traitlets>=4.3.1
+  Downloading traitlets-5.1.1-py3-none-any.whl (102 kB)
+Collecting widgetsnbextension~=3.6.0
+  Downloading widgetsnbextension-3.6.0-py2.py3-none-any.whl (1.6 MB)
+Collecting jupyterlab-widgets>=1.0.0; python_version >= "3.6"
+  Downloading jupyterlab_widgets-1.1.0-py3-none-any.whl (245 kB)
+Collecting ipython-genutils~=0.2.0
+  Downloading ipython_genutils-0.2.0-py2.py3-none-any.whl (26 kB)
+Requirement already satisfied: pygments in /usr/lib/python3/dist-packages (from qtconsole->jupyter) (2.3.1)
+Collecting qtpy
+  Downloading QtPy-2.0.1-py3-none-any.whl (65 kB)
+Collecting jupyter-client>=4.1
+  Downloading jupyter_client-7.1.2-py3-none-any.whl (130 kB)
+Collecting pyzmq>=17.1
+  Downloading pyzmq-22.3.0-cp38-cp38-manylinux_2_12_x86_64.manylinux2010_x86_64.whl (1.1 MB)
+Collecting mistune<2,>=0.8.1
+  Downloading mistune-0.8.4-py2.py3-none-any.whl (16 kB)
+Requirement already satisfied: entrypoints>=0.2.2 in /usr/lib/python3/dist-packages (from nbconvert->jupyter) (0.3)
+Collecting bleach
+  Downloading bleach-4.1.0-py2.py3-none-any.whl (157 kB)
+Collecting pandocfilters>=1.4.1
+  Downloading pandocfilters-1.5.0-py2.py3-none-any.whl (8.7 kB)
+Collecting beautifulsoup4
+  Downloading beautifulsoup4-4.10.0-py3-none-any.whl (97 kB)
+Collecting testpath
+  Downloading testpath-0.6.0-py3-none-any.whl (83 kB)
+Collecting jupyterlab-pygments
+  Downloading jupyterlab_pygments-0.1.2-py2.py3-none-any.whl (4.6 kB)
+Collecting nbclient<0.6.0,>=0.5.0
+  Downloading nbclient-0.5.13-py3-none-any.whl (70 kB)
+Requirement already satisfied: defusedxml in /usr/lib/python3/dist-packages (from nbconvert->jupyter) (0.6.0)
+Collecting prompt-toolkit!=3.0.0,!=3.0.1,<3.1.0,>=2.0.0
+  Downloading prompt_toolkit-3.0.28-py3-none-any.whl (380 kB)
+Collecting nest-asyncio>=1.5
+  Downloading nest_asyncio-1.5.4-py3-none-any.whl (5.1 kB)
+Collecting argon2-cffi
+  Downloading argon2_cffi-21.3.0-py3-none-any.whl (14 kB)
+Collecting terminado>=0.8.3
+  Downloading terminado-0.13.3-py3-none-any.whl (14 kB)
+Collecting Send2Trash>=1.8.0
+  Downloading Send2Trash-1.8.0-py3-none-any.whl (18 kB)
+Collecting prometheus-client
+  Downloading prometheus_client-0.13.1-py3-none-any.whl (57 kB)
+Requirement already satisfied: psutil in /usr/lib/python3/dist-packages (from ipykernel->jupyter) (5.5.1)
+Collecting matplotlib-inline<0.2.0,>=0.1.0
+  Downloading matplotlib_inline-0.1.3-py3-none-any.whl (8.2 kB)
+Collecting debugpy<2.0,>=1.0.0
+  Downloading debugpy-1.5.1-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl (1.9 MB)
+Requirement already satisfied: requests in /usr/lib/python3/dist-packages (from jupyterlab-server~=2.10->jupyterlab) (2.22.0)
+Collecting json5
+  Downloading json5-0.9.6-py2.py3-none-any.whl (18 kB)
+Collecting babel
+  Downloading Babel-2.9.1-py2.py3-none-any.whl (8.8 MB)
+Collecting backcall
+  Downloading backcall-0.2.0-py2.py3-none-any.whl (11 kB)
+Collecting pickleshare
+  Downloading pickleshare-0.7.5-py2.py3-none-any.whl (6.9 kB)
+Collecting decorator
+  Downloading decorator-5.1.1-py3-none-any.whl (9.1 kB)
+Requirement already satisfied: setuptools>=18.5 in /usr/lib/python3/dist-packages (from ipython->jupyterlab) (45.2.0)
+Collecting stack-data
+  Downloading stack_data-0.2.0-py3-none-any.whl (21 kB)
+Collecting jedi>=0.16
+  Downloading jedi-0.18.1-py2.py3-none-any.whl (1.6 MB)
+Collecting pexpect>4.3; sys_platform != "win32"
+  Downloading pexpect-4.8.0-py2.py3-none-any.whl (59 kB)
+Collecting MarkupSafe>=2.0
+  Downloading MarkupSafe-2.1.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (25 kB)
+Collecting websocket-client
+  Downloading websocket_client-1.3.1-py3-none-any.whl (54 kB)
+Collecting anyio>=3.1.0
+  Downloading anyio-3.5.0-py3-none-any.whl (79 kB)
+Collecting notebook-shim>=0.1.0
+  Downloading notebook_shim-0.1.0-py3-none-any.whl (13 kB)
+Requirement already satisfied: attrs<22,>=19 in /usr/lib/python3/dist-packages (from markdown-it-py~=1.0->jupytext) (19.3.0)
+Collecting pydata-sphinx-theme~=0.7.2
+  Downloading pydata_sphinx_theme-0.7.2-py3-none-any.whl (1.4 MB)
+Collecting importlib-metadata>=4.4; python_version < "3.10"
+  Downloading importlib_metadata-4.11.3-py3-none-any.whl (18 kB)
+Collecting sphinxcontrib-htmlhelp>=2.0.0
+  Downloading sphinxcontrib_htmlhelp-2.0.0-py2.py3-none-any.whl (100 kB)
+Collecting sphinxcontrib-qthelp
+  Downloading sphinxcontrib_qthelp-1.0.3-py2.py3-none-any.whl (90 kB)
+Collecting sphinxcontrib-jsmath
+  Downloading sphinxcontrib_jsmath-1.0.1-py2.py3-none-any.whl (5.1 kB)
+Collecting sphinxcontrib-applehelp
+  Downloading sphinxcontrib_applehelp-1.0.2-py2.py3-none-any.whl (121 kB)
+Collecting alabaster<0.8,>=0.7
+  Downloading alabaster-0.7.12-py2.py3-none-any.whl (14 kB)
+Collecting imagesize
+  Downloading imagesize-1.3.0-py2.py3-none-any.whl (5.2 kB)
+Collecting sphinxcontrib-serializinghtml>=1.1.5
+  Downloading sphinxcontrib_serializinghtml-1.1.5-py2.py3-none-any.whl (94 kB)
+Requirement already satisfied: snowballstemmer>=1.1 in /usr/lib/python3/dist-packages (from sphinx<5,>=3->jupyter-book) (2.0.0)
+Collecting sphinxcontrib-devhelp
+  Downloading sphinxcontrib_devhelp-1.0.2-py2.py3-none-any.whl (84 kB)
+Requirement already satisfied: wheel in /usr/lib/python3/dist-packages (from sphinx-togglebutton->jupyter-book) (0.34.2)
+Collecting uc-micro-py
+  Downloading uc_micro_py-1.0.1-py3-none-any.whl (6.2 kB)
+Collecting jupyter-sphinx~=0.3.2
+  Downloading jupyter_sphinx-0.3.2-py3-none-any.whl (20 kB)
+Collecting myst-parser~=0.15.2
+  Downloading myst_parser-0.15.2-py3-none-any.whl (46 kB)
+Collecting jupyter-cache~=0.4.1
+  Downloading jupyter_cache-0.4.3-py3-none-any.whl (31 kB)
+Collecting importlib-resources; python_version < "3.9"
+  Downloading importlib_resources-5.4.0-py3-none-any.whl (28 kB)
+Requirement already satisfied: six>=1.11.0 in /usr/lib/python3/dist-packages (from jsonschema<4->jupyter-book) (1.14.0)
+Collecting pyrsistent>=0.14.0
+  Downloading pyrsistent-0.18.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (119 kB)
+Collecting pybtex>=0.20
+  Downloading pybtex-0.24.0-py2.py3-none-any.whl (561 kB)
+Collecting pybtex-docutils>=1.0.0
+  Downloading pybtex_docutils-1.0.1-py3-none-any.whl (4.8 kB)
+Requirement already satisfied: python-dateutil>=2.1 in /usr/lib/python3/dist-packages (from jupyter-client>=4.1->qtconsole->jupyter) (2.7.3)
+Collecting webencodings
+  Downloading webencodings-0.5.1-py2.py3-none-any.whl (11 kB)
+Collecting soupsieve>1.2
+  Downloading soupsieve-2.3.1-py3-none-any.whl (37 kB)
+Requirement already satisfied: wcwidth in /usr/lib/python3/dist-packages (from prompt-toolkit!=3.0.0,!=3.0.1,<3.1.0,>=2.0.0->jupyter-console->jupyter) (0.1.8)
+Collecting argon2-cffi-bindings
+  Downloading argon2_cffi_bindings-21.2.0-cp36-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (86 kB)
+Collecting ptyprocess; os_name != "nt"
+  Downloading ptyprocess-0.7.0-py2.py3-none-any.whl (13 kB)
+Collecting pytz>=2015.7
+  Downloading pytz-2022.1-py2.py3-none-any.whl (503 kB)
+Collecting executing
+  Downloading executing-0.8.3-py2.py3-none-any.whl (16 kB)
+Collecting pure-eval
+  Downloading pure_eval-0.2.2-py3-none-any.whl (11 kB)
+Collecting asttokens
+  Downloading asttokens-2.0.5-py2.py3-none-any.whl (20 kB)
+Collecting parso<0.9.0,>=0.8.0
+  Downloading parso-0.8.3-py2.py3-none-any.whl (100 kB)
+Collecting sniffio>=1.1
+  Downloading sniffio-1.2.0-py3-none-any.whl (10 kB)
+Requirement already satisfied: idna>=2.8 in /usr/lib/python3/dist-packages (from anyio>=3.1.0->jupyter-server~=1.4->jupyterlab) (2.8)
+Requirement already satisfied: zipp>=0.5 in /usr/lib/python3/dist-packages (from importlib-metadata>=4.4; python_version < "3.10"->sphinx<5,>=3->jupyter-book) (1.0.0)
+Collecting nbdime
+  Downloading nbdime-3.1.1-py2.py3-none-any.whl (5.3 MB)
+Collecting sqlalchemy<1.5,>=1.3.12
+  Downloading SQLAlchemy-1.4.32-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (1.6 MB)
+Collecting latexcodec>=1.0.4
+  Downloading latexcodec-2.0.1-py2.py3-none-any.whl (18 kB)
+Collecting cffi>=1.0.1
+  Downloading cffi-1.15.0-cp38-cp38-manylinux_2_12_x86_64.manylinux2010_x86_64.whl (446 kB)
+Collecting colorama
+  Downloading colorama-0.4.4-py2.py3-none-any.whl (16 kB)
+Collecting GitPython!=2.1.4,!=2.1.5,!=2.1.6
+  Downloading GitPython-3.1.27-py3-none-any.whl (181 kB)
+Collecting jupyter-server-mathjax>=0.2.2
+  Downloading jupyter_server_mathjax-0.2.5-py3-none-any.whl (3.1 MB)
+Collecting greenlet!=0.4.17; python_version >= "3" and (platform_machine == "aarch64" or (platform_machine == "ppc64le" or (platform_machine == "x86_64" or (platform_machine == "amd64" or (platform_machine == "AMD64" or (platform_machine == "win32" or platform_machine == "WIN32"))))))
+  Downloading greenlet-1.1.2-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (156 kB)
+Collecting pycparser
+  Downloading pycparser-2.21-py2.py3-none-any.whl (118 kB)
+Collecting gitdb<5,>=4.0.1
+  Downloading gitdb-4.0.9-py3-none-any.whl (63 kB)
+Collecting smmap<6,>=3.0.1
+  Downloading smmap-5.0.0-py3-none-any.whl (24 kB)
+[91mERROR: ipython 8.1.1 has requirement pygments>=2.4.0, but you'll have pygments 2.3.1 which is incompatible.
+ERROR: jupyterlab-pygments 0.1.2 has requirement pygments<3,>=2.4.1, but you'll have pygments 2.3.1 which is incompatible.
+[0m[91mERROR: nbconvert 6.4.4 has requirement pygments>=2.4.1, but you'll have pygments 2.3.1 which is incompatible.
+[0m[91mERROR: myst-parser 0.15.2 has requirement mdit-py-plugins~=0.2.8, but you'll have mdit-py-plugins 0.3.0 which is incompatible.
+[0m[91mERROR: sphinx-external-toc 0.2.4 has requirement attrs<22,>=20.3, but you'll have attrs 19.3.0 which is incompatible.
+[0m[91mERROR: importlib-resources 5.4.0 has requirement zipp>=3.1.0; python_version < "3.10", but you'll have zipp 1.0.0 which is incompatible.
+[0m[91mERROR: jupyter-book 0.12.2 has requirement jupytext<1.12,>=1.11.2, but you'll have jupytext 1.13.7 which is incompatible.
+[0mInstalling collected packages: pyzmq, nest-asyncio, traitlets, jupyter-core, tornado, jupyter-client, matplotlib-inline, debugpy, backcall, pickleshare, decorator, prompt-toolkit, executing, pure-eval, asttokens, stack-data, parso, jedi, ptyprocess, pexpect, ipython, ipykernel, pyrsistent, jsonschema, nbformat, ipython-genutils, mistune, webencodings, bleach, pandocfilters, soupsieve, beautifulsoup4, MarkupSafe, jinja2, testpath, jupyterlab-pygments, nbclient, nbconvert, pycparser, cffi, argon2-cffi-bindings, argon2-cffi, terminado, Send2Trash, prometheus-client, notebook, widgetsnbextension, jupyterlab-widgets, ipywidgets, qtpy, qtconsole, jupyter-console, jupyter, json5, websocket-client, sniffio, anyio, jupyter-server, pytz, babel, jupyterlab-server, notebook-shim, nbclassic, jupyterlab, toml, markdown-it-py, mdit-py-plugins, jupytext, importlib-metadata, sphinxcontrib-htmlhelp, sphinxcontrib-qthelp, sphinxcontrib-jsmath, sphinxcontrib-applehelp, alabaster, imagesize, sphinxcontrib-serializinghtml, sphinxcontrib-devhelp, sphinx, sphinx-multitoc-numbering, sphinx-panels, pydata-sphinx-theme, sphinx-book-theme, sphinx-togglebutton, uc-micro-py, linkify-it-py, sphinx-copybutton, sphinx-comments, jupyter-sphinx, myst-parser, colorama, smmap, gitdb, GitPython, jupyter-server-mathjax, nbdime, greenlet, sqlalchemy, jupyter-cache, myst-nb, click, sphinx-external-toc, importlib-resources, sphinx-jupyterbook-latex, sphinx-thebe, latexcodec, pybtex, pybtex-docutils, sphinxcontrib-bibtex, jupyter-book
+  Attempting uninstall: tornado
+    Found existing installation: tornado 5.1.1
+    Not uninstalling tornado at /usr/lib/python3/dist-packages, outside environment /usr
+    Can't uninstall 'tornado'. No files were found to uninstall.
+  Attempting uninstall: importlib-metadata
+    Found existing installation: importlib-metadata 1.5.0
+    Not uninstalling importlib-metadata at /usr/lib/python3/dist-packages, outside environment /usr
+    Can't uninstall 'importlib-metadata'. No files were found to uninstall.
+Successfully installed GitPython-3.1.27 MarkupSafe-2.1.1 Send2Trash-1.8.0 alabaster-0.7.12 anyio-3.5.0 argon2-cffi-21.3.0 argon2-cffi-bindings-21.2.0 asttokens-2.0.5 babel-2.9.1 backcall-0.2.0 beautifulsoup4-4.10.0 bleach-4.1.0 cffi-1.15.0 click-8.0.4 colorama-0.4.4 debugpy-1.5.1 decorator-5.1.1 executing-0.8.3 gitdb-4.0.9 greenlet-1.1.2 imagesize-1.3.0 importlib-metadata-4.11.3 importlib-resou

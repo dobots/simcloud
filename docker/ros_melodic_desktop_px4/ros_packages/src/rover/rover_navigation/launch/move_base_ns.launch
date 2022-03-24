@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<launch>
+
+ <!-- Namespace (mandatory) Eg. robot_0 (no leading or trailing '/' !) -->
+ <arg name="namespace"/>
+ <!-- tf_prefix for frames -->
+ <arg name="tf_prefix" default="$(arg namespace)"/>
+
+ <!-- request navigation on namespaced map -->
+ <arg name="namespaced_map" default="false"/>
+
+ <arg name="rviz" default="false"/>
+
+ <group ns="$(arg namespace)">
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+        <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS"/>
+        <param name="base_global_planner" value="global_planner/GlobalPlanner"/>
+        <rosparam file="$(find rover_navigation)/cfg/costmap_common_params.yaml" command="load" ns="global_costmap" />
+        <rosparam file="$(find rover_navigation)/cfg/costmap_common_params.yaml" command="load" ns="local_costmap" />
+        <rosparam file="$(find rover_navigation)/cfg/global_costmap_params.yaml" command="load" />
+        <rosparam file="$(find rover_navigation)/cfg/local_costmap_params.yaml" command="load" />
+        <rosparam file="$(find rover_navigation)/cfg/global_planner_params.yaml" command="load" />
+        <rosparam file="$(find rover_navigation)/cfg/teb_local_planner_params.yaml" command="load" />
+        <rosparam file="$(find rover_navigation)/cfg/costmap_converter_params.yaml" command="load" />
+        <rosparam file="$(find rover_navigation)/cfg/move_base_params.yaml" command="load"/>
+
+        <!-- reset frame and topic parameters using user input data -->
+        <param name="global_costmap/robot_base_frame" value="$(arg tf_prefix)/base_link"/>
+        <param name="local_costmap/global_frame" value="$(arg tf_prefix)/odom"/>
+        <param name="local_costmap/robot_base_frame" value="$(arg tf_prefix)/base_link"/>
+        <param name="global_costmap/obstacle_layer/scan/topic" value="/$(arg namespace)/scan"/>
+        <param name="global_costmap/obstacle_layer/scan/sensor_frame" value="$(arg tf_prefix)/laser"/>
+        <param name="local_costmap/obstacle_layer/scan/topic" value="/$(arg namespace)/scan"/>
+        <param name="local_costmap/obstacle_layer/scan/sensor_frame" value="$(arg tf_prefix)/laser"/>
+        
+        <!-- Also change the map topic and frame IF the user requests namespaced map -->
+        <param if="$(arg namespaced_map)" name="global_costmap/global_frame" value="$(arg tf_prefix)/map"/>
+        <param if="$(arg namespaced_map)" name="global_costmap/static_layer/map_topic" value="/$(arg namespace)/map"/>
+        <param if="$(arg namespaced_map)" name="local_costmap/static_layer/map_topic" value="/$(arg namespace)/map"/>
+
+    </node>
+
+    <!-- Show in Rviz -->
+    <node if="$(arg rviz)" name="rviz" pkg="rviz" type="rviz" args="-d $(find rover_navigation)/rviz/rover_navigation_ns.rviz" required="false" output="screen"/>
+
+ </group>
+</launch>

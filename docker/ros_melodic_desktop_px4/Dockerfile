@@ -113,6 +113,9 @@ RUN echo '. $(rospack find uav)/scripts/init_uav_px4_deb.sh' >> /source_scripts/
 # Finally double-check if there are any updates:
 RUN apt-get update -y && apt-get dist-upgrade -y && rm -rf /var/lib/apt/lists/*
 
+RUN apt-get update -y && apt-get upgrade -y && apt-get install ros-melodic-web-video-server -y
+
+
 # Ensure image runs bash
 CMD ["bash"]
 

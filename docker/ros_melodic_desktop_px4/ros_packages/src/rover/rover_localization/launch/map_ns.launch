@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+ 
+ <arg name="map" default="$(find rover_localization)/map/house.yaml"/>
+
+ <!-- Namespace (mandatory) Eg. robot_0 (no leading or trailing '/' !) -->
+ <arg name="namespace"/>
+ <!-- tf_prefix for frame -->
+ <arg name="tf_prefix" default="$(arg namespace)"/>
+
+ <group ns="$(arg namespace)">
+    <node name="map_server" pkg="map_server" type="map_server" args="$(arg map)">
+        <param name="frame_id" value="$(arg tf_prefix)/map"/>
+    </node>
+ </group>
+
+</launch>

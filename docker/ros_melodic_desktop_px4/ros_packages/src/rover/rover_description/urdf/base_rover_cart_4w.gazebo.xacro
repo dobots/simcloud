@@ -1,0 +1,50 @@
+<?xml version="1.0"?>	
+<robot name= "base_rover_cart" xmlns:xacro="http://ros.org/wiki/xacro" >
+	<!--gazebo>
+		<plugin name= "base_rover_controller" filename="libgazebo_ros_skid_steer_drive.so" >
+			<commandTopic> cmd_vel </commandTopic>
+			<odometryTopic> odom </odometryTopic>
+			<odometryFrame> odom </odometryFrame>
+			<odometrySource> world </odometrySource>
+			<publishOdomTF> true </publishOdomTF>
+			<robotBaseFrame> base_link </robotBaseFrame>
+			<publishWheelTF> false </publishWheelTF>
+			<publishTf> true </publishTf>
+			<publishWheelJointState> true </publishWheelJointState>
+			<legacyMode> false </legacyMode>
+			<updateRate> 100 </updateRate>
+			<leftJoint> wheel_left_joint </leftJoint>
+			<rightJoint> wheel_right_joint </rightJoint>
+			<wheelSeparation> 0.50 </wheelSeparation>
+			<wheelDiameter> 0.21 </wheelDiameter>
+			<wheelAcceleration> 1 </wheelAcceleration>
+			<wheelTorque> 10 </wheelTorque>
+			<rosDebugLevel> na </rosDebugLevel>
+		</plugin>
+	</gazebo-->
+	
+
+	<gazebo>
+		<plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
+			<commandTopic> cmd_vel </commandTopic>
+			<odometryTopic> odom </odometryTopic>
+			<odometryFrame> odom </odometryFrame>
+
+			<updateRate>100.0</updateRate>
+			<robotNamespace>/</robotNamespace>
+	    		<leftFrontJoint>wheel_left_joint</leftFrontJoint>
+	    		<rightFrontJoint>wheel_right_joint</rightFrontJoint>
+	    		<leftRearJoint>wheel_left_joint2</leftRearJoint>
+	    		<rightRearJoint>wheel_right_joint2</rightRearJoint>
+	    		<wheelSeparation>0.5</wheelSeparation>
+	    		<wheelDiameter>0.215</wheelDiameter>
+	    		<robotBaseFrame>base_footprint</robotBaseFrame>
+	    		<torque>20</torque>
+	    		<topicName>cmd_vel</topicName>
+			<broadcastTF>false</broadcastTF>
+	    		<covariance_x>0.0001</covariance_x>
+	    		<covariance_y>0.0001</covariance_y>
+	    		<covariance_yaw>0.01</covariance_yaw>
+		</plugin>
+	</gazebo>
+</robot>
