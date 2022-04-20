@@ -24,6 +24,7 @@ docker run -iPt \
     -p 4000:4000 \
     -p 80:80 \
     -p 2222:22 \
+    --privileged \
     --device-cgroup-rule 'a 13:* rwm' \
     --device-cgroup-rule 'a 189:* rwm' \
     --env="DISPLAY=$DISPLAY" \
@@ -34,3 +35,4 @@ docker run -iPt \
     --volume="$PWD:/projects" \
     --name="simulator_ros2_jupyter" \
     simulator_ros2_jupyter\
+    bash

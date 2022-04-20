@@ -159,8 +159,17 @@ RUN sed -i 's|/models/rosbot|/rosbot|' /our_ros_packages/install/rosbot_descript
 
 
 #Install Pip and Jupyter
-RUN sudo apt-get -y install python3-pip 
+RUN sudo apt-get -y install python3-pip
+RUN pip3 install --upgrade numpy pandas 
 RUN pip3 install jupyter jupyterlab jupytext jupyter-book
+RUN pip3 install ipywidgets
 RUN pip3 install --upgrade --no-deps --force-reinstall jupyterlab-myst
+
+#Creating the Jupyter start Script
+RUN mkdir /jupyter_scripts/
+COPY ./start_jupyter.sh /jupyter_scripts/start_lab.sh
+COPY ./start_jupyter.sh /jupyter_scripts/start_notebook.sh
+RUN chmod +x /jupyter_scripts/start_lab.sh
+RUN chmod +x /jupyter_scripts/start_notebook.sh
 
 
