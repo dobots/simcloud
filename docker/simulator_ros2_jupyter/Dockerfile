@@ -167,8 +167,8 @@ RUN pip3 install --upgrade --no-deps --force-reinstall jupyterlab-myst
 
 #Creating the Jupyter start Script
 RUN mkdir /jupyter_scripts/
-COPY ./start_jupyter.sh /jupyter_scripts/start_lab.sh
-COPY ./start_jupyter.sh /jupyter_scripts/start_notebook.sh
+COPY ./start_lab.sh /jupyter_scripts/start_lab.sh
+COPY ./start_notebook.sh /jupyter_scripts/start_notebook.sh
 RUN chmod +x /jupyter_scripts/start_lab.sh
 RUN chmod +x /jupyter_scripts/start_notebook.sh
 
