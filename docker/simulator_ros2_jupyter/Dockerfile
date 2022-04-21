@@ -162,7 +162,7 @@ RUN sed -i 's|/models/rosbot|/rosbot|' /our_ros_packages/install/rosbot_descript
 RUN sudo apt-get -y install python3-pip
 RUN pip3 install --upgrade numpy pandas 
 RUN pip3 install jupyter jupyterlab jupytext jupyter-book
-RUN pip3 install ipywidgets
+RUN pip3 install ipywidgets pyyaml bqplot
 RUN pip3 install --upgrade --no-deps --force-reinstall jupyterlab-myst
 
 #Creating the Jupyter start Script
@@ -172,4 +172,4 @@ COPY ./start_notebook.sh /jupyter_scripts/start_notebook.sh
 RUN chmod +x /jupyter_scripts/start_lab.sh
 RUN chmod +x /jupyter_scripts/start_notebook.sh
 
-
+RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install --lts && nvm use stable"
