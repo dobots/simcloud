@@ -79,23 +79,24 @@ WORKDIR /gzweb
 RUN /bin/bash -c "source /source_me.bash && export GAZEBO_MODEL_PATH=/gzweb_db:$GAZEBO_MODEL_PATH && npm run deploy --- -m local"
 RUN sed -i 's|ws://|wss://|' http/client/gz3d.gui.js
 RUN sed -i "s|'http://'|'https://'|" http/client/gz3d.gui.js
+RUN sed -i 's|listen(port|listen(port, "0.0.0.0"|' gzbridge/server.js
 
 #ensure the right entry point for the docker container
 WORKDIR /
 
 ## WebViz
-WORKDIR /
-RUN git clone https://github.com/cruise-automation/webviz.git
-WORKDIR webviz
-RUN git checkout ce401383f0f487df8264d68fd09990fa1706e74d
-ENV NODE_VERSION v14.16.1
-RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
-ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
-ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
-RUN npm run bootstrap
-RUN npm run build-static-webviz
-RUN sed -i 's/http-server __static_webviz__/http-server --port 8081 __static_webviz__/g' ./package.json
-WORKDIR /
+#WORKDIR /
+#RUN git clone https://github.com/cruise-automation/webviz.git
+#WORKDIR webviz
+#RUN git checkout ce401383f0f487df8264d68fd09990fa1706e74d
+#ENV NODE_VERSION v14.16.1
+#RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
+#ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
+#ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
+#RUN npm run bootstrap
+#RUN npm run build-static-webviz
+#RUN sed -i 's/http-server __static_webviz__/http-server --port 8081 __static_webviz__/g' ./package.json
+#WORKDIR /
 
 #install wetty
 ENV NVM_DIR /usr/local/nvm
@@ -123,7 +124,7 @@ RUN cd web_scripts && chmod +x start_web_terminal.sh start_gzweb.sh start_webviz
 RUN apt-get update && apt-get install -y openssh-server sshpass
 RUN service ssh start
 EXPOSE 22
-CMD ["/usr/sbin/sshd","-D"]
+#CMD ["/usr/sbin/sshd","-D"]
 
 WORKDIR /
 
@@ -166,4 +167,9 @@ COPY ./rosbot_files/ /our_ros_packages/rosbot_files/
 RUN cp /our_ros_packages/rosbot_files/* /our_ros_packages/install/rosbot_description/share/rosbot_description/ 
 RUN sed -i 's|/models/rosbot|/rosbot|' /our_ros_packages/install/rosbot_description/share/rosbot_description/launch/rosbot_spawn.launch.py
 
+# start launch scripts
+COPY ./test_launchfile.sh ./test_launchfile.sh
+RUN chmod +x test_launchfile.sh
+RUN mkdir -p ~/.ssh
+CMD ["/web_scripts/start_web_terminal.sh"]
 

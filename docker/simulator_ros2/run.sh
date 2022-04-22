@@ -21,7 +21,7 @@ docker run -iPt \
     -v /dev/input:/dev/input \
     -p 8001:8001 \
     -p 8080:8080 \
-    -p 4000:4000 \
+    -p 3000:3000 \
     -p 80:80 \
     -p 2222:22 \
     --device-cgroup-rule 'a 13:* rwm' \
