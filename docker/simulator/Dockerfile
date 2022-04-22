@@ -149,19 +149,20 @@ RUN /bin/bash -c "source /source_me.bash && export GAZEBO_MODEL_PATH=/gzweb_db:$
 RUN sed -i 's|ws://|wss://|' http/client/gz3d.gui.js
 RUN sed -i "s|'http://'|'https://'|" http/client/gz3d.gui.js
 #RUN /bin/bash -c "./updateGZ3D.sh" 
+RUN sed -i 's|listen(port|listen(port, "0.0.0.0"|' gzbridge/server.js
 
 ### WebViz
-WORKDIR /
-RUN git clone https://github.com/cruise-automation/webviz.git
-WORKDIR webviz
-ENV NODE_VERSION v14.16.1
-RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
-ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
-ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
-RUN npm run bootstrap
-RUN npm run build-static-webviz
-RUN sed -i 's/http-server __static_webviz__/http-server --port 8081 __static_webviz__/g' ./package.json
-WORKDIR /
+#WORKDIR /
+#RUN git clone https://github.com/cruise-automation/webviz.git
+#WORKDIR webviz
+#ENV NODE_VERSION v14.16.1
+#RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
+#ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
+#ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
+#RUN npm run bootstrap
+#RUN npm run build-static-webviz
+#RUN sed -i 's/http-server __static_webviz__/http-server --port 8081 __static_webviz__/g' ./package.json
+#WORKDIR /
 
 # install autoware
 #RUN apt-get update
@@ -207,7 +208,7 @@ RUN cd web_scripts && chmod +x start_web_terminal.sh start_gzweb.sh start_webviz
 RUN apt-get update && apt-get install -y openssh-server sshpass
 RUN service ssh start
 EXPOSE 22
-CMD ["/usr/sbin/sshd","-D"]
+#CMD ["/usr/sbin/sshd","-D"]
 
 # Create new simcloud user and simcloud group (id 1000) for running the container
 #RUN addgroup --gid 1000 simcloud_group
@@ -241,6 +242,12 @@ RUN cd /our_ros_packages/src; rm -f CMakeLists.txt; source /source_me.bash; catk
 RUN /bin/bash -c 'source /source_me.bash; catkin_make -C /our_ros_packages'
 RUN echo '. /our_ros_packages/devel/setup.bash' >> /source_scripts/1system
 RUN echo '. $(rospack find uav)/scripts/init_uav_px4.sh' >> /source_scripts/999px4Firmware
+
+# start launch scripts
+COPY ./test_launchfile.sh ./test_launchfile.sh
+RUN chmod +x test_launchfile.sh
+RUN mkdir -p ~/.ssh
+CMD ["/web_scripts/start_web_terminal.sh"]
 
 # Ensure image runs bash - (BART?) UPDATE is disabled due to the web terminal
 #CMD ["bash"]

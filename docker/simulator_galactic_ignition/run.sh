@@ -21,7 +21,8 @@ docker run -iPt \
     -v /dev/input:/dev/input \
     -p 8001:8001 \
     -p 8080:8080 \
-    -p 3000:3000 \
+    -p 4000:4000 \
+    -p 9002:9002 \
     -p 80:80 \
     -p 2222:22 \
     --device-cgroup-rule 'a 13:* rwm' \
@@ -33,5 +34,5 @@ docker run -iPt \
     --env="XAUTHORITY=$XAUTHORITY" \
     --volume="$PWD:/projects" \
     --runtime=nvidia \
-    --name="simulator" \
-    simulator \
+    --name="simulator_ros2_ignition" \
+    simulator_ros2_ignition \

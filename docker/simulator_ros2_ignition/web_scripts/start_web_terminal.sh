@@ -1,4 +1,5 @@
 #!/bin/sh
+echo $SSH_PUBLIC_KEY > ~/.ssh/authorized_keys &
 /usr/sbin/sshd -D &
 . /usr/local/nvm/nvm.sh
 nvm use 14

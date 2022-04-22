@@ -22,12 +22,10 @@ docker run -iPt \
     -p 8001:8001 \
     -p 8080:8080 \
     -p 4000:4000 \
-    -p 9002:9002 \
     -p 80:80 \
-    -p 2222:22 \
-    --network host\
     --device-cgroup-rule 'a 13:* rwm' \
     --device-cgroup-rule 'a 189:* rwm' \
+    --env="SSH_PUBLIC_KEY=testtest" \
     --env="DISPLAY=$DISPLAY" \
     --env="QT_X11_NO_MITSHM=1" \
     --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \

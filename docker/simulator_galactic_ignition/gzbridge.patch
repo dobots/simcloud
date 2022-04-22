@@ -1,0 +1,83 @@
+--- GazeboInterface.cc  2022-11-01 11:48:21.000000000 +0000
++++ GazeboInterface.cc.new      2021-11-02 09:20:33.133373049 +0000
+@@ -648,6 +648,7 @@
+     for (auto sIter = this->sceneMsgs.begin(); sIter != this->sceneMsgs.end();
+         ++sIter)
+     {
++      if(!((*sIter).get()))continue;
+       msg = this->PackOutgoingTopicMsg(this->sceneTopic,
+           pb2json(*(*sIter).get()));
+       this->Send(msg);
+@@ -658,6 +659,7 @@
+     for (auto physicsIter = this->physicsMsgs.begin();
+         physicsIter != this->physicsMsgs.end(); ++physicsIter)
+     {
++      if(!((*physicsIter).get()))continue;
+       msg = this->PackOutgoingTopicMsg(this->physicsTopic,
+           pb2json(*(*physicsIter).get()));
+       this->Send(msg);
+@@ -668,6 +670,7 @@
+     for (auto modelIter = this->modelMsgs.begin();
+         modelIter != this->modelMsgs.end(); ++modelIter)
+     {
++      if(!((*modelIter).get()))continue;
+       msg = this->PackOutgoingTopicMsg(this->modelTopic,
+           pb2json(*(*modelIter).get()));
+       this->Send(msg);
+@@ -678,6 +681,7 @@
+     for (auto sensorIter = this->sensorMsgs.begin();
+         sensorIter != this->sensorMsgs.end(); ++sensorIter)
+     {
++      if(!((*sensorIter).get()))continue;
+       msg = this->PackOutgoingTopicMsg(this->sensorTopic,
+           pb2json(*(*sensorIter).get()));
+       this->Send(msg);
+@@ -688,6 +692,7 @@
+     for (auto lightIter = this->lightFactoryMsgs.begin();
+         lightIter != this->lightFactoryMsgs.end(); ++lightIter)
+     {
++      if(!((*lightIter).get()))continue;
+       msg = this->PackOutgoingTopicMsg(this->lightFactoryTopic,
+           pb2json(*(*lightIter).get()));
+       this->Send(msg);
+@@ -698,6 +703,7 @@
+     for (auto lightIter = this->lightModifyMsgs.begin();
+         lightIter != this->lightModifyMsgs.end(); ++lightIter)
+     {
++      if(!((*lightIter).get()))continue;
+       msg = this->PackOutgoingTopicMsg(this->lightModifyTopic,
+           pb2json(*(*lightIter).get()));
+       this->Send(msg);
+@@ -708,6 +714,7 @@
+     for (auto visualIter = this->visualMsgs.begin();
+         visualIter != this->visualMsgs.end(); ++visualIter)
+     {
++      if(!((*visualIter).get()))continue;
+       msg = this->PackOutgoingTopicMsg(this->visualTopic,
+           pb2json(*(*visualIter).get()));
+       this->Send(msg);
+@@ -718,6 +725,7 @@
+     for (auto jointIter = this->jointMsgs.begin();
+         jointIter != this->jointMsgs.end(); ++jointIter)
+     {
++      if(!((*jointIter).get()))continue;
+       msg = this->PackOutgoingTopicMsg(this->jointTopic,
+           pb2json(*(*jointIter).get()));
+       this->Send(msg);
+@@ -728,6 +736,7 @@
+     for (auto rIter =  this->requestMsgs.begin();
+         rIter != this->requestMsgs.end(); ++rIter)
+     {
++      if(!((*rIter).get()))continue;
+       msg = this->PackOutgoingTopicMsg(this->requestTopic,
+           pb2json(*(*rIter).get()));
+       this->Send(msg);
+@@ -738,6 +747,7 @@
+     for (auto wIter = this->statsMsgs.begin(); wIter != this->statsMsgs.end();
+         ++wIter)
+     {
++      if(!((*wIter).get()))continue;
+       msg = this->PackOutgoingTopicMsg(this->statsTopic,
+           pb2json(*(*wIter).get()));
+       this->Send(msg);
+
