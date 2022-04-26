@@ -111,6 +111,10 @@ RUN source /opt/ros/foxy/setup.bash; cd /our_ros_packages; rosdep install --from
 RUN /bin/bash -c 'source /source_me.bash'
 RUN echo '. /our_ros_packages/install/setup.sh' >> /source_scripts/1system
 
+# create mount point
+RUN mkdir -p /mnt/efs_data
+VOLUME /mnt/efs_data
+
 # start launch scripts
 COPY ./test_launchfile.sh ./test_launchfile.sh
 RUN chmod +x test_launchfile.sh
