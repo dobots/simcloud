@@ -21,12 +21,13 @@ To run docker without super user:
 ## Step 3: Build the Docker image
 
 Move into the folder of the docker image you would like to use and build it:
-	```
-	cd ~/docker
-	cd ros_melodic_desktop_px4
-	docker build -t ros_melodic_desktop_px4 .	
-	```
-	> **_NOTE:_** Check if your image has been succesfully build: `docker image list`
+```
+cd ~/docker	
+cd ros_melodic_desktop_px4	
+docker build -t ros_melodic_desktop_px4 .	
+```
+
+> **_NOTE:_** Check if your image has been succesfully build: `docker image list`
 
 ## Step 4: Start a container
 	
