@@ -153,15 +153,16 @@ RUN echo "export GAZEBO_MODEL_DATABASE_URI=countvoncount.math" >> /root/.bashrc
 #Install Pip and Jupyter
 RUN sudo apt-get -y install python3-pip
 RUN pip3 install --upgrade numpy pandas 
-RUN pip3 install jupyter jupyterlab jupytext jupyter-book ipywidgets pyyaml bqplot opencv-python
+RUN pip3 install jupyter jupyterlab jupytext jupyter-book ipywidgets pyyaml bqplot opencv-python sidecar sidecar
 RUN pip3 install --upgrade --no-deps --force-reinstall jupyterlab-myst
 
-RUN git clone https://github.com/ldania/jupyter-ros2.git
-WORKDIR jupyter-ros2
-RUN pip3 install -e .
-RUN jupyter nbextension install jupyros
-RUN jupyter nbextension enable jupyros
-WORKDIR /
+#RUN git clone https://github.com/dobots/jupyter-ros.git
+#WORKDIR jupyter-ros
+#RUN git checkout Ros2
+#RUN pip3 install -e .
+#RUN jupyter nbextension install jupyros
+#RUN jupyter nbextension enable jupyros
+#WORKDIR /
 
 #Creating the Jupyter start Script
 RUN chmod +x web_scripts/start_labs.sh web_scripts/start_notebook.sh
