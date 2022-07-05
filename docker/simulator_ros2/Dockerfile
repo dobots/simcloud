@@ -109,7 +109,13 @@ RUN npm install -g yarn
 RUN yarn global add wetty@2.0.3
 EXPOSE 3000
 COPY ./web_scripts/ /web_scripts/
+
+#### KEEP FOLLOWING LINES
+#### start_labs.sh start_notebook.sh
 RUN cd web_scripts && chmod +x start_web_terminal.sh start_gzweb.sh start_webviz.sh start_labs.sh start_notebook.sh
+#####
+
+
 
 # install Foxglove
 #RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
@@ -150,6 +156,13 @@ RUN echo "export GAZEBO_MODEL_DATABASE_URI=countvoncount.math" >> /root/.bashrc
 # add style to wetty
 #RUN echo "export PS1='ASIMOVO:\W '" >> /root/.bashrc
 
+
+
+#################################################
+#################################################
+### KEEP FOLLOWING LINES
+### START
+###########################################################
 #Install Pip and Jupyter
 RUN sudo apt-get -y install python3-pip
 RUN pip3 install --upgrade numpy pandas ipycanvas 
@@ -159,7 +172,26 @@ RUN pip3 install "python-lsp-server[all]"
 RUN pip3 install --upgrade --no-deps --force-reinstall jupyterlab-myst
 RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager ipyevents ipycanvas js 
 RUN jupyter labextension install @robostack/jupyterlab-ros
- 
+
+#####
+### END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #RUN git clone https://github.com/dobots/jupyter-ros.git
 #WORKDIR jupyter-ros
 #RUN git checkout Ros2
