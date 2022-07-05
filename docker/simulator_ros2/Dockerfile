@@ -109,7 +109,7 @@ RUN npm install -g yarn
 RUN yarn global add wetty@2.0.3
 EXPOSE 3000
 COPY ./web_scripts/ /web_scripts/
-RUN cd web_scripts && chmod +x start_web_terminal.sh start_gzweb.sh start_webviz.sh
+RUN cd web_scripts && chmod +x start_web_terminal.sh start_gzweb.sh start_webviz.sh start_labs.sh start_notebook.sh
 
 # install Foxglove
 #RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
@@ -152,10 +152,14 @@ RUN echo "export GAZEBO_MODEL_DATABASE_URI=countvoncount.math" >> /root/.bashrc
 
 #Install Pip and Jupyter
 RUN sudo apt-get -y install python3-pip
-RUN pip3 install --upgrade numpy pandas 
-RUN pip3 install jupyter jupyterlab jupytext jupyter-book ipywidgets pyyaml bqplot opencv-python sidecar sidecar
+RUN pip3 install --upgrade numpy pandas ipycanvas 
+RUN pip3 install jupyter jupyterlab jupytext jupyter-book ipywidgets pyyaml bqplot opencv-python sidecar ipyevents nbdev ipympl
+RUN pip3 install jupyterlab-lsp jupyterlab_widgets
+RUN pip3 install "python-lsp-server[all]"
 RUN pip3 install --upgrade --no-deps --force-reinstall jupyterlab-myst
-
+RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager ipyevents ipycanvas js 
+RUN jupyter labextension install @robostack/jupyterlab-ros
+ 
 #RUN git clone https://github.com/dobots/jupyter-ros.git
 #WORKDIR jupyter-ros
 #RUN git checkout Ros2
@@ -165,7 +169,7 @@ RUN pip3 install --upgrade --no-deps --force-reinstall jupyterlab-myst
 #WORKDIR /
 
 #Creating the Jupyter start Script
-RUN chmod +x web_scripts/start_labs.sh web_scripts/start_notebook.sh
+#RUN chmod +x web_scripts/start_labs.sh web_scripts/start_notebook.sh
 
 # Add ros_packages and UAV sourcing to bashrc as well:
 RUN mkdir /our_ros_packages; cd /our_ros_packages; mkdir src
