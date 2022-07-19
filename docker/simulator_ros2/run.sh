@@ -35,5 +35,4 @@ docker run -iPt \
     --volume="$PWD:/projects" \
     --runtime=nvidia \
     --name="simulator_ros2" \
-    --privileged\
     simulator_ros2 \

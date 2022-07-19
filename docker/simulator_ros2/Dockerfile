@@ -112,7 +112,7 @@ COPY ./web_scripts/ /web_scripts/
 
 #### KEEP FOLLOWING LINES
 #### start_labs.sh start_notebook.sh
-RUN cd web_scripts && chmod +x start_web_terminal.sh start_gzweb.sh start_webviz.sh start_labs.sh start_notebook.sh
+RUN cd web_scripts && chmod +x start_web_terminal.sh start_gzweb.sh start_webviz.sh start_labs.sh start_notebook.sh start_workspace.sh
 #####
 
 
@@ -170,8 +170,8 @@ RUN pip3 install jupyter jupyterlab jupytext jupyter-book ipywidgets pyyaml bqpl
 RUN pip3 install jupyterlab-lsp jupyterlab_widgets
 RUN pip3 install "python-lsp-server[all]"
 RUN pip3 install --upgrade --no-deps --force-reinstall jupyterlab-myst
-RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager ipyevents ipycanvas js 
-RUN jupyter labextension install @robostack/jupyterlab-ros
+RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager ipyevents ipycanvas js @epi2melabs/jupyterlab-autorun-cells 
+#RUN jupyter labextension install @robostack/jupyterlab-ros
 
 #####
 ### END
