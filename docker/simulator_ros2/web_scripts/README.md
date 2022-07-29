@@ -23,12 +23,19 @@ For our example:
 jupyter lab workspaces import /[PATH_TO_FILE]/MyWorkspace.jupyterlab-workspace
 ```
 
+
+To activate the saved workspace in the browser:
+```
+http://[IP ADRESS]:[PORT]/lab/workspaces/[WORKSPACE NAME]
+```
+
 By default you can launch a workspace in this simcloud image. 
 
 To launch a specific workspace:
 ```
 ~ ./web_scripts/start_workspace.sh
 ```
+
 
 
 
