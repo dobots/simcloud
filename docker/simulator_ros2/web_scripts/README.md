@@ -1,3 +1,35 @@
+# Editting a custom Jupyterlabs CSS page
+
+
+Open a Jupyterlabs page, find the component you want to edit.
+Displayed below:
+![css_editor](https://user-images.githubusercontent.com/27964546/182395721-f345469d-6e7d-40d6-a45d-24c3aad040fc.png)
+
+Find the variable which determines the size of the component. In this example we used:
+
+```
+--jp-private-horizontal-tab-height
+```
+
+Open the local index file of the Jupyterlabs page:
+```
+vim /usr/local/share/jupyter/lab/themes/@jupyterlab/theme-light-extension/index.css
+```
+At any line after the root open bracker (line 28), insert:
+
+```
+--jp-private-horizontal-tab-height: 0px;
+
+```
+Example:
+
+![Screenshot from 2022-08-02 16-15-54](https://user-images.githubusercontent.com/27964546/182396894-16f5254a-8bac-47ab-9775-32e49f2125a3.png)
+
+
+Close the file then launch labs.
+
+
+
 # HOW TO ADD WORKSPACE
 Navigate to File-> Save Workspace As
 ![Workspace_1](https://user-images.githubusercontent.com/27964546/181778983-181431e8-2c59-4cb7-a804-fbb35032d66b.png)
