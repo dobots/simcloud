@@ -98,19 +98,9 @@ WORKDIR /
 #RUN sed -i 's/http-server __static_webviz__/http-server --port 8081 __static_webviz__/g' ./package.json
 #WORKDIR /
 
-#install wetty
-ENV NVM_DIR /usr/local/nvm
-RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
-ENV NODE_VERSION v14.16.1
-RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
-ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
-ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
-RUN npm install -g yarn
-RUN yarn global add wetty@2.0.3
-EXPOSE 3000
 COPY ./web_scripts/ /web_scripts/
 
-#### KEEP FOLLOWING LINES
+
 #### start_labs.sh start_notebook.sh
 RUN cd web_scripts && chmod +x start_web_terminal.sh start_gzweb.sh start_webviz.sh start_labs.sh start_notebook.sh start_workspace.sh
 #####
@@ -158,31 +148,6 @@ RUN echo "export GAZEBO_MODEL_DATABASE_URI=countvoncount.math" >> /root/.bashrc
 
 
 
-#################################################
-#################################################
-### KEEP FOLLOWING LINES
-### START
-###########################################################
-#Install Pip and Jupyter
-RUN sudo apt-get -y install python3-pip
-RUN pip3 install --upgrade numpy pandas ipycanvas 
-RUN pip3 install jupyter jupyterlab jupytext jupyter-book ipywidgets pyyaml bqplot opencv-python sidecar ipyevents nbdev ipympl
-RUN pip3 install jupyterlab-lsp jupyterlab_widgets
-RUN pip3 install "python-lsp-server[all]"
-RUN pip3 install --upgrade --no-deps --force-reinstall jupyterlab-myst
-RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager ipyevents ipycanvas js @epi2melabs/jupyterlab-autorun-cells 
-#RUN jupyter labextension install @robostack/jupyterlab-ros
-
-#####
-### END
-
-
-
-
-
-
-
-
 
 
 
@@ -224,4 +189,34 @@ COPY ./test_launchfile.sh ./test_launchfile.sh
 RUN chmod +x test_launchfile.sh
 RUN mkdir -p ~/.ssh
 CMD ["/web_scripts/start_web_terminal.sh"]
+#RUN sed -i 's/http-server __static_webviz__/http-server --port 8081 __static_webviz__/g' ./package.json
+
+#install wetty
+ENV NVM_DIR /usr/local/nvm
+RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
+ENV NODE_VERSION v14.16.1
+RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
+ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
+ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
+RUN npm install -g yarn
+RUN yarn global add wetty@2.0.3
+EXPOSE 3000
+
+#################################################
+#################################################
+### KEEP FOLLOWING LINES
+### START
+###########################################################
+#Install Pip and Jupyter
+RUN sudo apt-get -y install python3-pip
+RUN pip3 install --upgrade numpy pandas ipycanvas
+RUN pip3 install jupyter jupyterlab jupytext jupyter-book ipywidgets pyyaml bqplot opencv-python sidecar ipyevents nbdev ipympl jupyterlab-urdf
+RUN pip3 install jupyterlab-lsp jupyterlab_widgets
+RUN pip3 install "python-lsp-server[all]"
+RUN pip3 install --upgrade --no-deps --force-reinstall jupyterlab-myst
+RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager ipyevents ipycanvas js @epi2melabs/jupyterlab-autorun-cells
+#RUN jupyter labextension install @robostack/jupyterlab-ros
+
+#####
+### END
 
