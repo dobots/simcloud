@@ -152,9 +152,12 @@ RUN echo "export GAZEBO_MODEL_DATABASE_URI=countvoncount.math" >> /root/.bashrc
 
 #Install Pip and Jupyter
 RUN sudo apt-get -y install python3-pip
-RUN pip3 install --upgrade numpy pandas 
-RUN pip3 install jupyter jupyterlab jupytext jupyter-book ipywidgets pyyaml bqplot opencv-python
+RUN pip3 install --upgrade numpy pandas ipycanvas 
+RUN pip3 install jupyter jupyterlab jupytext jupyter-book ipywidgets pyyaml bqplot opencv-python sidecar ipyevents nbdev ipympl jupyterlab-urdf
+RUN pip3 install jupyterlab-lsp jupyterlab_widgets
+RUN pip3 install "python-lsp-server[all]"
 RUN pip3 install --upgrade --no-deps --force-reinstall jupyterlab-myst
+RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager ipyevents ipycanvas js @epi2melabs/jupyterlab-autorun-cells
 
 RUN git clone https://github.com/ldania/jupyter-ros2.git
 WORKDIR jupyter-ros2
@@ -184,7 +187,11 @@ RUN sed -i 's|/models/rosbot|/rosbot|' /our_ros_packages/install/rosbot_descript
 
 # start launch scripts
 COPY ./test_launchfile.sh ./test_launchfile.sh
+COPY ./web_scripts/asimovo.jupyterlab-workspace ./web_scripts/asimovo.jupyterlab-workspace
+COPY ./web_scripts/README.md ./web_scripts/README.md
+COPY ./web_scripts/ros.html ./web_scripts/ros.html
+COPY ./web_scripts/roswiki.html ./web_scripts/roswiki.html
 RUN chmod +x test_launchfile.sh
 RUN mkdir -p ~/.ssh
-CMD ["/web_scripts/start_web_terminal.sh"]
+CMD ["/web_scripts/start_labs.sh"]
 
