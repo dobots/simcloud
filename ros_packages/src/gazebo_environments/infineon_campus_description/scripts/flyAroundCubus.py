@@ -22,11 +22,11 @@ from std_msgs.msg import Float64
 
 def rectangle_circumference():
     rectangle_points = list()
-    rectangle_points.append([5, 5])
-    rectangle_points.append([15, 40])
-    rectangle_points.append([-150, 40])
-    rectangle_points.append([-150, -20])
-    rectangle_points.append([15, -20])
+    rectangle_points.append([0, 0])
+    rectangle_points.append([5, 40])
+    rectangle_points.append([-155, 40])
+    rectangle_points.append([-155, -20])
+    rectangle_points.append([5, -20])
 
     return rectangle_points
     
@@ -40,8 +40,10 @@ def callback(msg):
     global target_points
     global target_position_x
     global target_position_y
+    global target_position_z
     global counter
-    if math.sqrt((target_position_x-current_pos_x)**2 + (target_position_y-current_pos_y)**2) < 3.0:
+    if math.sqrt((target_position_x-current_pos_x)**2 + (target_position_y-current_pos_y)**2 + (target_position_z-current_pos_z)**2) < 3.0:	
+	
         counter = counter + 1
         if counter == len(target_points): counter = 0
         target_position_x = target_points[counter][0]
@@ -76,7 +78,8 @@ def main():
 
     global target_position_x
     global target_position_y
-
+    global target_position_z
+    target_position_z = 16
 
     while not rospy.is_shutdown():
 
@@ -84,7 +87,7 @@ def main():
 
         position_msg.pose.position.x = target_position_x
         position_msg.pose.position.y = target_position_y
-        position_msg.pose.position.z = 16
+        position_msg.pose.position.z = target_position_z
 
         pubPosition.publish(position_msg)
         print(position_msg)

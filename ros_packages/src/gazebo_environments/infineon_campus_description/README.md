@@ -1,9 +1,20 @@
+# Run the infineon campus with a drone
+**1. Run the launch file for the world with a drone:**
+
+    roslaunch infineon_campus_description bringup.launch
+	
+**2. Run the following script to fly the drone around the campus:**
+
+    rosrun infineon_campus_description flyAroundCubus.py
+    rosrun infineon_campus_description arm_uav.sh
+
+
 # infineon_campus description
 Contains the 3D model of the infineon_campus. In addition it contains launch files to start the gazebo environment with a UAV. 
 
 ROS package, which includes the mesh files, sdf description, world description and a launch file to launch  a world with the infineon_campus
 
-**1. Run the launch file:**
+**1. Run the launch file for the world:**
 
     roslaunch infineon_campus_description infineon_campus_world.launch
 	

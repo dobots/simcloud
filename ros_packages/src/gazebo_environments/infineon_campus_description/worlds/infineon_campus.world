@@ -46,7 +46,7 @@
 
      <include>
          <uri>model://ar_tag_13</uri>
-         <pose>15 15 0 0 0 0</pose>
+         <pose>5 5 0 0 0 0</pose>
     </include>
 
    <!--    floor and mountains   -->

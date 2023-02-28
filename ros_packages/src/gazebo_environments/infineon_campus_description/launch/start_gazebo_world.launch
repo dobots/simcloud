@@ -21,8 +21,8 @@
   <!-- ADD POSE FOR UAV -->
   <!-- GAZEBO COORDINATE FRAME IS ORIGIN -->
   <!-- VALUES IN METER AND RADIANT -->
-  <arg name="x" default="15"/>
-  <arg name="y" default="15"/>
+  <arg name="x" default="8"/>
+  <arg name="y" default="8"/>
   <arg name="z" default="0.3"/>
   <arg name="roll" default="0"/>
   <arg name="pitch" default="0"/>
