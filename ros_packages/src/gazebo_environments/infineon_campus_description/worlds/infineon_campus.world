@@ -1,7 +1,6 @@
 <?xml version="1.0" ?>
 <sdf version='1.4'>
   <world name='default'>
-
     <physics name='default_physics' default='0' type='ode'>
       <gravity>0 0 -9.8066</gravity>
       <ode>
@@ -46,21 +45,26 @@
     </include>
 
      <include>
-      <uri>model://ar_tag_13</uri>
+         <uri>model://ar_tag_13</uri>
+         <pose>25 25 0 0 0 0</pose>
     </include>
 
-
+   <!--    floor and mountains   -->
+  <include>
+      <pose>0 0 0 0 0 0 </pose> 
+      <uri>model://infineon_campus_description/models/vrc_driving_terrain</uri>
+   </include>
 
 <model name="infineon_campus">
     <static>true</static>
-    <pose>0 0 0 0 0 0</pose>
+    <pose>0 0 0 0 0 -0.17646</pose>
     <link name="body"> 
    <visual name="visual">
   <!-- <pose>-160 0 -0.5 0 0 1.47</pose>-->
-  <pose>0 160 -0.5 0 0 0</pose>
+  <pose>0 160 -0.5 0 0 -0.1764</pose>
         <geometry>
           <mesh>
-            <uri>model://infineon_campus_description/meshes/infineon_campus.dae</uri>
+            <uri>model://infineon_campus_description/meshes/infineon_campus._only_3d_no_uv.dae</uri>
             <!--<uri>model://infineon_campus_description/meshes/cube.dae</uri>-->
           </mesh>
         </geometry>
@@ -68,7 +72,7 @@
       </visual>
   <collision name="collision">
   <!-- <pose>-160 0 -0.5 0 0 1.47</pose>-->
-    <pose>0 160 -0.5 0 0 0</pose>
+    <pose>0 160 -0.5 0 0 -0.1764</pose>
        <geometry>
           <mesh>
             <uri>model://infineon_campus_description/meshes/infineon_campus.dae</uri>

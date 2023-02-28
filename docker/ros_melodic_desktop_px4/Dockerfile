@@ -100,7 +100,11 @@ RUN apt-get update -y &&  apt-get install ros-melodic-rosbridge-suite -y
 #install velodyne packages
 RUN apt-get update -y && apt-get install -y ros-melodic-velodyne-simulator
 
+# Finally double-check if there are any updates:
+RUN apt-get update -y && apt-get dist-upgrade -y && rm -rf /var/lib/apt/lists/*
+
 # Add ros_packages and UAV sourcing to bashrc as well:
+RUN touch newversion
 COPY ./ros_packages /our_ros_packages
 RUN cd /our_ros_packages; rm -rf build devel
 RUN cd /our_ros_packages/src; rm -f CMakeLists.txt; source /source_me.bash; catkin_init_workspace
@@ -109,10 +113,8 @@ RUN echo '. /our_ros_packages/devel/setup.bash' >> /source_scripts/1system
 RUN echo '. $(rospack find uav)/scripts/init_uav_px4_deb.sh' >> /source_scripts/999px4Firmware
 
 # Put the project_ws folder in the source scripts
-RUN echo 'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:/projects/projects_ws/src' >> /source_scripts/1system
-
-# Finally double-check if there are any updates:
-RUN apt-get update -y && apt-get dist-upgrade -y && rm -rf /var/lib/apt/lists/*
+RUN echo 'export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:/projects/src' >> /source_scripts/1system
+RUN echo 'export ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH}:/projects/src' >> /source_scripts/1system
 
 # Ensure image runs bash
 CMD ["bash"]

@@ -12,7 +12,7 @@
     <pose>0 0 0 0 0 0</pose>
     <link name="body"> 
    <visual name="visual">
-   <pose>0 0 0 0 0 0</pose>
+   <pose>0 0 0 0 0 0.1764</pose>
         <geometry>
           <mesh>
             <uri>model://infineon_campus_description/meshes/infineon_campus.dae</uri>
@@ -22,7 +22,7 @@
         <cast_shadows>true</cast_shadows>
       </visual>
   <collision name="collision">
-   <pose>0 0 0 0 0 0</pose>
+   <pose>0 0 0 0 0 -0.1764</pose>
        <geometry>
           <mesh>
             <uri>model://infineon_campus_description/meshes/infineon_campus.dae</uri>
