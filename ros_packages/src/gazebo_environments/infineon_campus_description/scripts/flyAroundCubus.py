@@ -22,11 +22,11 @@ from std_msgs.msg import Float64
 
 def rectangle_circumference():
     rectangle_points = list()
-    rectangle_points.append([25, 25])
-    rectangle_points.append([25, 65])
-    rectangle_points.append([-150, 65])
+    rectangle_points.append([5, 5])
+    rectangle_points.append([15, 40])
+    rectangle_points.append([-150, 40])
     rectangle_points.append([-150, -20])
-    rectangle_points.append([30, -20])
+    rectangle_points.append([15, -20])
 
     return rectangle_points
     

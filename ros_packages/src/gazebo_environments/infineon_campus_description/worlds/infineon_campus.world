@@ -46,7 +46,7 @@
 
      <include>
          <uri>model://ar_tag_13</uri>
-         <pose>25 25 0 0 0 0</pose>
+         <pose>15 15 0 0 0 0</pose>
     </include>
 
    <!--    floor and mountains   -->
@@ -64,7 +64,7 @@
   <pose>0 160 -0.5 0 0 -0.1764</pose>
         <geometry>
           <mesh>
-            <uri>model://infineon_campus_description/meshes/infineon_campus._only_3d_no_uv.dae</uri>
+            <uri>model://infineon_campus_description/meshes/infineon_campus._only_3d.dae</uri>
             <!--<uri>model://infineon_campus_description/meshes/cube.dae</uri>-->
           </mesh>
         </geometry>
